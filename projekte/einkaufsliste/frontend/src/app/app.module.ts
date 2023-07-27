@@ -11,6 +11,10 @@ import {EinkaufszettelEffects} from "./store/einkaufszettel/einkaufszettel.effec
 import {einkaufszettelFeatureKey, einkaufszettelReducer} from "./store/einkaufszettel/einkaufszettel.reducer";
 import {HttpClientModule} from "@angular/common/http";
 import {CardModule} from "primeng/card";
+import {CheckboxModule} from "primeng/checkbox";
+import {FormsModule} from "@angular/forms";
+import {PanelModule} from "primeng/panel";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 @NgModule({
   declarations: [
@@ -19,14 +23,18 @@ import {CardModule} from "primeng/card";
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
     CardModule,
+    CheckboxModule,
     StoreModule.forRoot({}, {}),
     StoreDevtoolsModule.instrument({maxAge: 25, logOnly: !isDevMode()}),
     EffectsModule.forRoot([]),
     EffectsModule.forFeature([EinkaufszettelEffects]),
     StoreModule.forFeature(einkaufszettelFeatureKey, einkaufszettelReducer),
+    FormsModule,
+    PanelModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

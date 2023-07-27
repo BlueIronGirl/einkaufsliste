@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable, retry} from "rxjs";
-import {Artikel} from "../entities/artikel";
+import {Kategorie} from "../entities/kategorie";
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +12,8 @@ export class EinkaufszettelStoreService {
   constructor(private httpClient: HttpClient) {
   }
 
-  getAll(): Observable<Artikel[]> {
-    return this.httpClient.get<Artikel[]>(`${this.api}/alleArtikel`).pipe(
+  getAll(): Observable<Kategorie[]> {
+    return this.httpClient.get<Kategorie[]>(`${this.api}/alleKategorien`).pipe(
       retry(3)
     );
   }

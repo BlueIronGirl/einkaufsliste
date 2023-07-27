@@ -7,5 +7,5 @@ export const selectEinkaufszettelState = createFeatureSelector<fromEinkaufszette
 
 export const selectAllArtikel = createSelector(
   selectEinkaufszettelState,
-  state => state.artikel
+  state => state.kategorien
 )

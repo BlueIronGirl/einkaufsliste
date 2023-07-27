@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {Store} from "@ngrx/store";
 import {EinkaufszettelActions} from "../../store/einkaufszettel/einkaufszettel.actions";
-import {Artikel} from "../../entities/artikel";
-import {Observable} from "rxjs";
 import {selectAllArtikel} from "../../store/einkaufszettel/einkaufszettel.selectors";
+import {Kategorie} from "../../entities/kategorie";
 
 @Component({
   selector: 'app-einkaufszettel',
@@ -11,7 +10,7 @@ import {selectAllArtikel} from "../../store/einkaufszettel/einkaufszettel.select
   styleUrls: ['./einkaufszettel.component.scss']
 })
 export class EinkaufszettelComponent implements OnInit{
-  artikel$!: Observable<Artikel[]>;
+  kategories!: Kategorie[];
 
   constructor(private store: Store) {
   }
@@ -19,7 +18,7 @@ export class EinkaufszettelComponent implements OnInit{
   ngOnInit(): void {
     this.store.dispatch(EinkaufszettelActions.loadEinkaufszettels());
 
-    this.artikel$ = this.store.select(selectAllArtikel);
+    this.store.select(selectAllArtikel).subscribe(kategories => this.kategories = kategories);
   }
 
 }

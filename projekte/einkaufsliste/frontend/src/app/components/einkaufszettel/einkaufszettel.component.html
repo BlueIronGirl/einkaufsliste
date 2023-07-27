@@ -1,12 +1,18 @@
-<div *ngIf="artikel$ | async as artikels">
-  <div class="grid gap-4 h-56">
-    <div *ngFor="let artikel of artikels">
-      <p-card class="border-indigo-500 rounded-lg" header="{{artikel.name}}">
-        <p class="m-0">
-          Anzahl: {{artikel.anzahl}} <br/>
-          Kategorie: {{artikel.kategorie.name}}
-        </p>
-      </p-card>
-    </div>
+<div class="grid">
+  <div *ngFor="let kategorie of kategories">
+    <p-panel header="{{kategorie.name}}" [toggleable]="true" class="p-0">
+      <div *ngFor="let artikel of kategorie.artikels">
+        <div class="max-w-sm rounded overflow-hidden shadow-lg">
+          <div class="px-6 py-4">
+            <div class="font-bold text-xl">
+              <p-checkbox class="mr-2 pb-px object-center" [(ngModel)]="artikel.gekauft" [binary]="true"></p-checkbox>
+              <span class="">{{artikel.anzahl}}x {{artikel.name}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </p-panel>
   </div>
 </div>
+
+

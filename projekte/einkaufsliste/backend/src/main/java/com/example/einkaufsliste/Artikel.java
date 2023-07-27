@@ -1,5 +1,6 @@
 package com.example.einkaufsliste;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,8 +19,9 @@ public class Artikel {
 
     private String name;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="kategorie_id")
+    @JsonIgnore
     private Kategorie kategorie;
 
     private int anzahl;

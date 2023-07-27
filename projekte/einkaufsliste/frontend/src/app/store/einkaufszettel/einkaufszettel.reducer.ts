@@ -1,22 +1,22 @@
-import {createFeature, createReducer, on} from '@ngrx/store';
+import {createReducer, on} from '@ngrx/store';
 import {EinkaufszettelActions} from './einkaufszettel.actions';
-import {Artikel} from "../../entities/artikel";
+import {Kategorie} from "../../entities/kategorie";
 
 export const einkaufszettelFeatureKey = 'einkaufszettel';
 
 export interface State {
-  artikel: Artikel[];
+  kategorien: Kategorie[];
 }
 
 export const initialState: State = {
-  artikel: []
+  kategorien: []
 };
 
 export const einkaufszettelReducer = createReducer(
   initialState,
   on(EinkaufszettelActions.loadEinkaufszettels, state => state),
   on(EinkaufszettelActions.loadEinkaufszettelsSuccess, (state, action) => {
-    return {...state, artikel: action.data}
+    return {...state, kategorien: action.data}
   }),
   on(EinkaufszettelActions.loadEinkaufszettelsFailure, (state, action) => state),
 );

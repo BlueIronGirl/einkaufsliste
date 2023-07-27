@@ -13,7 +13,7 @@ export class EinkaufszettelEffects {
     return this.actions$.pipe(
       ofType(EinkaufszettelActions.loadEinkaufszettels),
       switchMap(() => this.einkaufszettelService.getAll().pipe(
-          map(artikel => EinkaufszettelActions.loadEinkaufszettelsSuccess({data: artikel})),
+          map(kategorie => EinkaufszettelActions.loadEinkaufszettelsSuccess({data: kategorie})),
           catchError(error => of(EinkaufszettelActions.loadEinkaufszettelsFailure({error})))
         )
       )
