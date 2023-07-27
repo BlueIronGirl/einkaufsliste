@@ -1,8 +1,10 @@
 package com.example.einkaufsliste;
 
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -18,16 +20,6 @@ public class ArtikelController {
         return artikelRepository.findAll();
     }
 
-//    @GetMapping("/alleGekauftenArtikel")
-//    public List<Artikel> alleGekauftenArtikel() {
-//        return artikelRepository.findeAlleGekauftenArtikel();
-//    }
-//
-//    @GetMapping("/alleNichtGekauftenArtikel")
-//    public List<Artikel> alleNichtGekauftenArtikel() {
-//        return artikelRepository.findeAlleNichtGekauftenArtikel();
-//    }
-
     @GetMapping("/artikel/{id}")
     public Artikel ladeArtikel(@PathVariable Long id) throws Exception {
         return artikelRepository.findById(id).orElseThrow(() -> new Exception("Artikel nicht gefunden"));
@@ -35,7 +27,13 @@ public class ArtikelController {
 
     @PostMapping(value = "/artikel", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Artikel neuerArtikel(@RequestBody Artikel artikel) {
-        return artikelRepository.save(artikel);
+        Artikel newArtikel = new Artikel();
+        newArtikel.setName(artikel.getName());
+        newArtikel.setKategorie(artikel.getKategorie());
+        newArtikel.setAnzahl(artikel.getAnzahl());
+        newArtikel.setGekauft(artikel.isGekauft());
+        newArtikel.setErstellungsZeitpunkt(LocalDateTime.now());
+        return artikelRepository.save(newArtikel);
     }
 
     @PutMapping("/artikel/{id}")
@@ -44,7 +42,11 @@ public class ArtikelController {
                 .map(artikel -> {
                     artikel.setName(newArtikel.getName());
                     artikel.setAnzahl(newArtikel.getAnzahl());
+                    if (!artikel.isGekauft() && newArtikel.isGekauft()) {
+                        artikel.setKaufZeitpunkt(LocalDateTime.now());
+                    }
                     artikel.setGekauft(newArtikel.isGekauft());
+                    artikel.setKategorie(newArtikel.getKategorie());
                     return artikelRepository.save(artikel);
                 })
                 .orElseGet(() -> {

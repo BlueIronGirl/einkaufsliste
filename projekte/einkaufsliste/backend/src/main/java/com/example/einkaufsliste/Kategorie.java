@@ -1,5 +1,6 @@
 package com.example.einkaufsliste;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,5 +19,6 @@ public class Kategorie {
 
     @OneToOne(mappedBy = "kategorie")
     @ToString.Exclude
+    @JsonIgnore
     private Artikel artikel;
 }
