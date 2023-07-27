@@ -1,7 +1,8 @@
 package com.example.einkaufsliste;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -16,9 +17,4 @@ public class Kategorie {
     private Long id;
 
     private String name;
-
-    @OneToOne(mappedBy = "kategorie")
-    @ToString.Exclude
-    @JsonIgnore
-    private Artikel artikel;
 }
