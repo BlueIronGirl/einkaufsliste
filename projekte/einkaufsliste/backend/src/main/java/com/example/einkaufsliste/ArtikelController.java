@@ -1,12 +1,12 @@
 package com.example.einkaufsliste;
 
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@CrossOrigin(maxAge = 3600)
 @RestController
 public class ArtikelController {
     ArtikelRepository artikelRepository;

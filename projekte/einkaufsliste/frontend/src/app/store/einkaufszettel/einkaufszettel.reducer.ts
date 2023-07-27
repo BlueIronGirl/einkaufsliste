@@ -1,5 +1,5 @@
-import { createFeature, createReducer, on } from '@ngrx/store';
-import { EinkaufszettelActions } from './einkaufszettel.actions';
+import {createFeature, createReducer, on} from '@ngrx/store';
+import {EinkaufszettelActions} from './einkaufszettel.actions';
 import {Artikel} from "../../entities/artikel";
 
 export const einkaufszettelFeatureKey = 'einkaufszettel';
@@ -12,7 +12,7 @@ export const initialState: State = {
   artikel: []
 };
 
-export const reducer = createReducer(
+export const einkaufszettelReducer = createReducer(
   initialState,
   on(EinkaufszettelActions.loadEinkaufszettels, state => state),
   on(EinkaufszettelActions.loadEinkaufszettelsSuccess, (state, action) => {
@@ -20,9 +20,4 @@ export const reducer = createReducer(
   }),
   on(EinkaufszettelActions.loadEinkaufszettelsFailure, (state, action) => state),
 );
-
-export const einkaufszettelFeature = createFeature({
-  name: einkaufszettelFeatureKey,
-  reducer,
-});
 

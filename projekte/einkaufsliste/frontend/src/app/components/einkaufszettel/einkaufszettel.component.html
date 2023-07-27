@@ -1,1 +1,12 @@
-<p>einkaufszettel works!</p>
+<div *ngIf="artikel$ | async as artikels">
+  <div class="grid gap-4 h-56">
+    <div *ngFor="let artikel of artikels">
+      <p-card class="border-indigo-500 rounded-lg" header="{{artikel.name}}">
+        <p class="m-0">
+          Anzahl: {{artikel.anzahl}} <br/>
+          Kategorie: {{artikel.kategorie.name}}
+        </p>
+      </p-card>
+    </div>
+  </div>
+</div>

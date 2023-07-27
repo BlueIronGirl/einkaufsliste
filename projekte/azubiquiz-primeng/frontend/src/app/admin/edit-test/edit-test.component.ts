@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {AbstractControl, FormArray, FormBuilder, FormGroup, FormGroupName, Validators} from '@angular/forms';
+import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Test} from '../../shared/entities/test';
 import {selectMaxTestId, selectTestById} from '../store/test/test.selectors';
@@ -8,7 +8,6 @@ import {addTest, loadTests, updateTest} from '../store/test/test.actions';
 import {TestValidators} from '../shared/test-validators';
 import {Question} from '../../shared/entities/question';
 import {ANSWERTYPE_MULTIPLECHOICE, ANSWERTYPE_TEXT} from '../../shared/entities/answer';
-import {DropdownItem} from "primeng/dropdown";
 
 @Component({
   selector: 'pn-edit-test',

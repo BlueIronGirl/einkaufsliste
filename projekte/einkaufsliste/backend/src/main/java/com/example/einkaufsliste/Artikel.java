@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @ToString
 public class Artikel {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     private String name;
