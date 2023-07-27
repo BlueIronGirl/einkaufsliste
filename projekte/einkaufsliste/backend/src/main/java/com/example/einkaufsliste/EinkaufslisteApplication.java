@@ -8,9 +8,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class EinkaufslisteApplication implements CommandLineRunner {
 
 	private final ArtikelRepository artikelRepository;
+	private final KategorieRepository kategorieRepository;
 
-	public EinkaufslisteApplication(ArtikelRepository artikelRepository) {
+	public EinkaufslisteApplication(ArtikelRepository artikelRepository, KategorieRepository kategorieRepository) {
 		this.artikelRepository = artikelRepository;
+		this.kategorieRepository = kategorieRepository;
 	}
 
 	public static void main(String[] args) {
@@ -19,6 +21,6 @@ public class EinkaufslisteApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		new CommandLineLoop(artikelRepository).run();
+		new CommandLineLoop(artikelRepository, kategorieRepository).run();
 	}
 }

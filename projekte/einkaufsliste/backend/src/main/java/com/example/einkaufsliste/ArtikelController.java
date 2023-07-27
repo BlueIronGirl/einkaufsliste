@@ -18,15 +18,15 @@ public class ArtikelController {
         return artikelRepository.findAll();
     }
 
-    @GetMapping("/alleGekauftenArtikel")
-    public List<Artikel> alleGekauftenArtikel() {
-        return artikelRepository.findeAlleGekauftenArtikel();
-    }
-
-    @GetMapping("/alleNichtGekauftenArtikel")
-    public List<Artikel> alleNichtGekauftenArtikel() {
-        return artikelRepository.findeAlleNichtGekauftenArtikel();
-    }
+//    @GetMapping("/alleGekauftenArtikel")
+//    public List<Artikel> alleGekauftenArtikel() {
+//        return artikelRepository.findeAlleGekauftenArtikel();
+//    }
+//
+//    @GetMapping("/alleNichtGekauftenArtikel")
+//    public List<Artikel> alleNichtGekauftenArtikel() {
+//        return artikelRepository.findeAlleNichtGekauftenArtikel();
+//    }
 
     @GetMapping("/artikel/{id}")
     public Artikel ladeArtikel(@PathVariable Long id) throws Exception {
