@@ -19,25 +19,31 @@ export class EinkaufszettelStoreService {
   }
 
   getAll(): Observable<Artikel[]> {
-    return this.httpClient.get<Artikel[]>(`${this.api}/alleArtikel`).pipe(
+    return this.httpClient.get<Artikel[]>(`${this.api}/artikels`).pipe(
       retry(3)
     );
   }
 
-  addArtikel(artikel: Artikel) {
-    return this.httpClient.post<Artikel>(`${this.api}/artikel`, artikel).pipe(
+  createArtikel(artikel: Artikel) {
+    return this.httpClient.post<Artikel>(`${this.api}/artikels`, artikel).pipe(
       catchError(EinkaufszettelStoreService.errorHandler)
     );
   }
 
-  editArtikel(artikel: Artikel) {
-    return this.httpClient.put<Artikel>(`${this.api}/artikel/${artikel.id}`, artikel).pipe(
+  updateArtikel(artikel: Artikel) {
+    return this.httpClient.put<Artikel>(`${this.api}/artikels/${artikel.id}`, artikel).pipe(
       catchError(EinkaufszettelStoreService.errorHandler)
     );
   }
 
   deleteArtikel(artikel: Artikel) {
-    return this.httpClient.delete<Artikel>(`${this.api}/artikel/${artikel.id}`).pipe(
+    return this.httpClient.delete<Artikel>(`${this.api}/artikels/${artikel.id}`).pipe(
+      catchError(EinkaufszettelStoreService.errorHandler)
+    );
+  }
+
+  archiviereArtikel() {
+    return this.httpClient.post<Artikel[]>(`${this.api}/archiv/archiviereGekaufteArtikel`, null).pipe(
       catchError(EinkaufszettelStoreService.errorHandler)
     );
   }

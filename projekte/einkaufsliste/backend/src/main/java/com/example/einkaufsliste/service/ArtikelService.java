@@ -6,6 +6,7 @@ import com.example.einkaufsliste.repository.ArtikelArchivRepository;
 import com.example.einkaufsliste.repository.ArtikelRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -16,14 +17,13 @@ import java.util.List;
 @Service
 public class ArtikelService {
     private final ArtikelRepository artikelRepository;
-    private final ArtikelArchivRepository artikelArchivRepository;
 
     /**
      * Alle Artikel von dem aktiven Einkaufszettel abfragen
      *
      * @return alle Artikel als Liste
      */
-    public List<Artikel> alleArtikel() {
+    public List<Artikel> selectAllArtikel() {
         return artikelRepository.findAll();
     }
 
@@ -34,7 +34,7 @@ public class ArtikelService {
      * @return Artikel
      * @throws Exception wenn der Artikel nicht gefunden wurde
      */
-    public Artikel selectAllArtikel(@PathVariable Long id) throws Exception {
+    public Artikel selectArtikel(@PathVariable Long id) throws Exception {
         return artikelRepository.findById(id).orElseThrow(() -> new Exception("Artikel nicht gefunden"));
     }
 
@@ -86,24 +86,5 @@ public class ArtikelService {
         artikelRepository.deleteById(id);
 
         return artikel;
-    }
-
-    /**
-     * Alle gekauften Artikel archivieren
-     *
-     * @return archivierte Artikel
-     */
-    public List<Artikel> archiviereGekaufteArtikel() {
-        List<Artikel> gekaufteArtikel = artikelRepository.findByGekauftTrue();
-
-        // Artikel archivieren
-        gekaufteArtikel.stream()
-                .map(ArtikelArchiv::new)
-                .forEach(artikelArchivRepository::save);
-
-        // Artikel aus Einkaufszettel loeschen
-        gekaufteArtikel.forEach(artikel -> artikelRepository.deleteById(artikel.getId()));
-
-        return gekaufteArtikel;
     }
 }

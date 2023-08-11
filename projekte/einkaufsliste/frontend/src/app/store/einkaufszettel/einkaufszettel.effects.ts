@@ -22,22 +22,22 @@ export class EinkaufszettelEffects {
 
   addArtikel$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(EinkaufszettelActions.addArtikel),
+      ofType(EinkaufszettelActions.createArtikel),
       map(action => action.data),
-      concatMap(inputData => this.einkaufszettelService.addArtikel(inputData).pipe(
-        map(data => EinkaufszettelActions.addArtikelSuccess({data: data})),
-        catchError(error => of(EinkaufszettelActions.addArtikelFailure({error})))
+      concatMap(inputData => this.einkaufszettelService.createArtikel(inputData).pipe(
+        map(data => EinkaufszettelActions.createArtikelSuccess({data: data})),
+        catchError(error => of(EinkaufszettelActions.createArtikelFailure({error})))
       ))
     )
   });
 
   editArtikel$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(EinkaufszettelActions.editArtikel),
+      ofType(EinkaufszettelActions.updateArtikel),
       map(action => action.data),
-      concatMap(inputData => this.einkaufszettelService.editArtikel(inputData).pipe(
-        map(data => EinkaufszettelActions.editArtikelSuccess({data: data})),
-        catchError(error => of(EinkaufszettelActions.editArtikelFailure({error})))
+      concatMap(inputData => this.einkaufszettelService.updateArtikel(inputData).pipe(
+        map(data => EinkaufszettelActions.updateArtikelSuccess({data: data})),
+        catchError(error => of(EinkaufszettelActions.updateArtikelFailure({error})))
       ))
     )
   });
@@ -53,6 +53,15 @@ export class EinkaufszettelEffects {
     )
   });
 
+  archiviereArtikel$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(EinkaufszettelActions.archiviereArtikel),
+      concatMap(inputData => this.einkaufszettelService.archiviereArtikel().pipe(
+        map(data => EinkaufszettelActions.archiviereArtikelSuccess({data: data})),
+        catchError(error => of(EinkaufszettelActions.archiviereArtikelFailure({error})))
+      ))
+    )
+  });
 
   constructor(private actions$: Actions, private einkaufszettelService: EinkaufszettelStoreService) {
   }

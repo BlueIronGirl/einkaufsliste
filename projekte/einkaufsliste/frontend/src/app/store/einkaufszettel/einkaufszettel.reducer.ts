@@ -20,13 +20,13 @@ export const einkaufszettelReducer = createReducer(
   }),
 
   // addArtikel
-  on(EinkaufszettelActions.addArtikelSuccess, (state, action) => {
+  on(EinkaufszettelActions.createArtikelSuccess, (state, action) => {
     let artikels = [...state.artikels, action.data];
     return {...state, artikels: artikels};
   }),
 
   // updateArtikel
-  on(EinkaufszettelActions.editArtikelSuccess, (state, action) => {
+  on(EinkaufszettelActions.updateArtikelSuccess, (state, action) => {
     let indexToUpdate = state.artikels.findIndex(item => item.id === action.data.id);
 
     let artikels = [...state.artikels];
@@ -44,6 +44,20 @@ export const einkaufszettelReducer = createReducer(
     let artikels = [...state.artikels];
     if (indexToRemove >= 0) {
       artikels.splice(indexToRemove, 1);
+    }
+
+    return {artikels: artikels};
+  }),
+
+  // archiviereArtikel
+  on(EinkaufszettelActions.archiviereArtikelSuccess, (state, action) => {
+    let artikels = [...state.artikels];
+
+    for (let artikel of action.data) {
+      let indexToRemove = artikels.findIndex(item => item.id === artikel.id);
+      if (indexToRemove >= 0) {
+        artikels.splice(indexToRemove, 1);
+      }
     }
 
     return {artikels: artikels};

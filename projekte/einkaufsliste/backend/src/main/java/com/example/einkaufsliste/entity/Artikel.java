@@ -6,13 +6,12 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Entity(name="artikel")
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Getter
 @Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 public class Artikel {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -32,10 +31,6 @@ public class Artikel {
     private LocalDateTime erstellungsZeitpunkt;
 
     private LocalDateTime kaufZeitpunkt;
-
-    public Artikel(Artikel artikel) {
-        this(artikel.id, artikel.name, artikel.kategorie, artikel.anzahl, artikel.gekauft, artikel.erstellungsZeitpunkt, artikel.kaufZeitpunkt);
-    }
 
     // TODO (ALB) 27.07.2023: erstelleruserid, käuferuserid
 }

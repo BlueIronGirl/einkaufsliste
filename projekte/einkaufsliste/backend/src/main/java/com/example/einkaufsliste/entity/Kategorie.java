@@ -8,10 +8,11 @@ import lombok.ToString;
 
 import java.util.List;
 
-@Entity
 @Getter
 @Setter
 @ToString
+@Entity
+@Cacheable(false)
 public class Kategorie {
     @Id
     @GeneratedValue

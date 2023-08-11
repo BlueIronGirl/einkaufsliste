@@ -19,9 +19,9 @@ public class ArtikelController {
      *
      * @return alle Artikel als Liste
      */
-    @GetMapping("/selectAllArtikel")
+    @GetMapping("/artikels")
     public List<Artikel> selectAllArtikel() {
-        return artikelService.alleArtikel();
+        return artikelService.selectAllArtikel();
     }
 
     /**
@@ -31,9 +31,9 @@ public class ArtikelController {
      * @return Artikel
      * @throws Exception wenn der Artikel nicht gefunden wurde
      */
-    @GetMapping("/artikel/{id}")
+    @GetMapping("/artikels/{id}")
     public Artikel selectArtikel(@PathVariable Long id) throws Exception {
-        return artikelService.selectAllArtikel(id);
+        return artikelService.selectArtikel(id);
     }
 
     /**
@@ -42,7 +42,7 @@ public class ArtikelController {
      * @param artikel zu speichernder Artikel
      * @return erfasster Artikel
      */
-    @PostMapping(value = "/artikel", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/artikels", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Artikel createArtikel(@RequestBody Artikel artikel) {
         return artikelService.createArtikel(artikel);
     }
@@ -55,7 +55,7 @@ public class ArtikelController {
      * @return aktualisierter Artikel
      * @throws Exception Artikel wurde nicht gefunden
      */
-    @PutMapping("/artikel/{id}")
+    @PutMapping("/artikels/{id}")
     public Artikel updateArtikel(@RequestBody Artikel artikelData, @PathVariable Long id) throws Exception {
         return artikelService.updateArtikel(artikelData, id);
     }
@@ -67,18 +67,8 @@ public class ArtikelController {
      * @return geloeschter Artikel
      * @throws Exception Artikel wurde nicht gefunden
      */
-    @DeleteMapping("/artikel/{id}")
+    @DeleteMapping("/artikels/{id}")
     public Artikel deleteArtikel(@PathVariable Long id) throws Exception {
         return artikelService.deleteArtikel(id);
-    }
-
-    /**
-     * Alle gekauften Artikel archivieren
-     *
-     * @return archivierte Artikel
-     */
-    @PostMapping("/archiviereGekaufteArtikel")
-    public List<Artikel> archiviereGekaufteArtikel() {
-        return artikelService.archiviereGekaufteArtikel();
     }
 }

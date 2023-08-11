@@ -29,8 +29,9 @@ export class EinkaufszettelComponent implements OnInit {
 
   changeArtikelGekauft(artikel: Artikel) {
     let artikelNew = {...artikel, gekauft: !artikel.gekauft};
-    this.store.dispatch(EinkaufszettelActions.editArtikel({data: artikelNew}));
+    this.store.dispatch(EinkaufszettelActions.updateArtikel({data: artikelNew}));
 
+    this.messageService.clear();
     this.messageService.add({severity: 'success', summary: 'Artikel wurde gespeichert'});
   }
 }

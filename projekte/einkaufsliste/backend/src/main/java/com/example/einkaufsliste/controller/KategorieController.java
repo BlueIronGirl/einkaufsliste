@@ -20,7 +20,7 @@ public class KategorieController {
      *
      * @return alle Kategorien als Liste
      */
-    @GetMapping("/selectAllKategorien")
+    @GetMapping("/kategorien")
     public List<Kategorie> selectAllKategorien() {
         return kategorieService.selectAllKategorien();
     }

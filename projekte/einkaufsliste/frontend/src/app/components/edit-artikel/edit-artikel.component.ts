@@ -61,9 +61,9 @@ export class EditArtikelComponent implements OnInit {
     const artikel: Artikel = {...formValue};
 
     if (this.edit) {
-      this.store.dispatch(EinkaufszettelActions.editArtikel({data: artikel}));
+      this.store.dispatch(EinkaufszettelActions.updateArtikel({data: artikel}));
     } else {
-      this.store.dispatch(EinkaufszettelActions.addArtikel({data: artikel}));
+      this.store.dispatch(EinkaufszettelActions.createArtikel({data: artikel}));
     }
 
     this.messageService.add({severity:'success', summary:'Artikel wurde gespeichert'});
