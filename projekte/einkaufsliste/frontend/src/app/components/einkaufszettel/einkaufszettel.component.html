@@ -3,7 +3,7 @@
     <p-panel class="p-0" [toggleable]="true" [collapsed]="true">
       <!-- Header -->
       <ng-template pTemplate="header">
-        <p-checkbox class="mr-2" [(ngModel)]="artikel.gekauft" [binary]="true"></p-checkbox>
+        <p-checkbox class="mr-2" [(ngModel)]="artikel.gekauft" [binary]="true" (onChange)="changeArtikelGekauft(artikel)"></p-checkbox>
         <span class="text-primary font-semibold text-xl text-emerald-500 mr-1">{{artikel.anzahl}}</span>
         <span class="text-primary font-semibold text-xl">{{artikel.name}}</span>
         <span class="flex-grow"></span>
@@ -32,5 +32,7 @@
     </p-panel>
   </div>
 </div>
+
+<p-messages></p-messages>
 
 

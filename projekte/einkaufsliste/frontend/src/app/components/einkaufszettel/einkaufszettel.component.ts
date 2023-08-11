@@ -3,16 +3,18 @@ import {Store} from "@ngrx/store";
 import {EinkaufszettelActions} from "../../store/einkaufszettel/einkaufszettel.actions";
 import {selectAllArtikel} from "../../store/einkaufszettel/einkaufszettel.selectors";
 import {Artikel} from "../../entities/artikel";
+import {MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-einkaufszettel',
   templateUrl: './einkaufszettel.component.html',
-  styleUrls: ['./einkaufszettel.component.scss']
+  styleUrls: ['./einkaufszettel.component.scss'],
+  providers: [MessageService]
 })
-export class EinkaufszettelComponent implements OnInit{
+export class EinkaufszettelComponent implements OnInit {
   artikels!: Artikel[];
 
-  constructor(private store: Store) {
+  constructor(private store: Store, private messageService: MessageService) {
   }
 
   ngOnInit(): void {
@@ -23,5 +25,12 @@ export class EinkaufszettelComponent implements OnInit{
 
   deleteArtikel(artikel: Artikel) {
     this.store.dispatch(EinkaufszettelActions.deleteArtikel({data: artikel}));
+  }
+
+  changeArtikelGekauft(artikel: Artikel) {
+    let artikelNew = {...artikel, gekauft: !artikel.gekauft};
+    this.store.dispatch(EinkaufszettelActions.editArtikel({data: artikelNew}));
+
+    this.messageService.add({severity: 'success', summary: 'Artikel wurde gespeichert'});
   }
 }

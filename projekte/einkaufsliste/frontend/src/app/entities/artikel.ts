@@ -3,7 +3,7 @@ export interface Artikel {
   name: string;
   anzahl: number;
   gekauft: boolean;
-  // TODO
+  // TODO kategorie
   erstellungsZeitpunkt?: string;
   kaufZeitpunkt?: string;
 }
