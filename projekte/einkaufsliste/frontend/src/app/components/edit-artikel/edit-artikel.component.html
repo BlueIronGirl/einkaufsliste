@@ -1,0 +1,83 @@
+<form [formGroup]="artikelForm" class="w-full max-w-sm" (ngSubmit)="save()">
+  <!-- Id -->
+  <div class="md:flex md:items-center mt-2 mb-6" *ngIf="edit">
+    <div class="md:w-1/3">
+      <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="id">
+        Id*
+      </label>
+    </div>
+    <div class="md:w-2/3">
+      <p-inputNumber id="id" formControlName="id"></p-inputNumber>
+    </div>
+  </div>
+
+  <!-- Name -->
+  <div class="md:flex md:items-center mt-2 mb-6">
+    <div class="md:w-1/3">
+      <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="name">
+        Name*
+      </label>
+    </div>
+    <div class="md:w-2/3">
+      <input id="name" type="text" pInputText formControlName="name"/>
+    </div>
+  </div>
+
+  <!-- Kategorie TODO -->
+<!--  <div class="md:flex md:items-center mt-2 mb-6">-->
+<!--    <div class="md:w-1/3">-->
+<!--      <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="kategorie">-->
+<!--        Kategorie-->
+<!--      </label>-->
+<!--    </div>-->
+<!--    <div class="md:w-2/3">-->
+<!--      <input id="kategorie" type="text" pInputText formControlName="kategorie"/>-->
+<!--    </div>-->
+<!--  </div>-->
+
+  <!-- Anzahl -->
+  <div class="md:flex md:items-center mt-2 mb-6">
+    <div class="md:w-1/3">
+      <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="anzahl">
+        Anzahl*
+      </label>
+    </div>
+    <div class="md:w-2/3">
+      <p-inputNumber id="anzahl" formControlName="anzahl"></p-inputNumber>
+    </div>
+  </div>
+
+  <!-- Gekauft -->
+  <div class="md:flex md:items-center mt-2 mb-6">
+    <div class="md:w-1/3">
+      <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="anzahl">
+        Gekauft?
+      </label>
+    </div>
+    <div class="md:w-2/3">
+      <p-checkbox formControlName="gekauft" inputId="gekauft" [binary]="true"></p-checkbox>
+    </div>
+  </div>
+
+  <!-- Speichern -->
+  <div class="md:flex md:items-center mt-2 mb-6">
+    <div class="md:w-1/3 block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
+
+    </div>
+    <div class="md:w-2/3">
+      <button type="submit"
+              [disabled]="artikelForm.invalid"
+              class="text-white bg-gray-800 rounded-lg px-1 py-1 text-center">
+        Speichern
+      </button>
+      <button type="button"
+              (click)="reset()"
+              [disabled]="artikelForm.invalid"
+              class="text-white bg-gray-800 rounded-lg ml-2 px-1 py-1 text-center">
+        Zurücksetzen
+      </button>
+    </div>
+  </div>
+
+  <p-messages></p-messages>
+</form>

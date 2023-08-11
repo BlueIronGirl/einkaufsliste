@@ -12,29 +12,47 @@ import {einkaufszettelFeatureKey, einkaufszettelReducer} from "./store/einkaufsz
 import {HttpClientModule} from "@angular/common/http";
 import {CardModule} from "primeng/card";
 import {CheckboxModule} from "primeng/checkbox";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {PanelModule} from "primeng/panel";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import { EditArtikelComponent } from './components/edit-artikel/edit-artikel.component';
+import {InputNumberModule} from "primeng/inputnumber";
+import {ButtonModule} from "primeng/button";
+import {InputTextModule} from "primeng/inputtext";
+import {MessageModule} from "primeng/message";
+import {MessagesModule} from "primeng/messages";
 
 @NgModule({
   declarations: [
     AppComponent,
-    EinkaufszettelComponent
+    EinkaufszettelComponent,
+    EditArtikelComponent
   ],
   imports: [
+    // standard angular
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
-    CardModule,
-    CheckboxModule,
+    FormsModule,
+    ReactiveFormsModule,
+
+    // ngrx
     StoreModule.forRoot({}, {}),
     StoreDevtoolsModule.instrument({maxAge: 25, logOnly: !isDevMode()}),
     EffectsModule.forRoot([]),
     EffectsModule.forFeature([EinkaufszettelEffects]),
     StoreModule.forFeature(einkaufszettelFeatureKey, einkaufszettelReducer),
-    FormsModule,
+
+    //primeng
+    ButtonModule,
+    CardModule,
+    CheckboxModule,
+    InputNumberModule,
+    InputTextModule,
     PanelModule,
+    MessageModule,
+    MessagesModule
   ],
   providers: [],
   bootstrap: [AppComponent]

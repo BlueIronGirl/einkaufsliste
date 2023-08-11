@@ -21,5 +21,6 @@ public class Kategorie {
 
     @OneToMany(mappedBy = "kategorie", fetch = FetchType.EAGER)
     @ToString.Exclude
+    @JsonIgnore
     private List<Artikel> artikels;
 }

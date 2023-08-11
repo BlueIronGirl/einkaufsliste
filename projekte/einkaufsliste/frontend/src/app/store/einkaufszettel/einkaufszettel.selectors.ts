@@ -1,4 +1,4 @@
-import { createFeatureSelector, createSelector } from '@ngrx/store';
+import {createFeatureSelector, createSelector} from '@ngrx/store';
 import * as fromEinkaufszettel from './einkaufszettel.reducer';
 
 export const selectEinkaufszettelState = createFeatureSelector<fromEinkaufszettel.State>(
@@ -7,5 +7,12 @@ export const selectEinkaufszettelState = createFeatureSelector<fromEinkaufszette
 
 export const selectAllArtikel = createSelector(
   selectEinkaufszettelState,
-  state => state.kategorien
+  state => state.artikels
+);
+
+export const selectArtikelById = (id: number) => createSelector(
+  selectEinkaufszettelState,
+  state => {
+    return state.artikels[state.artikels.findIndex(artikel => artikel.id === id)];
+  }
 )

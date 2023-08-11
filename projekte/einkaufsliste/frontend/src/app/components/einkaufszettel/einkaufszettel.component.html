@@ -1,16 +1,34 @@
 <div class="grid">
-  <div *ngFor="let kategorie of kategories">
-    <p-panel header="{{kategorie.name}}" [toggleable]="true" class="p-0">
-      <div *ngFor="let artikel of kategorie.artikels">
-        <div class="max-w-sm rounded overflow-hidden shadow-lg">
-          <div class="px-6 py-4">
-            <div class="font-bold text-xl">
-              <p-checkbox class="mr-2 pb-px object-center" [(ngModel)]="artikel.gekauft" [binary]="true"></p-checkbox>
-              <span class="">{{artikel.anzahl}}x {{artikel.name}}</span>
-            </div>
+  <div *ngFor="let artikel of artikels">
+    <p-panel class="p-0" [toggleable]="true" [collapsed]="true">
+      <!-- Header -->
+      <ng-template pTemplate="header">
+        <p-checkbox class="mr-2" [(ngModel)]="artikel.gekauft" [binary]="true"></p-checkbox>
+        <span class="text-primary font-semibold text-xl text-emerald-500 mr-1">{{artikel.anzahl}}</span>
+        <span class="text-primary font-semibold text-xl">{{artikel.name}}</span>
+        <span class="flex-grow"></span>
+        <button type="button"
+                [routerLink]="['/artikel', artikel.id]"
+                class="text-white bg-gray-800 rounded-lg px-1 py-1 text-center">
+          Editieren
+        </button>
+        <button type="button"
+                (click)="deleteArtikel(artikel)"
+                class="text-white bg-gray-800 rounded-lg px-1 py-1 text-center">
+          Löschen
+        </button>
+      </ng-template>
+
+      <ng-template pTemplate="content">
+        <div class="grid grid-cols-2 gap-2 w-1/4">
+          <div>Erstellt am:</div>
+          <div>{{artikel.erstellungsZeitpunkt | date:'dd.MM.yyyy hh:mm' }}</div>
+          <div>Gekauft am:</div>
+          <div>
+            <span *ngIf="artikel.kaufZeitpunkt">{{artikel.kaufZeitpunkt | date:'dd.MM.yyyy hh:mm' }}</span>
           </div>
         </div>
-      </div>
+      </ng-template>
     </p-panel>
   </div>
 </div>

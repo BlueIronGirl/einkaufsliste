@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@CrossOrigin(maxAge = 3600)
+@CrossOrigin(origins = "*")
 @RestController
 public class ArtikelController {
     ArtikelRepository artikelRepository;
@@ -27,17 +27,12 @@ public class ArtikelController {
 
     @PostMapping(value = "/artikel", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Artikel neuerArtikel(@RequestBody Artikel artikel) {
-        Artikel newArtikel = new Artikel();
-        newArtikel.setName(artikel.getName());
-        newArtikel.setKategorie(artikel.getKategorie());
-        newArtikel.setAnzahl(artikel.getAnzahl());
-        newArtikel.setGekauft(artikel.isGekauft());
-        newArtikel.setErstellungsZeitpunkt(LocalDateTime.now());
-        return artikelRepository.save(newArtikel);
+        artikel.setErstellungsZeitpunkt(LocalDateTime.now());
+        return artikelRepository.save(artikel);
     }
 
     @PutMapping("/artikel/{id}")
-    public Artikel ersetzeArtikel(@RequestBody Artikel newArtikel, @PathVariable Long id) {
+    public Artikel ersetzeArtikel(@RequestBody Artikel newArtikel, @PathVariable Long id) throws Exception {
         return artikelRepository.findById(id)
                 .map(artikel -> {
                     artikel.setName(newArtikel.getName());
@@ -49,14 +44,15 @@ public class ArtikelController {
                     artikel.setKategorie(newArtikel.getKategorie());
                     return artikelRepository.save(artikel);
                 })
-                .orElseGet(() -> {
-                    newArtikel.setId(id);
-                    return artikelRepository.save(newArtikel);
-                });
+                .orElseThrow(() -> new Exception("Artikel nicht gefunden"));
     }
 
     @DeleteMapping("/artikel/{id}")
-    public void loescheArtikel(@PathVariable Long id) {
+    public Artikel loescheArtikel(@PathVariable Long id) throws Exception {
+        Artikel artikel = artikelRepository.findById(id).orElseThrow(() -> new Exception("Artikel nicht gefunden"));
+
         artikelRepository.deleteById(id);
+
+        return artikel;
     }
 }
