@@ -1,5 +1,9 @@
-package com.example.einkaufsliste;
+package com.example.einkaufsliste.util;
 
+import com.example.einkaufsliste.entity.Artikel;
+import com.example.einkaufsliste.repository.ArtikelRepository;
+import com.example.einkaufsliste.entity.Kategorie;
+import com.example.einkaufsliste.repository.KategorieRepository;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;

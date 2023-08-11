@@ -1,4 +1,4 @@
-package com.example.einkaufsliste;
+package com.example.einkaufsliste.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

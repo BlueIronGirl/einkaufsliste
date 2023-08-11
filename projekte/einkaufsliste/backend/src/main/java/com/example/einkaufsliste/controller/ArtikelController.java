@@ -1,5 +1,7 @@
-package com.example.einkaufsliste;
+package com.example.einkaufsliste.controller;
 
+import com.example.einkaufsliste.entity.Artikel;
+import com.example.einkaufsliste.repository.ArtikelRepository;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 

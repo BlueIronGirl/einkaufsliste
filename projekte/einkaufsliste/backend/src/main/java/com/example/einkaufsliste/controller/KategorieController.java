@@ -1,5 +1,7 @@
-package com.example.einkaufsliste;
+package com.example.einkaufsliste.controller;
 
+import com.example.einkaufsliste.entity.Kategorie;
+import com.example.einkaufsliste.repository.KategorieRepository;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

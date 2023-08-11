@@ -1,4 +1,4 @@
-package com.example.einkaufsliste;
+package com.example.einkaufsliste.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

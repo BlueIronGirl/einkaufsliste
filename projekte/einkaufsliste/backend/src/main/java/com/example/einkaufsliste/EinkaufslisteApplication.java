@@ -1,5 +1,8 @@
 package com.example.einkaufsliste;
 
+import com.example.einkaufsliste.repository.ArtikelRepository;
+import com.example.einkaufsliste.repository.KategorieRepository;
+import com.example.einkaufsliste.util.CommandLineLoop;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
