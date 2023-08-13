@@ -9,8 +9,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 public class Artikel {
     @Id
