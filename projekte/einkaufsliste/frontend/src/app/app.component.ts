@@ -11,6 +11,7 @@ import {EinkaufszettelActions} from "./store/einkaufszettel/einkaufszettel.actio
 })
 export class AppComponent {
   adminModus = false;
+  menuRendered = false;
 
   constructor(private store: Store, private messageService: MessageService) {
   }

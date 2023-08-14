@@ -7,7 +7,7 @@ import {catchError} from "rxjs/operators";
 @Injectable({
   providedIn: 'root'
 })
-export class EinkaufszettelStoreService {
+export class EinkaufszettelService {
   private api = 'http://localhost:8080';
 
   constructor(private httpClient: HttpClient) {
@@ -26,25 +26,25 @@ export class EinkaufszettelStoreService {
 
   createArtikel(artikel: Artikel) {
     return this.httpClient.post<Artikel>(`${this.api}/artikels`, artikel).pipe(
-      catchError(EinkaufszettelStoreService.errorHandler)
+      catchError(EinkaufszettelService.errorHandler)
     );
   }
 
   updateArtikel(artikel: Artikel) {
     return this.httpClient.put<Artikel>(`${this.api}/artikels/${artikel.id}`, artikel).pipe(
-      catchError(EinkaufszettelStoreService.errorHandler)
+      catchError(EinkaufszettelService.errorHandler)
     );
   }
 
   deleteArtikel(artikel: Artikel) {
     return this.httpClient.delete<Artikel>(`${this.api}/artikels/${artikel.id}`).pipe(
-      catchError(EinkaufszettelStoreService.errorHandler)
+      catchError(EinkaufszettelService.errorHandler)
     );
   }
 
   archiviereArtikel() {
     return this.httpClient.post<Artikel[]>(`${this.api}/archiv/archiviereGekaufteArtikel`, null).pipe(
-      catchError(EinkaufszettelStoreService.errorHandler)
+      catchError(EinkaufszettelService.errorHandler)
     );
   }
 }

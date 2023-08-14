@@ -1,19 +1,32 @@
 import {createReducer, on} from '@ngrx/store';
 import {EinkaufszettelActions} from './einkaufszettel.actions';
 import {Artikel} from "../../entities/artikel";
+import {User} from "../../entities/user";
 
 export const einkaufszettelFeatureKey = 'einkaufszettel';
 
 export interface State {
   artikels: Artikel[];
+  loginUser: User | null;
 }
 
 export const initialState: State = {
-  artikels: []
+  artikels: [],
+  loginUser: null
 };
 
 export const einkaufszettelReducer = createReducer(
   initialState,
+  // register
+  on(EinkaufszettelActions.registerSuccess, (state, action) => {
+    return {...state, loginUser: action.data}
+  }),
+
+  // login
+  on(EinkaufszettelActions.loginSuccess, (state, action) => {
+    return {...state, loginUser: action.data}
+  }),
+
   // loadEinkaufszettel
   on(EinkaufszettelActions.loadEinkaufszettelsSuccess, (state, action) => {
     return {...state, artikels: action.data}
@@ -46,7 +59,7 @@ export const einkaufszettelReducer = createReducer(
       artikels.splice(indexToRemove, 1);
     }
 
-    return {artikels: artikels};
+    return {...state, artikels: artikels};
   }),
 
   // archiviereArtikel
@@ -60,7 +73,7 @@ export const einkaufszettelReducer = createReducer(
       }
     }
 
-    return {artikels: artikels};
+    return {...state, artikels: artikels};
   }),
 );
 

@@ -1,13 +1,38 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {catchError, concatMap, map, switchMap} from 'rxjs/operators';
+import {catchError, concatMap, map, switchMap, tap} from 'rxjs/operators';
 import {of} from 'rxjs';
 import {EinkaufszettelActions} from './einkaufszettel.actions';
-import {EinkaufszettelStoreService} from "../../service/einkaufszettel-store.service";
+import {EinkaufszettelService} from "../../service/einkaufszettel.service";
+import {LoginService} from "../../service/login.service";
+import {Router} from "@angular/router";
 
 
 @Injectable()
 export class EinkaufszettelEffects {
+  register$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(EinkaufszettelActions.register),
+      map(action => action.data),
+      concatMap(inputData => this.loginService.register(inputData).pipe(
+        map(data => EinkaufszettelActions.registerSuccess({data: data})),
+        catchError(error => of(EinkaufszettelActions.registerFailure({error})))
+      ))
+    )
+  });
+
+
+  login$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(EinkaufszettelActions.login),
+      map(action => action.data),
+      concatMap(inputData => this.loginService.login(inputData).pipe(
+        map(data => EinkaufszettelActions.loginSuccess({data: data})),
+        catchError(error => of(EinkaufszettelActions.loginFailure({error})))
+      )),
+      tap(() => this.router.navigateByUrl("/einkaufszettel"))
+    )
+  });
 
   loadEinkaufszettels$ = createEffect(() => {
     return this.actions$.pipe(
@@ -63,6 +88,6 @@ export class EinkaufszettelEffects {
     )
   });
 
-  constructor(private actions$: Actions, private einkaufszettelService: EinkaufszettelStoreService) {
+  constructor(private actions$: Actions, private router: Router, private loginService: LoginService, private einkaufszettelService: EinkaufszettelService) {
   }
 }

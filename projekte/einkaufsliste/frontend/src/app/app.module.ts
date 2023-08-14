@@ -9,7 +9,7 @@ import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {EffectsModule} from '@ngrx/effects';
 import {EinkaufszettelEffects} from "./store/einkaufszettel/einkaufszettel.effects";
 import {einkaufszettelFeatureKey, einkaufszettelReducer} from "./store/einkaufszettel/einkaufszettel.reducer";
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {CardModule} from "primeng/card";
 import {CheckboxModule} from "primeng/checkbox";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -21,12 +21,15 @@ import {ButtonModule} from "primeng/button";
 import {InputTextModule} from "primeng/inputtext";
 import {MessageModule} from "primeng/message";
 import {MessagesModule} from "primeng/messages";
+import { LoginComponent } from './components/login/login.component';
+import {TokenInterceptor} from "./interceptor/token-interceptor.service";
 
 @NgModule({
   declarations: [
     AppComponent,
     EinkaufszettelComponent,
-    EditArtikelComponent
+    EditArtikelComponent,
+    LoginComponent
   ],
   imports: [
     // standard angular
@@ -54,7 +57,13 @@ import {MessagesModule} from "primeng/messages";
     MessageModule,
     MessagesModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
