@@ -1,24 +1,23 @@
 package com.example.einkaufsliste.service;
 
-import com.example.einkaufsliste.dto.LoginDto;
-import com.example.einkaufsliste.entity.User;
-import com.example.einkaufsliste.repository.UserRepository;
-import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import java.nio.CharBuffer;
 import java.util.Optional;
 
-@AllArgsConstructor
+import com.example.einkaufsliste.dto.LoginDto;
+import com.example.einkaufsliste.entity.User;
+import com.example.einkaufsliste.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+@RequiredArgsConstructor
 @Service
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     public User login(LoginDto loginDto) {
-        User user = userRepository.findByUsername(loginDto.getUsername())
-                .orElseThrow(() -> new RuntimeException("Unbekannter User!"));
+        User user = findByLogin(loginDto.getUsername());
 
         if (passwordEncoder.matches(CharBuffer.wrap(loginDto.getPassword()), user.getPassword())) {
             return user;
@@ -33,9 +32,10 @@ public class UserService {
             throw new RuntimeException("Benutzer existiert bereits");
         }
 
-        User user = new User();
-        user.setUsername(loginDto.getUsername());
-        user.setPassword(passwordEncoder.encode(CharBuffer.wrap(loginDto.getPassword())));
+        User user = User.builder()
+            .username(loginDto.getUsername())
+            .password(passwordEncoder.encode(CharBuffer.wrap(loginDto.getPassword())))
+            .build();
 
         return userRepository.save(user);
     }
