@@ -55,6 +55,10 @@ class UserServiceTest {
         .build();
   }
 
+  /*
+  FindByLogin
+   */
+
   @Test
   void findByLogin_givenExistingUser_thenReturnUser() {
     when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
@@ -71,6 +75,10 @@ class UserServiceTest {
     assertThrows(RuntimeException.class, () -> userService.findByLogin(USERNAME));
   }
 
+  /*
+  Login
+   */
+
   @Test
   void login_givenExistingUser_thenReturnUser() {
     when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
@@ -80,7 +88,6 @@ class UserServiceTest {
     User user = userService.login(loginDto);
 
     verify(passwordEncoder, Mockito.times(1)).matches(CharBuffer.wrap(loginDto.getPassword()), user.getPassword());
-
     assertEquals(USERNAME, user.getUsername());
   }
 
@@ -90,7 +97,7 @@ class UserServiceTest {
 
     LoginDto loginDto = new LoginDto("admin", "admin");
 
-    assertThrows(RuntimeException.class, () -> userService.login(loginDto));;
+    assertThrows(RuntimeException.class, () -> userService.login(loginDto));
   }
 
   @Test
@@ -101,21 +108,29 @@ class UserServiceTest {
     LoginDto loginDto = new LoginDto("admin", "admin");
 
     assertThrows(RuntimeException.class, () -> userService.login(loginDto));
-
     verify(passwordEncoder, Mockito.times(1)).matches(CharBuffer.wrap(loginDto.getPassword()), user.getPassword());
   }
 
-  @Test
-  void register_givenNoUser_thenReturnUser() {
-    when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
+  /*
+  Register
+   */
 
+  @Test
+  void register_givenNotExistingUser_thenReturnUser() {
+    when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
     given(userRepository.save(Mockito.any(User.class))).willReturn(user);
 
     User user = userService.register(new LoginDto("admin", "admin"));
 
     verify(userRepository, Mockito.times(1)).save(Mockito.any(User.class));
-
     assertEquals(this.user.getUsername(), user.getUsername());
+  }
+
+  @Test
+  void register_givenExisting_thenThrowException() {
+    when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
+
+    assertThrows(RuntimeException.class, () -> userService.register(new LoginDto("admin", "admin"));
   }
 
   // TODO (ALB) 15.08.2023: validations
