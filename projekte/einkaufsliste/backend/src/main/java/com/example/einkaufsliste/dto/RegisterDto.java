@@ -6,12 +6,15 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class LoginDto {
+public class RegisterDto {
 
   @NotBlank
   private String username;
 
   @NotBlank
   private String password;
+
+  @NotBlank
+  private String name;
 
 }

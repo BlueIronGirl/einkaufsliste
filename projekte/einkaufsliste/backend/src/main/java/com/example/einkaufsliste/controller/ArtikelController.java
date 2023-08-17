@@ -1,12 +1,20 @@
 package com.example.einkaufsliste.controller;
 
+import java.util.List;
+
 import com.example.einkaufsliste.entity.Artikel;
 import com.example.einkaufsliste.service.ArtikelService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @AllArgsConstructor
 @RestController
@@ -19,8 +27,8 @@ public class ArtikelController {
      * @return alle Artikel als Liste
      */
     @GetMapping("/artikels")
-    public List<Artikel> selectAllArtikel() {
-        return artikelService.selectAllArtikel();
+    public ResponseEntity<List<Artikel>> selectAllArtikel() {
+        return ResponseEntity.ok(artikelService.selectAllArtikel());
     }
 
     /**
@@ -31,8 +39,8 @@ public class ArtikelController {
      * @throws Exception wenn der Artikel nicht gefunden wurde
      */
     @GetMapping("/artikels/{id}")
-    public Artikel selectArtikel(@PathVariable Long id) throws Exception {
-        return artikelService.selectArtikel(id);
+    public ResponseEntity<Artikel> selectArtikel(@PathVariable Long id) throws Exception {
+        return ResponseEntity.ok(artikelService.selectArtikel(id));
     }
 
     /**
@@ -42,8 +50,8 @@ public class ArtikelController {
      * @return erfasster Artikel
      */
     @PostMapping(value = "/artikels", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Artikel createArtikel(@RequestBody Artikel artikel) {
-        return artikelService.createArtikel(artikel);
+    public ResponseEntity<Artikel> createArtikel(@Valid @RequestBody Artikel artikel) {
+        return ResponseEntity.ok(artikelService.createArtikel(artikel));
     }
 
     /**
@@ -55,8 +63,8 @@ public class ArtikelController {
      * @throws Exception Artikel wurde nicht gefunden
      */
     @PutMapping("/artikels/{id}")
-    public Artikel updateArtikel(@RequestBody Artikel artikelData, @PathVariable Long id) throws Exception {
-        return artikelService.updateArtikel(artikelData, id);
+    public ResponseEntity<Artikel> updateArtikel(@Valid @RequestBody Artikel artikelData, @PathVariable Long id) throws Exception {
+        return ResponseEntity.ok(artikelService.updateArtikel(artikelData, id));
     }
 
     /**
@@ -67,7 +75,7 @@ public class ArtikelController {
      * @throws Exception Artikel wurde nicht gefunden
      */
     @DeleteMapping("/artikels/{id}")
-    public Artikel deleteArtikel(@PathVariable Long id) throws Exception {
-        return artikelService.deleteArtikel(id);
+    public ResponseEntity<Artikel> deleteArtikel(@PathVariable Long id) throws Exception {
+        return ResponseEntity.ok(artikelService.deleteArtikel(id));
     }
 }

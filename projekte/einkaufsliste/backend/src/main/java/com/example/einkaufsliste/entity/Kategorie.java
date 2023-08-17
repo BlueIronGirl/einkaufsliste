@@ -1,13 +1,18 @@
 package com.example.einkaufsliste.entity;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import lombok.Data;
+import jakarta.persistence.Cacheable;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -19,6 +24,7 @@ public class Kategorie {
     @GeneratedValue
     private Long id;
 
+    @NotBlank
     private String name;
 
     @OneToMany(mappedBy = "kategorie", fetch = FetchType.EAGER)

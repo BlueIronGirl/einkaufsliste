@@ -8,11 +8,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.nio.CharBuffer;
+import java.util.HashSet;
 import java.util.Optional;
 
 import com.example.einkaufsliste.dto.LoginDto;
+import com.example.einkaufsliste.dto.RegisterDto;
 import com.example.einkaufsliste.entity.User;
 import com.example.einkaufsliste.repository.UserRepository;
+import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,6 +36,9 @@ class UserServiceTest {
 
   @Mock
   private PasswordEncoder passwordEncoder;
+
+  @Mock
+  private Validator validator;
 
   @InjectMocks
   private UserService userService;
@@ -118,9 +124,24 @@ class UserServiceTest {
   @Test
   void register_givenNotExistingUser_thenReturnUser() {
     when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
+    when(validator.validate(any())).thenReturn(new HashSet<>());
     given(userRepository.save(Mockito.any(User.class))).willReturn(user);
 
-    User user = userService.register(new LoginDto("admin", "admin"));
+    User user = userService.register(new RegisterDto("admin", "admin", "admin"));
+
+    verify(userRepository, Mockito.times(1)).save(Mockito.any(User.class));
+    assertEquals(this.user.getUsername(), user.getUsername());
+  }
+
+  @Test
+  void register_givenNotExistingUserWithoutName_thenReturnUser() {
+// TODO (ALB) 17.08.2023: constraintvalidation
+
+    when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
+    when(validator.validate(any())).thenReturn(new HashSet<>());
+    given(userRepository.save(Mockito.any(User.class))).willReturn(user);
+
+    User user = userService.register(new RegisterDto("admin", "admin", ""));
 
     verify(userRepository, Mockito.times(1)).save(Mockito.any(User.class));
     assertEquals(this.user.getUsername(), user.getUsername());
@@ -130,7 +151,7 @@ class UserServiceTest {
   void register_givenExisting_thenThrowException() {
     when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
 
-    assertThrows(RuntimeException.class, () -> userService.register(new LoginDto("admin", "admin"));
+    assertThrows(RuntimeException.class, () -> userService.register(new RegisterDto("admin", "admin", "admin")));
   }
 
   // TODO (ALB) 15.08.2023: validations
