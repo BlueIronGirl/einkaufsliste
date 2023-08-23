@@ -3,6 +3,8 @@ import {Store} from "@ngrx/store";
 import {MessageService} from "primeng/api";
 import {User} from "../../entities/user";
 import {EinkaufszettelActions} from "../../store/einkaufszettel/einkaufszettel.actions";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-login',
@@ -12,21 +14,30 @@ import {EinkaufszettelActions} from "../../store/einkaufszettel/einkaufszettel.a
 })
 export class LoginComponent implements OnInit {
   user?: User;
+  loginForm: FormGroup = this.formBuilder.group({
+    username: ['', Validators.required],
+    password: ['', Validators.required]
+  });
 
-  constructor(private store: Store, private messageService: MessageService) {
+  constructor(private formBuilder: FormBuilder, private store: Store, private router: Router, private messageService: MessageService) {
   }
 
   ngOnInit(): void {
-    this.user = {
-      username: 'alice',
-      password: 'admin'
+    const user: User = {
+      username: '',
+      password: ''
     }
-    this.login();
+    this.loginForm.patchValue(user);
   }
 
   login() {
-    if (this.user) {
-      this.store.dispatch(EinkaufszettelActions.login({data: this.user}));
-    }
+    const formValue = this.loginForm.getRawValue();
+    const user: User = {...formValue};
+
+    this.store.dispatch(EinkaufszettelActions.login({data: user}));
+  }
+
+  reset() {
+    this.ngOnInit();
   }
 }

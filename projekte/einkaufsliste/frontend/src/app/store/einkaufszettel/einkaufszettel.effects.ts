@@ -28,9 +28,21 @@ export class EinkaufszettelEffects {
       map(action => action.data),
       concatMap(inputData => this.loginService.login(inputData).pipe(
         map(data => EinkaufszettelActions.loginSuccess({data: data})),
+        tap(data => {
+          this.loginService.saveLoginStateToLocalStorage(data.data);
+          this.router.navigateByUrl("/einkaufszettel");
+        }),
         catchError(error => of(EinkaufszettelActions.loginFailure({error})))
-      )),
-      tap(() => this.router.navigateByUrl("/einkaufszettel"))
+      ))
+    )
+  });
+
+  logout$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(EinkaufszettelActions.logout),
+      tap(() => {
+        this.loginService.saveLoginStateToLocalStorage(null);
+      })
     )
   });
 

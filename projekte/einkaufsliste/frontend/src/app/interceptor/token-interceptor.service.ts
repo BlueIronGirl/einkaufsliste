@@ -16,7 +16,7 @@ export class TokenInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     request = request.clone({
       setHeaders: {
-        Authorization: `Bearer ${this.auth.getLoginToken()}`
+        Authorization: `Bearer ${this.auth.getActiveLoginToken()}`
       }
     });
     return next.handle(request);

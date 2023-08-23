@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {Observable, throwError} from "rxjs";
 import {User} from "../entities/user";
-import {catchError} from "rxjs/operators";
+import {catchError, map, tap} from "rxjs/operators";
 import {Store} from "@ngrx/store";
 import {EinkaufszettelActions} from "../store/einkaufszettel/einkaufszettel.actions";
 import jwtDecode, {JwtPayload} from 'jwt-decode';
@@ -34,7 +34,11 @@ export class LoginService {
     );
   }
 
-  getLoginToken(): string {
+  saveLoginStateToLocalStorage(user: User | null) {
+    localStorage.setItem('user', JSON.stringify(user));
+  }
+
+  getActiveLoginToken(): string {
     let token = '';
 
     this.store.select(selectLogin).subscribe(user => token = user?.token ? user.token : '');
@@ -47,8 +51,11 @@ export class LoginService {
 
     if (userString) {
       const user: User = JSON.parse(userString);
-      this.store.dispatch(EinkaufszettelActions.loginSuccess({data: user}));
-      return this.isTokenNotExpired(this.getExpire(user.token!));
+
+      if (user && user.token) {
+        this.store.dispatch(EinkaufszettelActions.loginSuccess({data: user}));
+        return this.isTokenNotExpired(this.getExpire(user.token));
+      }
     }
 
     return false;

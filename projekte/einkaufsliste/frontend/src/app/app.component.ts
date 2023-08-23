@@ -22,4 +22,8 @@ export class AppComponent {
     this.messageService.clear();
     this.messageService.add({severity: 'success', summary: 'Artikel wurden archiviert'});
   }
+
+  logout() {
+    this.store.dispatch(EinkaufszettelActions.logout());
+  }
 }

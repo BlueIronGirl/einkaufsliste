@@ -23,6 +23,7 @@ import {MessageModule} from "primeng/message";
 import {MessagesModule} from "primeng/messages";
 import { LoginComponent } from './components/login/login.component';
 import {TokenInterceptor} from "./interceptor/token-interceptor.service";
+import {PasswordModule} from "primeng/password";
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import {TokenInterceptor} from "./interceptor/token-interceptor.service";
     CardModule,
     CheckboxModule,
     InputNumberModule,
+    PasswordModule,
     InputTextModule,
     PanelModule,
     MessageModule,
