@@ -1,12 +1,13 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {Observable, throwError} from "rxjs";
+import {Observable, of, throwError} from "rxjs";
 import {User} from "../entities/user";
 import {catchError, map, tap} from "rxjs/operators";
 import {Store} from "@ngrx/store";
 import {EinkaufszettelActions} from "../store/einkaufszettel/einkaufszettel.actions";
 import jwtDecode, {JwtPayload} from 'jwt-decode';
 import {selectLogin} from "../store/einkaufszettel/einkaufszettel.selectors";
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ import {selectLogin} from "../store/einkaufszettel/einkaufszettel.selectors";
 export class LoginService {
   private api = 'http://localhost:8080';
 
-  constructor(private httpClient: HttpClient, private store: Store) {
+  constructor(private router: Router, private httpClient: HttpClient, private store: Store) {
   }
 
   private static errorHandler(error: HttpErrorResponse): Observable<never> {
@@ -52,9 +53,9 @@ export class LoginService {
     if (userString) {
       const user: User = JSON.parse(userString);
 
-      if (user && user.token) {
-        this.store.dispatch(EinkaufszettelActions.loginSuccess({data: user}));
-        return this.isTokenNotExpired(this.getExpire(user.token));
+      if (user && user.token && this.isTokenNotExpired(this.getExpire(user.token))) {
+        this.store.dispatch(EinkaufszettelActions.loginLocalstorage({data: user}));
+        return true;
       }
     }
 

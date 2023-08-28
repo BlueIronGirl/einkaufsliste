@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Store} from "@ngrx/store";
 import {MessageService} from "primeng/api";
 import {EinkaufszettelActions} from "./store/einkaufszettel/einkaufszettel.actions";
+import {selectLogin} from "./store/einkaufszettel/einkaufszettel.selectors";
 
 @Component({
   selector: 'app-root',
@@ -9,11 +10,16 @@ import {EinkaufszettelActions} from "./store/einkaufszettel/einkaufszettel.actio
   styleUrls: ['./app.component.scss'],
   providers: [MessageService]
 })
-export class AppComponent {
-  adminModus = false;
-  menuRendered = false;
+export class AppComponent implements OnInit{
+  // adminModus = false;
+  logoutButtonRendered = false;
 
   constructor(private store: Store, private messageService: MessageService) {
+
+  }
+
+  ngOnInit(): void {
+    this.store.select(selectLogin).subscribe(user => this.logoutButtonRendered = user != null);
   }
 
   archiviereGekaufteArtikel() {

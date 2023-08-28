@@ -11,10 +11,12 @@ export const EinkaufszettelActions = createActionGroup({
     'Register Failure': props<{ error: HttpErrorResponse }>(),
 
     'Login': props<{ data: User }>(),
+    'Login Localstorage': props<{ data: User }>(),
     'Login Success': props<{ data: User }>(),
     'Login Failure': props<{ error: HttpErrorResponse }>(),
 
     'Logout': emptyProps(),
+    'Logout Success': emptyProps(),
 
     'Load Einkaufszettels': emptyProps(),
     'Load Einkaufszettels Success': props<{ data: Artikel[] }>(),

@@ -21,7 +21,6 @@ export class EinkaufszettelEffects {
     )
   });
 
-
   login$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(EinkaufszettelActions.login),
@@ -40,9 +39,11 @@ export class EinkaufszettelEffects {
   logout$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(EinkaufszettelActions.logout),
-      tap(() => {
+      map(() => EinkaufszettelActions.logoutSuccess()),
+      tap(data => {
         this.loginService.saveLoginStateToLocalStorage(null);
-      })
+        this.router.navigateByUrl("/login");
+      }),
     )
   });
 
