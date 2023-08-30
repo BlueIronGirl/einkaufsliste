@@ -7,14 +7,14 @@ services:
   db:
     image: "mariadb:latest"
     restart: unless-stopped
-#    env_file: [ .env ]
+    #    env_file: [ .env ]
     environment:
       MYSQL_DATABASE: alicedb
       MYSQL_USER: root
       MYSQL_PASSWORD: test123
       MYSQL_ROOT_PASSWORD: test123
-#      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
-#      - MYSQL_DATABASE=$MYSQL_DATABASE
+    #      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+    #      - MYSQL_DATABASE=$MYSQL_DATABASE
     ports:
       - "3306:3306"
     volumes:
@@ -37,5 +37,13 @@ services:
          }'
     ports:
       - "8080:8080"
+      - "5005:5005"
     stdin_open: true
     tty: true
+  frontend:
+    depends_on: [ backend ]
+    build: frontend
+    restart: unless-stopped
+    env_file: [ .env ]
+    ports:
+      - "80:80"

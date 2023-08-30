@@ -1,7 +1,5 @@
 package com.example.einkaufsliste.controller;
 
-import java.net.URI;
-
 import com.example.einkaufsliste.config.UserAuthenticationProvider;
 import com.example.einkaufsliste.dto.LoginDto;
 import com.example.einkaufsliste.dto.RegisterDto;
@@ -13,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.net.URI;
 
 @AllArgsConstructor
 @RestController
