@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {Observable, of, throwError} from "rxjs";
+import {Observable, throwError} from "rxjs";
 import {User} from "../entities/user";
-import {catchError, map, tap} from "rxjs/operators";
+import {catchError} from "rxjs/operators";
 import {Store} from "@ngrx/store";
 import {EinkaufszettelActions} from "../store/einkaufszettel/einkaufszettel.actions";
 import jwtDecode, {JwtPayload} from 'jwt-decode';

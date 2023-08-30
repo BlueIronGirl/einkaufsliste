@@ -50,9 +50,10 @@ public class UserService {
 
 
         User user = User.builder()
-            .username(registerDto.getUsername())
-            .password(passwordEncoder.encode(CharBuffer.wrap(registerDto.getPassword())))
-            .build();
+                .username(registerDto.getUsername())
+                .password(passwordEncoder.encode(CharBuffer.wrap(registerDto.getPassword())))
+                .name(registerDto.getName())
+                .build();
 
         return userRepository.save(user);
     }
