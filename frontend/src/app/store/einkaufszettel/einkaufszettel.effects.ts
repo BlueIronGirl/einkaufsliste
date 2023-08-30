@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {catchError, concatMap, map, switchMap, tap} from 'rxjs/operators';
-import {Observable, of} from 'rxjs';
+import {of} from 'rxjs';
 import {EinkaufszettelActions} from './einkaufszettel.actions';
 import {EinkaufszettelService} from "../../service/einkaufszettel.service";
 import {LoginService} from "../../service/login.service";
@@ -71,7 +71,7 @@ export class EinkaufszettelEffects {
     );
   });
 
-  addArtikel$ = createEffect(() => {
+  createArtikel$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(EinkaufszettelActions.createArtikel),
       map(action => action.data),
@@ -82,7 +82,15 @@ export class EinkaufszettelEffects {
     )
   });
 
-  editArtikel$ = createEffect(() => {
+  createArtikelSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EinkaufszettelActions.createArtikelSuccess),
+      tap((action) => {
+        this.router.navigateByUrl("/einkaufszettel");
+      }),
+    ), {dispatch: false});
+
+  updateArtikel$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(EinkaufszettelActions.updateArtikel),
       map(action => action.data),
@@ -92,6 +100,14 @@ export class EinkaufszettelEffects {
       ))
     )
   });
+
+  updateArtikelSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EinkaufszettelActions.updateArtikelSuccess),
+      tap((action) => {
+        this.router.navigateByUrl("/einkaufszettel");
+      }),
+    ), {dispatch: false});
 
   deleteArtikel$ = createEffect(() => {
     return this.actions$.pipe(
