@@ -1,4 +1,4 @@
-# Tools
+# Einkaufsliste
 
-## Name
-Alice Bedows Tools-Repo zum Erlernen & Üben von neuen Programmiersprachen, Programmierchallenges und privater Projekte
+Dies ist ein Showcase für das Java-Framework Spring Boot in Kombination mit dem TypeScript-Frontend-Framework Angular und PrimeNG.
+Die Einkaufsliste kann mit Docker gestartet werden.
