@@ -17,6 +17,8 @@ services:
     #      - MYSQL_DATABASE=$MYSQL_DATABASE
     ports:
       - "3306:3306"
+    networks:
+      - my-app
     volumes:
       - database:/var/lib/mysql
     healthcheck:
@@ -38,6 +40,8 @@ services:
     ports:
       - "8080:8080"
       - "5005:5005"
+    networks:
+      - my-app
     stdin_open: true
     tty: true
   frontend:
@@ -47,3 +51,8 @@ services:
     env_file: [ .env ]
     ports:
       - "80:80"
+    networks:
+      - my-app
+networks:
+  my-app:
+   driver: bridge

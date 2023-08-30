@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {catchError, concatMap, map, switchMap, tap} from 'rxjs/operators';
-import {of} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {EinkaufszettelActions} from './einkaufszettel.actions';
 import {EinkaufszettelService} from "../../service/einkaufszettel.service";
 import {LoginService} from "../../service/login.service";
@@ -27,14 +27,19 @@ export class EinkaufszettelEffects {
       map(action => action.data),
       concatMap(inputData => this.loginService.login(inputData).pipe(
         map(data => EinkaufszettelActions.loginSuccess({data: data})),
-        tap(data => {
-          this.loginService.saveLoginStateToLocalStorage(data.data);
-          this.router.navigateByUrl("/einkaufszettel");
-        }),
         catchError(error => of(EinkaufszettelActions.loginFailure({error})))
       ))
     )
   });
+
+  loginSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EinkaufszettelActions.loginSuccess),
+      tap((action) => {
+        this.loginService.saveLoginStateToLocalStorage(action.data);
+        this.router.navigateByUrl("/einkaufszettel");
+      }),
+    ), {dispatch: false});
 
   logout$ = createEffect(() => {
     return this.actions$.pipe(
