@@ -10,8 +10,7 @@ import {MessageService} from "primeng/api";
 @Component({
   selector: 'app-edit-artikel',
   templateUrl: './edit-artikel.component.html',
-  styleUrls: ['./edit-artikel.component.scss'],
-  providers: [MessageService]
+  styleUrls: ['./edit-artikel.component.scss']
 })
 export class EditArtikelComponent implements OnInit {
   artikelForm: FormGroup = this.formBuilder.group({

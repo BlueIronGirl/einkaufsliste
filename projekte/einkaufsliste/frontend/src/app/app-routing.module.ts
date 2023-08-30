@@ -4,10 +4,12 @@ import {EinkaufszettelComponent} from "./components/einkaufszettel/einkaufszette
 import {EditArtikelComponent} from "./components/edit-artikel/edit-artikel.component";
 import {LoginComponent} from "./components/login/login.component";
 import {AuthGuard} from "./guard/auth-guard";
+import {RegisterComponent} from "./components/register/register.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'einkaufszettel', pathMatch: 'full'},
   {path: 'login', component: LoginComponent},
+  {path: 'register', component: RegisterComponent},
   {path: 'einkaufszettel', component: EinkaufszettelComponent, canActivate: [AuthGuard]},
   {path: 'artikel/:id', component: EditArtikelComponent, canActivate: [AuthGuard]},
   {path: 'artikel/new', component: EditArtikelComponent, canActivate: [AuthGuard]}

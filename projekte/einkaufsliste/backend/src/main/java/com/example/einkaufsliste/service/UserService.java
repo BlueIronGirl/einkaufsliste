@@ -7,6 +7,7 @@ import java.util.Set;
 import com.example.einkaufsliste.dto.LoginDto;
 import com.example.einkaufsliste.dto.RegisterDto;
 import com.example.einkaufsliste.entity.User;
+import com.example.einkaufsliste.exception.EntityAlreadyExistsException;
 import com.example.einkaufsliste.repository.UserRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -35,7 +36,7 @@ public class UserService {
         Optional<User> optionalUser = userRepository.findByUsername(registerDto.getUsername());
 
         if (optionalUser.isPresent()) {
-            throw new RuntimeException("Benutzer existiert bereits");
+            throw new EntityAlreadyExistsException("Benutzer existiert bereits");
         }
 
         Set<ConstraintViolation<RegisterDto>> violations = validator.validate(registerDto);

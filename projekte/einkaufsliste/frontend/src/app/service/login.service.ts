@@ -8,6 +8,7 @@ import {EinkaufszettelActions} from "../store/einkaufszettel/einkaufszettel.acti
 import jwtDecode, {JwtPayload} from 'jwt-decode';
 import {selectLogin} from "../store/einkaufszettel/einkaufszettel.selectors";
 import {Router} from "@angular/router";
+import {MessageService} from "primeng/api";
 
 @Injectable({
   providedIn: 'root'
@@ -15,23 +16,24 @@ import {Router} from "@angular/router";
 export class LoginService {
   private api = 'http://localhost:8080';
 
-  constructor(private router: Router, private httpClient: HttpClient, private store: Store) {
+  constructor(private router: Router, private httpClient: HttpClient, private store: Store, private messageService: MessageService) {
   }
 
-  private static errorHandler(error: HttpErrorResponse): Observable<never> {
-    console.error('Fehler aufgetreten!' + error);
+  private errorHandler(error: HttpErrorResponse): Observable<never> {
+    console.error('Fehler aufgetreten!' + JSON.stringify(error));
+    this.messageService.add({severity: 'error', summary: `Fehler beim Speichern! ${error.message}`});
     return throwError(() => error);
   }
 
   login(user: User) {
     return this.httpClient.post<User>(`${this.api}/auth/login`, user).pipe(
-      catchError(LoginService.errorHandler)
+      catchError(error => this.errorHandler(error))
     );
   }
 
   register(user: User) {
     return this.httpClient.post<User>(`${this.api}/auth/register`, user).pipe(
-      catchError(LoginService.errorHandler)
+      catchError(error => this.errorHandler(error))
     );
   }
 

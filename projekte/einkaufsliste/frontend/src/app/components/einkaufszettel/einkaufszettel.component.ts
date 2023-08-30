@@ -8,8 +8,7 @@ import {MessageService} from "primeng/api";
 @Component({
   selector: 'app-einkaufszettel',
   templateUrl: './einkaufszettel.component.html',
-  styleUrls: ['./einkaufszettel.component.scss'],
-  providers: [MessageService]
+  styleUrls: ['./einkaufszettel.component.scss']
 })
 export class EinkaufszettelComponent implements OnInit {
   artikels!: Artikel[];

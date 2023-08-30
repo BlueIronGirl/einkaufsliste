@@ -1,4 +1,4 @@
-<form [formGroup]="loginForm" class="w-full max-w-sm" (ngSubmit)="login()">
+<form [formGroup]="loginForm" class="w-full max-w-sm" (ngSubmit)="register()">
   <!-- Benutzername -->
   <div class="md:flex md:items-center mt-2 mb-6">
     <div class="md:w-1/3">
@@ -23,6 +23,18 @@
     </div>
   </div>
 
+  <!-- Name -->
+  <div class="md:flex md:items-center mt-2 mb-6">
+    <div class="md:w-1/3">
+      <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="name">
+        Name
+      </label>
+    </div>
+    <div class="md:w-2/3">
+      <input id="name" type="text" pInputText formControlName="name"/>
+    </div>
+  </div>
+
   <!-- Speichern -->
   <div class="md:flex md:items-center mt-2 mb-6">
     <div class="md:w-1/3 block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
@@ -31,11 +43,6 @@
     <div class="md:w-2/3">
       <button type="submit"
               [disabled]="loginForm.invalid"
-              class="text-white bg-gray-800 rounded-lg px-1 py-1 text-center">
-        Login
-      </button>
-      <button type="button"
-              (click)="register()"
               class="text-white bg-gray-800 rounded-lg px-1 py-1 text-center">
         Registrieren
       </button>

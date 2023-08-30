@@ -21,6 +21,14 @@ export class EinkaufszettelEffects {
     )
   });
 
+  registerSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EinkaufszettelActions.registerSuccess),
+      tap((action) => {
+        this.router.navigateByUrl("/login");
+      }),
+    ), {dispatch: false});
+
   login$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(EinkaufszettelActions.login),

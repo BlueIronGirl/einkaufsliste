@@ -24,13 +24,17 @@ import {MessagesModule} from "primeng/messages";
 import { LoginComponent } from './components/login/login.component';
 import {TokenInterceptor} from "./interceptor/token-interceptor.service";
 import {PasswordModule} from "primeng/password";
+import { RegisterComponent } from './components/register/register.component';
+import {MessageService} from "primeng/api";
+import {ToastModule} from "primeng/toast";
 
 @NgModule({
   declarations: [
     AppComponent,
     EinkaufszettelComponent,
     EditArtikelComponent,
-    LoginComponent
+    LoginComponent,
+    RegisterComponent
   ],
   imports: [
     // standard angular
@@ -57,14 +61,16 @@ import {PasswordModule} from "primeng/password";
     InputTextModule,
     PanelModule,
     MessageModule,
-    MessagesModule
+    MessagesModule,
+    ToastModule
   ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
       multi: true
-    }
+    },
+    MessageService
   ],
   bootstrap: [AppComponent]
 })

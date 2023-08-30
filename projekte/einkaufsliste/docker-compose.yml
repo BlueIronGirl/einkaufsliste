@@ -35,7 +35,8 @@ services:
            "spring.datasource.password" : "test123",
            "spring.datasource.driver-class-name" : "org.mariadb.jdbc.Driver",
            "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.MariaDB103Dialect",
-           "spring.jpa.hibernate.ddl-auto" : "update"
+           "spring.jpa.hibernate.ddl-auto" : "update",
+           "server.error.include-message" : "always"
          }'
     ports:
       - "8080:8080"
