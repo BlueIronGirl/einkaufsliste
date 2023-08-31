@@ -1,9 +1,14 @@
 <div class="grid">
   <div *ngFor="let artikel of artikels">
-    <p-panel class="p-0" [toggleable]="true" [collapsed]="true">
+    <p-panel class="p-0"
+             [toggleable]="true"
+             [collapsed]="true">
       <!-- Header -->
       <ng-template pTemplate="header">
-        <p-checkbox class="mr-2" [(ngModel)]="artikel.gekauft" [binary]="true" (onChange)="changeArtikelGekauft(artikel)"></p-checkbox>
+        <p-checkbox class="mr-2"
+                    [(ngModel)]="artikel.gekauft"
+                    [binary]="true"
+                    (onChange)="changeArtikelGekauft(artikel)"></p-checkbox>
         <span class="text-primary font-semibold text-xl text-emerald-500 mr-1">{{artikel.anzahl}}</span>
         <span class="text-primary font-semibold text-xl">{{artikel.name}}</span>
         <span class="flex-grow"></span>
@@ -22,10 +27,12 @@
       <ng-template pTemplate="content">
         <div class="grid grid-cols-2 gap-2 w-1/4">
           <div>Erstellt am:</div>
-<!--          <div>{{artikel.erstellungsZeitpunkt | date:'dd.MM.yyyy hh:mm' }}</div>-->
-          <div>Gekauft am:</div>
+          <div>{{artikel.erstellungsZeitpunkt | date:'dd.MM.yyyy hh:mm' }}</div>
           <div>
-<!--            <span *ngIf="artikel.kaufZeitpunkt">{{artikel.kaufZeitpunkt | date:'dd.MM.yyyy hh:mm' }}</span>-->
+            <span *ngIf="artikel.kaufZeitpunkt"> Gekauft am:</span>
+          </div>
+          <div>
+            <span *ngIf="artikel.kaufZeitpunkt">{{artikel.kaufZeitpunkt | date:'dd.MM.yyyy hh:mm' }}</span>
           </div>
         </div>
       </ng-template>
