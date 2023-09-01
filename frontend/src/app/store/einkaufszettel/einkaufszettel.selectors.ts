@@ -8,7 +8,7 @@ export const selectEinkaufszettelState = createFeatureSelector<fromEinkaufszette
 export const selectLogin = createSelector(
   selectEinkaufszettelState,
   state => state.loginUser
-)
+);
 
 export const selectAllArtikel = createSelector(
   selectEinkaufszettelState,

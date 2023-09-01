@@ -1,12 +1,9 @@
 package com.example.einkaufsliste.service;
 
 import com.example.einkaufsliste.entity.Artikel;
-import com.example.einkaufsliste.entity.ArtikelArchiv;
-import com.example.einkaufsliste.repository.ArtikelArchivRepository;
 import com.example.einkaufsliste.repository.ArtikelRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 

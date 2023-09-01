@@ -21,8 +21,6 @@ services:
       - my-app
     volumes:
       - database:/var/lib/mysql
-    healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "--silent" ]
   backend:
     depends_on: [ db ]
     build: backend
