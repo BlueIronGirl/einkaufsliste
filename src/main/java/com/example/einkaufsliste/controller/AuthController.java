@@ -20,6 +20,12 @@ public class AuthController {
     private final UserService userService;
     private final UserAuthenticationProvider userAuthenticationProvider;
 
+    /**
+     * Login: Dabei wird ein Token fuer die Authentifizierung erstellt
+     *
+     * @param loginDto LoginDaten
+     * @return eingeloggter User mit Token
+     */
     @PostMapping("/auth/login")
     public ResponseEntity<User> login(@Valid @RequestBody LoginDto loginDto) {
         User user = userService.login(loginDto);
@@ -28,6 +34,12 @@ public class AuthController {
         return ResponseEntity.ok(user);
     }
 
+    /**
+     * Register: Dabei wird ein Token fuer die Authentifizierung erstellt
+     *
+     * @param registerDto Registrierungsdaten
+     * @return eingeloggter User mit Token
+     */
     @PostMapping("/auth/register")
     public ResponseEntity<User> register(@Valid @RequestBody RegisterDto registerDto) {
         User createdUser = userService.register(registerDto);

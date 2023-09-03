@@ -41,6 +41,4 @@ public class Artikel {
     private LocalDateTime erstellungsZeitpunkt;
 
     private LocalDateTime kaufZeitpunkt;
-
-    // TODO (ALB) 27.07.2023: erstelleruserid, käuferuserid
 }

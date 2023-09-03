@@ -19,11 +19,6 @@ public class ArtikelArchivService {
         return artikelArchivRepository.findAll();
     }
 
-    /**
-     * Alle gekauften Artikel archivieren
-     *
-     * @return archivierte Artikel
-     */
     public List<Artikel> loescheArchivierteArtikel() {
         List<Artikel> gekaufteArtikel = artikelRepository.findByGekauftTrue();
 

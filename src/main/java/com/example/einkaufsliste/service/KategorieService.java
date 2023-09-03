@@ -12,11 +12,6 @@ import java.util.List;
 public class KategorieService {
     private final KategorieRepository kategorieRepository;
 
-    /**
-     * Alle Kategorien laden
-     *
-     * @return Kategorien als Liste
-     */
     public List<Kategorie> selectAllKategorien() {
         return kategorieRepository.findAll();
     }
