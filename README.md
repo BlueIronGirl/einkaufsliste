@@ -10,5 +10,5 @@ und PrimeNG.
 
 ## App Starten
 
-Die Einkaufsliste kann mit Docker gestartet werden. 
+Die Einkaufsliste kann mit Docker gestartet werden.
 
