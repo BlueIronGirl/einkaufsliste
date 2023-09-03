@@ -10,12 +10,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 
 @AllArgsConstructor
 @RestController
+@RequestMapping("auth")
 public class AuthController {
     private final UserService userService;
     private final UserAuthenticationProvider userAuthenticationProvider;
@@ -26,7 +28,7 @@ public class AuthController {
      * @param loginDto LoginDaten
      * @return eingeloggter User mit Token
      */
-    @PostMapping("/auth/login")
+    @PostMapping("/login")
     public ResponseEntity<User> login(@Valid @RequestBody LoginDto loginDto) {
         User user = userService.login(loginDto);
         user.setToken(userAuthenticationProvider.createToken(user));
@@ -40,7 +42,7 @@ public class AuthController {
      * @param registerDto Registrierungsdaten
      * @return eingeloggter User mit Token
      */
-    @PostMapping("/auth/register")
+    @PostMapping("/register")
     public ResponseEntity<User> register(@Valid @RequestBody RegisterDto registerDto) {
         User createdUser = userService.register(registerDto);
         createdUser.setToken(userAuthenticationProvider.createToken(createdUser));

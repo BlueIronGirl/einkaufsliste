@@ -8,16 +8,11 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
 @RestController
+@RequestMapping("artikels")
 public class ArtikelController {
     private final ArtikelService artikelService;
 
@@ -26,7 +21,7 @@ public class ArtikelController {
      *
      * @return alle Artikel als Liste
      */
-    @GetMapping("/artikels")
+    @GetMapping
     public ResponseEntity<List<Artikel>> selectAllArtikel() {
         return ResponseEntity.ok(artikelService.selectAllArtikel());
     }
@@ -38,7 +33,7 @@ public class ArtikelController {
      * @return Artikel
      * @throws Exception wenn der Artikel nicht gefunden wurde
      */
-    @GetMapping("/artikels/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Artikel> selectArtikel(@PathVariable Long id) throws Exception {
         return ResponseEntity.ok(artikelService.selectArtikel(id));
     }
@@ -49,7 +44,7 @@ public class ArtikelController {
      * @param artikel zu speichernder Artikel
      * @return erfasster Artikel
      */
-    @PostMapping(value = "/artikels", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     public ResponseEntity<Artikel> createArtikel(@Valid @RequestBody Artikel artikel) {
         return ResponseEntity.ok(artikelService.createArtikel(artikel));
     }
@@ -62,7 +57,7 @@ public class ArtikelController {
      * @return aktualisierter Artikel
      * @throws Exception Artikel wurde nicht gefunden
      */
-    @PutMapping("/artikels/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Artikel> updateArtikel(@Valid @RequestBody Artikel artikelData, @PathVariable Long id) throws Exception {
         return ResponseEntity.ok(artikelService.updateArtikel(artikelData, id));
     }
@@ -74,7 +69,7 @@ public class ArtikelController {
      * @return geloeschter Artikel
      * @throws Exception Artikel wurde nicht gefunden
      */
-    @DeleteMapping("/artikels/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Artikel> deleteArtikel(@PathVariable Long id) throws Exception {
         return ResponseEntity.ok(artikelService.deleteArtikel(id));
     }

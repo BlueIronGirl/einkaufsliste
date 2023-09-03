@@ -1,11 +1,8 @@
 package com.example.einkaufsliste.repository;
 
 import com.example.einkaufsliste.entity.ArtikelArchiv;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+public interface ArtikelArchivRepository extends JpaRepository<ArtikelArchiv, Long> {
 
-public interface ArtikelArchivRepository extends CrudRepository<ArtikelArchiv, Long> {
-    @Override
-    List<ArtikelArchiv> findAll();
 }

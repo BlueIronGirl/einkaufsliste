@@ -6,12 +6,14 @@ import com.example.einkaufsliste.service.ArtikelArchivService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @AllArgsConstructor
 @RestController
+@RequestMapping("archiv")
 public class ArtikelArchivController {
     private final ArtikelArchivService artikelArchivService;
 
@@ -20,7 +22,7 @@ public class ArtikelArchivController {
      *
      * @return alle Artikel als Liste
      */
-    @GetMapping("/archiv/artikels")
+    @GetMapping("/artikels")
     public List<ArtikelArchiv> selectAllArtikelArchiv() {
         return artikelArchivService.selectAllArtikelArchiv();
     }
@@ -30,7 +32,7 @@ public class ArtikelArchivController {
      *
      * @return archivierte Artikel
      */
-    @PostMapping("/archiv/archiviereGekaufteArtikel")
+    @PostMapping("/archiviereGekaufteArtikel")
     public List<Artikel> archiviereGekaufteArtikel() {
         return artikelArchivService.loescheArchivierteArtikel();
     }
