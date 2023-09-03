@@ -1,13 +1,13 @@
-FROM openjdk:17-slim-buster as build
+FROM eclipse-temurin:17-jdk-focal
 
-COPY .mvn .mvn
-COPY mvnw .
-COPY pom.xml .
-RUN ./mvnw -B dependency:go-offline
-COPY src src
-RUN ./mvnw -B package -Dmaven.test.skip=true
+WORKDIR /app
 
-FROM openjdk:17-jdk-slim
-COPY --from=build target/*.jar app.jar
-EXPOSE 8080
-ENTRYPOINT ["java","-jar","/app.jar"]
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
+
+RUN chmod +x ./mvnw
+RUN ./mvnw dependency:go-offline
+
+COPY src ./src
+
+CMD ["./mvnw", "spring-boot:run"]
