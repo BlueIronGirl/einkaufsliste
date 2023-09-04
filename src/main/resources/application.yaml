@@ -4,9 +4,14 @@ spring:
     username: ${MYSQL_USER}
     password: ${MYSQL_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDB103Dialect
+
 
 server:
   error:
