@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: "jdbc:mariadb://${APP_DB_HOST:db}:3306/${MYSQL_DATABASE:shopping-list}"
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+server:
+  error:
+    include-message: ${APP_ERROR_INCLUDE_MESSAGE:never}
+
+  forward-headers-strategy: native
+  servlet:
+    # see nginx.conf in UI Repository
+    context-path: /api
+
+logging:
+  level:
+    root: ${APP_LOGGING_ROOT:error}
+    com.example.einkaufsliste: ${APP_LOGGING:warn}
