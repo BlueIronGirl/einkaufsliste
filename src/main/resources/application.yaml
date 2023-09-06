@@ -25,4 +25,4 @@ server:
 logging:
   level:
     root: ${APP_LOGGING_ROOT:error}
-    com.example.einkaufsliste: ${APP_LOGGING:warn}
+    de.shoppinglist: ${APP_LOGGING:warn}
