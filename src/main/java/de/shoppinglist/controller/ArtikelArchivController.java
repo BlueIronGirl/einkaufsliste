@@ -22,7 +22,7 @@ public class ArtikelArchivController {
      *
      * @return alle Artikel als Liste
      */
-    @GetMapping("/artikels")
+    @GetMapping
     public List<ArtikelArchiv> selectAllArtikelArchiv() {
         return artikelArchivService.selectAllArtikelArchiv();
     }
@@ -34,6 +34,6 @@ public class ArtikelArchivController {
      */
     @PostMapping("/archiviereGekaufteArtikel")
     public List<Artikel> archiviereGekaufteArtikel() {
-        return artikelArchivService.loescheArchivierteArtikel();
+        return artikelArchivService.archiviereGekaufteArtikel();
     }
 }

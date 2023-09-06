@@ -19,13 +19,12 @@ public class ArtikelArchivService {
         return artikelArchivRepository.findAll();
     }
 
-    public List<Artikel> loescheArchivierteArtikel() {
+    public List<Artikel> archiviereGekaufteArtikel() {
         List<Artikel> gekaufteArtikel = artikelRepository.findByGekauftTrue();
 
         // Artikel archivieren
         gekaufteArtikel.stream()
-                .map(ArtikelArchiv::new)
-                .forEach(artikelArchivRepository::save);
+                .map(ArtikelArchiv::new).forEach(artikelArchivRepository::saveAndFlush);
 
         // Artikel aus Einkaufszettel loeschen
         gekaufteArtikel.forEach(artikel -> artikelRepository.deleteById(artikel.getId()));
