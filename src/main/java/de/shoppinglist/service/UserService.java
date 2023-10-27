@@ -8,6 +8,8 @@ import de.shoppinglist.dto.LoginDto;
 import de.shoppinglist.dto.RegisterDto;
 import de.shoppinglist.entity.User;
 import de.shoppinglist.exception.EntityAlreadyExistsException;
+import de.shoppinglist.exception.EntityNotFoundException;
+import de.shoppinglist.exception.UnautorizedException;
 import de.shoppinglist.repository.UserRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -29,7 +31,7 @@ public class UserService {
         if (passwordEncoder.matches(CharBuffer.wrap(loginDto.getPassword()), user.getPassword())) {
             return user;
         }
-        throw new RuntimeException("Passwort falsch!");
+        throw new UnautorizedException("Passwort falsch!");
     }
 
     public User register(RegisterDto registerDto) {
@@ -61,6 +63,6 @@ public class UserService {
 
     public User findByLogin(String login) {
         return userRepository.findByUsername(login)
-                .orElseThrow(() -> new RuntimeException("Unbekannter User!"));
+                .orElseThrow(() -> new EntityNotFoundException("Unbekannter User!"));
     }
 }

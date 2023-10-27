@@ -1,6 +1,7 @@
 package de.shoppinglist.service;
 
 import de.shoppinglist.entity.Artikel;
+import de.shoppinglist.exception.EntityNotFoundException;
 import de.shoppinglist.repository.ArtikelRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,8 +20,8 @@ public class ArtikelService {
         return artikelRepository.findAll();
     }
 
-    public Artikel selectArtikel(@PathVariable Long id) throws Exception {
-        return artikelRepository.findById(id).orElseThrow(() -> new Exception("Artikel nicht gefunden"));
+    public Artikel selectArtikel(@PathVariable Long id) {
+        return artikelRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Artikel nicht gefunden"));
     }
 
     public Artikel createArtikel(@RequestBody Artikel artikelData) {
@@ -28,7 +29,7 @@ public class ArtikelService {
         return artikelRepository.save(artikelData);
     }
 
-    public Artikel updateArtikel(@RequestBody Artikel artikelData, @PathVariable Long id) throws Exception {
+    public Artikel updateArtikel(@RequestBody Artikel artikelData, @PathVariable Long id) {
         return artikelRepository.findById(id)
                 .map(artikel -> {
                     artikel.setName(artikelData.getName());
@@ -40,12 +41,12 @@ public class ArtikelService {
                     artikel.setKategorie(artikelData.getKategorie());
                     return artikelRepository.save(artikel);
                 })
-                .orElseThrow(() -> new Exception("Artikel nicht gefunden"));
+                .orElseThrow(() -> new EntityNotFoundException("Artikel nicht gefunden"));
     }
 
-    public Artikel deleteArtikel(@PathVariable Long id) throws Exception {
+    public Artikel deleteArtikel(@PathVariable Long id) {
         Artikel artikel = artikelRepository.findById(id)
-                .orElseThrow(() -> new Exception("Artikel nicht gefunden"));
+                .orElseThrow(() -> new EntityNotFoundException("Artikel nicht gefunden"));
 
         artikelRepository.deleteById(id);
 

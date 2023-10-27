@@ -3,6 +3,12 @@ package de.shoppinglist.controller;
 import de.shoppinglist.entity.Artikel;
 import de.shoppinglist.entity.ArtikelArchiv;
 import de.shoppinglist.service.ArtikelArchivService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,21 +23,23 @@ import java.util.List;
 public class ArtikelArchivController {
     private final ArtikelArchivService artikelArchivService;
 
-    /**
-     * Alle Artikel von dem Archiv abfragen
-     *
-     * @return alle Artikel als Liste
-     */
+    @Operation(summary = "Get all archived articles", description = "Get all archived articles")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok", content = {
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ArtikelArchiv.class)))
+            })
+    })
     @GetMapping
     public List<ArtikelArchiv> selectAllArtikelArchiv() {
         return artikelArchivService.selectAllArtikelArchiv();
     }
 
-    /**
-     * Alle gekauften Artikel archivieren
-     *
-     * @return archivierte Artikel
-     */
+    @Operation(summary = "Get all archived articles", description = "Get all archived articles")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok", content = {
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Artikel.class)))
+            })
+    })
     @PostMapping("/archiviereGekaufteArtikel")
     public List<Artikel> archiviereGekaufteArtikel() {
         return artikelArchivService.archiviereGekaufteArtikel();
