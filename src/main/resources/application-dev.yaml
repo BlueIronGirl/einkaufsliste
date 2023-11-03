@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: "jdbc:mariadb://${APP_DB_HOST:db}:3306/${MYSQL_DATABASE:shopping-list}"
-    username: ${MYSQL_USER}
-    password: ${MYSQL_PASSWORD}
+    url: "jdbc:mariadb://${APP_DB_HOST:localhost}:3306/${MYSQL_DATABASE:shopping-list}"
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:test123}
     driver-class-name: org.mariadb.jdbc.Driver
 
   jpa:
@@ -25,10 +25,10 @@ server:
 logging:
   level:
     root: ${APP_LOGGING_ROOT:error}
-    de.shoppinglist: ${APP_LOGGING:warn}
+    de.shoppinglist: ${APP_LOGGING:debug}
 
 management:
   endpoints:
     web:
       exposure:
-        include: "health,metrics"
+        include: "*"

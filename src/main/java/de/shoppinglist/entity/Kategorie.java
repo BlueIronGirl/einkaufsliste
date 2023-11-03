@@ -1,17 +1,16 @@
 package de.shoppinglist.entity;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Cacheable;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * Entity-Class representing the Kategorie-Table
+ */
 @Getter
 @Setter
 @ToString
@@ -19,7 +18,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Cacheable(false)
 public class Kategorie {
     @Id
     @GeneratedValue
@@ -32,4 +30,21 @@ public class Kategorie {
     @ToString.Exclude
     @JsonIgnore
     private List<Artikel> artikels;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Kategorie kategorie = (Kategorie) o;
+        return Objects.equals(id, kategorie.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

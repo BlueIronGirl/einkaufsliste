@@ -1,11 +1,14 @@
 package de.shoppinglist.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 
-@Component
+/**
+ * Configuration-Class providing the Password-Encoder
+ */
+@Configuration
 public class PasswordConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {

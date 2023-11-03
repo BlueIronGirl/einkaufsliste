@@ -3,7 +3,6 @@ package de.shoppinglist.controller;
 import de.shoppinglist.config.UserAuthenticationProvider;
 import de.shoppinglist.dto.LoginDto;
 import de.shoppinglist.dto.RegisterDto;
-import de.shoppinglist.entity.Artikel;
 import de.shoppinglist.entity.User;
 import de.shoppinglist.exception.EntityAlreadyExistsException;
 import de.shoppinglist.exception.EntityNotFoundException;
@@ -16,7 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,12 +24,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 
-@AllArgsConstructor
+/**
+ * Controller-Class providing the REST-Endpoints for the Login and Register of the Users of the Application
+ */
 @RestController
 @RequestMapping("auth")
 public class AuthController {
     private final UserService userService;
     private final UserAuthenticationProvider userAuthenticationProvider;
+
+    @Autowired
+    public AuthController(UserService userService, UserAuthenticationProvider userAuthenticationProvider) {
+        this.userService = userService;
+        this.userAuthenticationProvider = userAuthenticationProvider;
+    }
 
     @Operation(summary = "Login to the Application and get a valid token", description = "Login to the Application and get a valid token")
     @ApiResponses(value = {

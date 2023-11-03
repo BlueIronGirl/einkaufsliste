@@ -9,6 +9,11 @@ import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.util.Objects;
+
+/**
+ * Entity-Class representing the User-Table
+ */
 @Getter
 @Setter
 @ToString
@@ -35,4 +40,21 @@ public class User {
 
     @Transient
     private String token;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        User user = (User) o;
+        return id == user.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

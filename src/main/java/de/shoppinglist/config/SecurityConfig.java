@@ -1,6 +1,7 @@
 package de.shoppinglist.config;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,7 +16,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-@AllArgsConstructor
+/**
+ * Configuration-Class providing the Security-Configuration so that only authenticated users can access the API
+ */
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -24,19 +28,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .cors(Customizer.withDefaults())
-                .addFilterBefore(new JwtAuthFilter(userAuthenticationProvider), BasicAuthenticationFilter.class)
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .cors(Customizer.withDefaults()) // enable cors
+                .addFilterBefore(new JwtAuthFilter(userAuthenticationProvider), BasicAuthenticationFilter.class) // add JwtAuthFilter before BasicAuthenticationFilter
+                .csrf(AbstractHttpConfigurer::disable) // disable csrf
+                .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // no session management
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers(HttpMethod.POST, "/auth/**").permitAll() // register und login Endpoint fuer jeden Client ohne Authentifizierung erreichbar
-                        .anyRequest().authenticated());
+                        .requestMatchers(HttpMethod.POST, "/auth/**").permitAll() // register und login endpoint reachable for everyone
+                        .requestMatchers(HttpMethod.GET, "/actuator/**").permitAll() // actuator endpoint reachable for everyone
+                        .requestMatchers(HttpMethod.GET, "/swagger-ui.html").permitAll() // swagger Endpoint reachable for everyone
+                        .anyRequest().authenticated()); // all other requests need to be authenticated
 
         return httpSecurity.build();
     }
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
         configuration.addAllowedOriginPattern("*");

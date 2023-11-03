@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
+/**
+ * Logging-Aspect for the application to Log all Method-Call-Parameters, Return-Values and Exceptions
+ */
 @Aspect
 @Component
 public class LoggingAspect {
@@ -35,17 +38,25 @@ public class LoggingAspect {
         // Method is empty as this is just a Pointcut, the implementations are in the advices.
     }
 
+    /**
+     * Advice that logs all Method-Call-Parameters and Return-Values
+     *
+     * @param joinPoint Specific Joinpoint of the Method
+     * @return Result of the called Method
+     * @throws Throwable Exception that is thrown by the called Method
+     */
     @Around("applicationPackagePointcut() && springBeanPointcut()")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
-        // Aufrufparameter loggen
+        // Log Method-Call-Parameters
         logger.info("Enter: {}.{}() with argument[s] = {}", joinPoint.getSignature().getDeclaringTypeName(),
                 joinPoint.getSignature().getName(), Arrays.toString(joinPoint.getArgs()));
 
         try {
-            Object result = joinPoint.proceed();
+            Object result = joinPoint.proceed(); // call original Method
+            // Log Return-Value
             logger.info("Exit: {}.{}() with result = {}", joinPoint.getSignature().getDeclaringTypeName(),
                     joinPoint.getSignature().getName(), result);
-            return result;
+            return result; // return result of the original Method
         } catch (IllegalArgumentException e) {
             logger.error("Illegal argument in {}.{}(): {}", joinPoint.getSignature().getDeclaringTypeName(),
                     joinPoint.getSignature().getName(), Arrays.toString(joinPoint.getArgs()));
@@ -57,10 +68,11 @@ public class LoggingAspect {
      * Advice that logs methods throwing exceptions.
      *
      * @param joinPoint join point for advice
-     * @param e exception
+     * @param e         exception
      */
     @AfterThrowing(pointcut = "applicationPackagePointcut() && springBeanPointcut()", throwing = "e")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable e) {
+        // Log Exception
         logger.error("Exception in {}.{}() with cause = {} and message = {}", joinPoint.getSignature().getDeclaringTypeName(),
                 joinPoint.getSignature().getName(), e.getCause() != null ? e.getCause() : "NULL", e.getMessage());
     }

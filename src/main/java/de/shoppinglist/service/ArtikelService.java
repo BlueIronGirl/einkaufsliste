@@ -3,7 +3,7 @@ package de.shoppinglist.service;
 import de.shoppinglist.entity.Artikel;
 import de.shoppinglist.exception.EntityNotFoundException;
 import de.shoppinglist.repository.ArtikelRepository;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,10 +11,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@AllArgsConstructor
+/**
+ * Service-Class providing the business logic for the Artikel-Entity
+ * <p>
+ * The Artikel-Table is used to display the articles on the shopping list
+ * <p>
+ * Articles can be added, updated and deleted
+ * The articles can be marked as bought and are then moved to the ArtikelArchiv-Table
+ */
 @Service
 public class ArtikelService {
     private final ArtikelRepository artikelRepository;
+
+    @Autowired
+    public ArtikelService(ArtikelRepository artikelRepository) {
+        this.artikelRepository = artikelRepository;
+    }
 
     public List<Artikel> selectAllArtikel() {
         return artikelRepository.findAll();

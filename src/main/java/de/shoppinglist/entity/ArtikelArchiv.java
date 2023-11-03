@@ -5,7 +5,11 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
+/**
+ * Entity-Class representing the ArtikelArchiv-Table
+ */
 @Getter
 @Setter
 @ToString
@@ -34,5 +38,22 @@ public class ArtikelArchiv {
 
     public ArtikelArchiv(Artikel artikel) {
         this(artikel.getId(), artikel.getName(), artikel.getKategorie(), artikel.getAnzahl(), artikel.getErstellungsZeitpunkt(), artikel.getKaufZeitpunkt());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ArtikelArchiv that = (ArtikelArchiv) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

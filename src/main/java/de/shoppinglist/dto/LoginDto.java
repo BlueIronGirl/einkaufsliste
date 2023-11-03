@@ -1,13 +1,12 @@
 package de.shoppinglist.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
+/**
+ * DTO-Class for the Login-Request
+ */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class LoginDto {
 
   @NotBlank
@@ -16,4 +15,8 @@ public class LoginDto {
   @NotBlank
   private String password;
 
+  public LoginDto(String username, String password) {
+    this.username = username;
+    this.password = password;
+  }
 }

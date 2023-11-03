@@ -10,17 +10,24 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@AllArgsConstructor
+/**
+ * Controller-Class providing the REST-Endpoints for the Artikel-Entity
+ */
 @RestController
 @RequestMapping("artikels")
 public class ArtikelController {
     private final ArtikelService artikelService;
+
+    @Autowired
+    public ArtikelController(ArtikelService artikelService) {
+        this.artikelService = artikelService;
+    }
 
     @Operation(summary = "Get all articles", description = "Get all articles")
     @ApiResponses(value = {

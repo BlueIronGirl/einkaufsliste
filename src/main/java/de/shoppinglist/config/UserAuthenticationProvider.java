@@ -17,19 +17,28 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
 
+/**
+ * Component-Class providing the UserAuthenticationProvider to create and validate JWT-Tokens
+ */
 @RequiredArgsConstructor
 @Component
 public class UserAuthenticationProvider {
     @Value("${security.jwt.token.secret-key:secret-key}")
-    private String secretKey;
+    private String secretKey; // secret key for JWT
 
-    private final UserService userService;
+    private final UserService userService; // UserService to find User by username
 
     @PostConstruct
     protected void init() {
-        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes()); // encode secret key
     }
 
+    /**
+     * Method to create a JWT-Token for a given User that is valid for 1 hour
+     *
+     * @param user User to create the token for
+     * @return JWT-Token
+     */
     public String createToken(User user) {
         Date now = new Date();
         Date validUntil = new Date(now.getTime() + 3_600_000); // 1 Hour
@@ -43,6 +52,12 @@ public class UserAuthenticationProvider {
                 .sign(algorithm);
     }
 
+    /**
+     * Method to validate a given JWT-Token and return the Authentication for the User
+     *
+     * @param token JWT-Token to validate
+     * @return Authentication for the User
+     */
     public Authentication validateToken(String token) {
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
 

@@ -11,6 +11,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * Filter for JWT-Authentication that is executed once per request. It checks if the request contains a valid JWT and sets the authentication in the SecurityContext
+ */
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final UserAuthenticationProvider userAuthenticationProvider;

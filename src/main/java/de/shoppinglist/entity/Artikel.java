@@ -1,24 +1,23 @@
 package de.shoppinglist.entity;
 
-import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
+
+/**
+ * Entity-Class representing the Artikel-Table
+ */
 @Getter
 @Setter
 @ToString
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Artikel {
     @Id
@@ -41,4 +40,21 @@ public class Artikel {
     private LocalDateTime erstellungsZeitpunkt;
 
     private LocalDateTime kaufZeitpunkt;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Artikel artikel = (Artikel) o;
+        return Objects.equals(id, artikel.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
