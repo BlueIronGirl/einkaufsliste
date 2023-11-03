@@ -37,9 +37,6 @@ class UserServiceTest {
   @Mock
   private PasswordEncoder passwordEncoder;
 
-  @Mock
-  private Validator validator;
-
   @InjectMocks
   private UserService userService;
 
