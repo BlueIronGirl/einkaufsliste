@@ -55,7 +55,7 @@ public class CodingRulesArchitectureTest {
             .should().bePrivate()
             .andShould().beStatic()
             .andShould().beFinal()
-            .because("Logger sollten private, static und final sein, damit sie pro Klasse nur einmal existieren.");
+            .because("loggers should be private, static and final.");
 
     /**
      * A rule that checks that the logging Method of the LoggingAspect logs.
