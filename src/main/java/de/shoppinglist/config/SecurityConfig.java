@@ -1,6 +1,6 @@
 package de.shoppinglist.config;
 
-import lombok.AllArgsConstructor;
+import de.shoppinglist.service.UserAuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,13 +23,13 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final UserAuthenticationProvider userAuthenticationProvider;
+    private final UserAuthenticationService userAuthenticationService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .cors(Customizer.withDefaults()) // enable cors
-                .addFilterBefore(new JwtAuthFilter(userAuthenticationProvider), BasicAuthenticationFilter.class) // add JwtAuthFilter before BasicAuthenticationFilter
+                .addFilterBefore(new JwtAuthFilter(userAuthenticationService), BasicAuthenticationFilter.class) // add JwtAuthFilter before BasicAuthenticationFilter
                 .csrf(AbstractHttpConfigurer::disable) // disable csrf
                 .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // no session management
                 .authorizeHttpRequests((requests) -> requests

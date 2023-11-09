@@ -1,17 +1,16 @@
-package de.shoppinglist.config;
+package de.shoppinglist.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import de.shoppinglist.entity.User;
-import de.shoppinglist.service.UserService;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Base64;
 import java.util.Collections;
@@ -20,13 +19,16 @@ import java.util.Date;
 /**
  * Component-Class providing the UserAuthenticationProvider to create and validate JWT-Tokens
  */
-@RequiredArgsConstructor
-@Component
-public class UserAuthenticationProvider {
-    @Value("${security.jwt.token.secret-key:secret-key}")
+@Service
+public class UserAuthenticationService {
     private String secretKey; // secret key for JWT
-
     private final UserService userService; // UserService to find User by username
+
+    @Autowired
+    public UserAuthenticationService(@Value("${security.jwt.token.secret-key:secret-key}") String secretKey, UserService userService) {
+        this.secretKey = secretKey;
+        this.userService = userService;
+    }
 
     @PostConstruct
     protected void init() {

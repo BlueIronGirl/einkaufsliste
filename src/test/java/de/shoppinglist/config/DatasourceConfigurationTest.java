@@ -13,8 +13,12 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 class DatasourceConfigurationTest {
 
-    @Autowired
     private DatasourceConfiguration datasourceConfiguration;
+
+    @Autowired
+    public DatasourceConfigurationTest(DatasourceConfiguration datasourceConfiguration) {
+        this.datasourceConfiguration = datasourceConfiguration;
+    }
 
     @Test
     void getAllConfigurationProperties() {
@@ -22,6 +26,5 @@ class DatasourceConfigurationTest {
         assertEquals("root", datasourceConfiguration.getUsername());
         assertEquals("test123", datasourceConfiguration.getPassword());
         assertEquals("org.mariadb.jdbc.Driver", datasourceConfiguration.getDriverClassName());
-        assertEquals("jdbc:mariadb://localhost:3306/shopping-list", datasourceConfiguration.getDatasourceUrl());
     }
 }

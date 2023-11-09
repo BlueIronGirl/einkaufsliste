@@ -1,6 +1,6 @@
 package de.shoppinglist.controller;
 
-import de.shoppinglist.config.UserAuthenticationProvider;
+import de.shoppinglist.service.UserAuthenticationService;
 import de.shoppinglist.dto.LoginDto;
 import de.shoppinglist.dto.RegisterDto;
 import de.shoppinglist.entity.User;
@@ -31,12 +31,12 @@ import java.net.URI;
 @RequestMapping("auth")
 public class AuthController {
     private final UserService userService;
-    private final UserAuthenticationProvider userAuthenticationProvider;
+    private final UserAuthenticationService userAuthenticationService;
 
     @Autowired
-    public AuthController(UserService userService, UserAuthenticationProvider userAuthenticationProvider) {
+    public AuthController(UserService userService, UserAuthenticationService userAuthenticationService) {
         this.userService = userService;
-        this.userAuthenticationProvider = userAuthenticationProvider;
+        this.userAuthenticationService = userAuthenticationService;
     }
 
     @Operation(summary = "Login to the Application and get a valid token", description = "Login to the Application and get a valid token")
@@ -53,7 +53,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<User> login(@Valid @RequestBody LoginDto loginDto) {
         User user = userService.login(loginDto);
-        user.setToken(userAuthenticationProvider.createToken(user));
+        user.setToken(userAuthenticationService.createToken(user));
 
         return ResponseEntity.ok(user);
     }
@@ -70,7 +70,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<User> register(@Valid @RequestBody RegisterDto registerDto) {
         User createdUser = userService.register(registerDto);
-        createdUser.setToken(userAuthenticationProvider.createToken(createdUser));
+        createdUser.setToken(userAuthenticationService.createToken(createdUser));
         return ResponseEntity.created(URI.create("/users/" + createdUser.getId())).body(createdUser);
     }
 }
