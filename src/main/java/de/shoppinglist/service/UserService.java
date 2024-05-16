@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.CharBuffer;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -72,5 +73,9 @@ public class UserService {
     public User findByLogin(String login) {
         return userRepository.findByUsername(login)
                 .orElseThrow(() -> new EntityNotFoundException("Unbekannter User!"));
+    }
+
+    public List<User> selectAllUsers() {
+        return userRepository.findAll();
     }
 }

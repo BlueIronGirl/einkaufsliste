@@ -1,12 +1,15 @@
 package de.shoppinglist.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import de.shoppinglist.entity.base.EntityBase;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Entity-Class representing the Kategorie-Table
@@ -14,37 +17,26 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
-public class Kategorie {
-    @Id
-    @GeneratedValue
-    private Long id;
+public class Kategorie extends EntityBase {
+  @Id
+  @GeneratedValue
+  private Long id;
 
-    @NotBlank
-    private String name;
+  @NotBlank
+  private String name;
 
-    @OneToMany(mappedBy = "kategorie", fetch = FetchType.EAGER)
-    @ToString.Exclude
-    @JsonIgnore
-    private List<Artikel> artikels;
+  @ManyToMany
+  @ToString.Exclude
+  @JsonIgnore
+  private List<Artikel> artikels;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Kategorie kategorie = (Kategorie) o;
-        return Objects.equals(id, kategorie.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+  @Builder
+  public Kategorie(Long id, Long id1, String name, List<Artikel> artikels) {
+    super(id);
+    this.id = id1;
+    this.name = name;
+    this.artikels = artikels;
+  }
 }

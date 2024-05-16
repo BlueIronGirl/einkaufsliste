@@ -1,11 +1,12 @@
 package de.shoppinglist.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import de.shoppinglist.entity.base.EntityBase;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
+import java.util.List;
 
 /**
  * Entity-Class representing the ArtikelArchiv-Table
@@ -13,47 +14,43 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "artikelarchiv")
-public class ArtikelArchiv {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+public class ArtikelArchiv extends EntityBase {
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  private Long id;
 
-    private String name;
+  private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "kategorie_id")
-    @JsonIgnore
-    private Kategorie kategorie;
+  @ManyToMany
+  @ToString.Exclude
+  private List<Kategorie> kategories;
 
-    private int anzahl;
+  private int anzahl;
 
-    private LocalDateTime erstellungsZeitpunkt;
+  private LocalDateTime erstellungsZeitpunkt;
 
-    private LocalDateTime kaufZeitpunkt;
+  private LocalDateTime kaufZeitpunkt;
 
-    public ArtikelArchiv(Artikel artikel) {
-        this(artikel.getId(), artikel.getName(), artikel.getKategorie(), artikel.getAnzahl(), artikel.getErstellungsZeitpunkt(), artikel.getKaufZeitpunkt());
-    }
+  @ManyToOne
+  @JoinColumn(name = "einkaufszettel_id", nullable = false)
+  @JsonIgnore
+  private Einkaufszettel einkaufszettel;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ArtikelArchiv that = (ArtikelArchiv) o;
-        return Objects.equals(id, that.id);
-    }
+  public ArtikelArchiv(Artikel artikel) {
+    this(artikel.getId(), artikel.getName(), artikel.getKategories(), artikel.getAnzahl(), artikel.getErstellungsZeitpunkt(), artikel.getKaufZeitpunkt(), artikel.getEinkaufszettel());
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+  public ArtikelArchiv(Long id, Long id1, String name, List<Kategorie> kategories, int anzahl, LocalDateTime erstellungsZeitpunkt, LocalDateTime kaufZeitpunkt) {
+    super(id);
+    this.id = id1;
+    this.name = name;
+    this.kategories = kategories;
+    this.anzahl = anzahl;
+    this.erstellungsZeitpunkt = erstellungsZeitpunkt;
+    this.kaufZeitpunkt = kaufZeitpunkt;
+  }
 }

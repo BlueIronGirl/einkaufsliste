@@ -1,15 +1,13 @@
 package de.shoppinglist.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
-import jakarta.persistence.UniqueConstraint;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import de.shoppinglist.entity.base.EntityBase;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-import java.util.Objects;
+import java.util.List;
 
 /**
  * Entity-Class representing the User-Table
@@ -17,44 +15,35 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "user", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"username"})
+    @UniqueConstraint(columnNames = {"username"})
 })
-public class User {
-    @Id
-    @GeneratedValue
-    private long id;
+public class User extends EntityBase {
+  @NotBlank
+  private String username;
 
-    @NotBlank
-    private String username;
+  @NotBlank
+  private String password;
 
-    @NotBlank
-    private String password;
+  @NotBlank
+  private String name;
 
-    @NotBlank
-    private String name;
+  @Transient
+  private String token;
 
-    @Transient
-    private String token;
+  @ManyToMany(mappedBy = "users")
+  @ToString.Exclude
+  @JsonIgnore
+  private List<Einkaufszettel> einkaufszettels;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        User user = (User) o;
-        return id == user.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+  @Builder
+  public User(Long id, String username, String password, String name, String token) {
+    super(id);
+    this.username = username;
+    this.password = password;
+    this.name = name;
+    this.token = token;
+  }
 }

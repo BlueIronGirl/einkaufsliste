@@ -1,13 +1,17 @@
 package de.shoppinglist.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import de.shoppinglist.entity.base.EntityBase;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
+import java.util.List;
 
 /**
  * Entity-Class representing the Artikel-Table
@@ -15,46 +19,38 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Artikel {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+public class Artikel extends EntityBase {
+  @NotBlank
+  private String name;
 
-    @NotBlank
-    private String name;
+  @ManyToMany
+  @ToString.Exclude
+  private List<Kategorie> kategories;
 
-    @ManyToOne
-    @JoinColumn(name = "kategorie_id")
-    @JsonIgnore
-    private Kategorie kategorie;
+  @ManyToOne
+  @JoinColumn(name = "einkaufszettel_id", nullable = false)
+  @JsonIgnore
+  private Einkaufszettel einkaufszettel;
 
-    @Min(1)
-    private int anzahl;
+  @Min(1)
+  private int anzahl;
 
-    private boolean gekauft;
+  private boolean gekauft;
 
-    private LocalDateTime erstellungsZeitpunkt;
+  private LocalDateTime erstellungsZeitpunkt;
 
-    private LocalDateTime kaufZeitpunkt;
+  private LocalDateTime kaufZeitpunkt;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Artikel artikel = (Artikel) o;
-        return Objects.equals(id, artikel.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+  @Builder
+  public Artikel(Long id, String name, List<Kategorie> kategories, int anzahl, boolean gekauft, LocalDateTime erstellungsZeitpunkt, LocalDateTime kaufZeitpunkt) {
+    super(id);
+    this.name = name;
+    this.kategories = kategories;
+    this.anzahl = anzahl;
+    this.gekauft = gekauft;
+    this.erstellungsZeitpunkt = erstellungsZeitpunkt;
+    this.kaufZeitpunkt = kaufZeitpunkt;
+  }
 }
