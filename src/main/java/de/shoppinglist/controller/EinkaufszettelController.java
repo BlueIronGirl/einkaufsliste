@@ -98,7 +98,7 @@ public class EinkaufszettelController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Artikel.class))}),
             @ApiResponse(responseCode = "400", description = "Invalid article")
     })
-    @PostMapping("/artikel/{id}")
+    @PostMapping("/{id}/artikel")
     public ResponseEntity<Artikel> createArtikel(@PathVariable(name = "id") Long einkaufszettelId, @Valid @RequestBody Artikel artikel) {
         return ResponseEntity.ok(einkaufszettelService.createArtikel(einkaufszettelId, artikel));
     }
