@@ -19,38 +19,38 @@ import java.util.List;
 @Entity
 @Table(name = "artikelarchiv")
 public class ArtikelArchiv extends EntityBase {
-  @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long id;
 
-  private String name;
+    private String name;
 
-  @ManyToMany
-  @ToString.Exclude
-  private List<Kategorie> kategories;
+    @ManyToMany
+    @ToString.Exclude
+    private List<Kategorie> kategories;
 
-  private int anzahl;
+    private int anzahl;
 
-  private LocalDateTime erstellungsZeitpunkt;
+    private LocalDateTime erstellungsZeitpunkt;
 
-  private LocalDateTime kaufZeitpunkt;
+    private LocalDateTime kaufZeitpunkt;
 
-  @ManyToOne
-  @JoinColumn(name = "einkaufszettel_id", nullable = false)
-  @JsonIgnore
-  private Einkaufszettel einkaufszettel;
+    @ManyToOne
+    @JoinColumn(name = "einkaufszettel_id", nullable = false)
+    @JsonIgnore
+    private Einkaufszettel einkaufszettel;
 
-  public ArtikelArchiv(Artikel artikel) {
-    this(artikel.getId(), artikel.getName(), artikel.getKategories(), artikel.getAnzahl(), artikel.getErstellungsZeitpunkt(), artikel.getKaufZeitpunkt(), artikel.getEinkaufszettel());
-  }
+    public ArtikelArchiv(Artikel artikel) {
+        this(artikel.getId(), artikel.getName(), artikel.getKategories(), artikel.getAnzahl(), artikel.getErstellungsZeitpunkt(), artikel.getKaufZeitpunkt(), artikel.getEinkaufszettel());
+    }
 
-  public ArtikelArchiv(Long id, Long id1, String name, List<Kategorie> kategories, int anzahl, LocalDateTime erstellungsZeitpunkt, LocalDateTime kaufZeitpunkt) {
-    super(id);
-    this.id = id1;
-    this.name = name;
-    this.kategories = kategories;
-    this.anzahl = anzahl;
-    this.erstellungsZeitpunkt = erstellungsZeitpunkt;
-    this.kaufZeitpunkt = kaufZeitpunkt;
-  }
+    public ArtikelArchiv(Long id, Long id1, String name, List<Kategorie> kategories, int anzahl, LocalDateTime erstellungsZeitpunkt, LocalDateTime kaufZeitpunkt) {
+        super(id);
+        this.id = id1;
+        this.name = name;
+        this.kategories = kategories;
+        this.anzahl = anzahl;
+        this.erstellungsZeitpunkt = erstellungsZeitpunkt;
+        this.kaufZeitpunkt = kaufZeitpunkt;
+    }
 }

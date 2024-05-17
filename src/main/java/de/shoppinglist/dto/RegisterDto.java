@@ -9,18 +9,18 @@ import lombok.Data;
 @Data
 public class RegisterDto {
 
-  @NotBlank
-  private String username;
+    @NotBlank
+    private String username;
 
-  @NotBlank
-  private String password;
+    @NotBlank
+    private String password;
 
-  @NotBlank
-  private String name;
+    @NotBlank
+    private String name;
 
-  public RegisterDto(String username, String password, String name) {
-    this.username = username;
-    this.password = password;
-    this.name = name;
-  }
+    public RegisterDto(String username, String password, String name) {
+        this.username = username;
+        this.password = password;
+        this.name = name;
+    }
 }

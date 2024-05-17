@@ -1,12 +1,12 @@
 package de.shoppinglist.controller;
 
-import de.shoppinglist.service.UserAuthenticationService;
 import de.shoppinglist.dto.LoginDto;
 import de.shoppinglist.dto.RegisterDto;
 import de.shoppinglist.entity.User;
 import de.shoppinglist.exception.EntityAlreadyExistsException;
 import de.shoppinglist.exception.EntityNotFoundException;
 import de.shoppinglist.exception.UnautorizedException;
+import de.shoppinglist.service.UserAuthenticationService;
 import de.shoppinglist.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;

@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,7 +49,8 @@ public class ArtikelArchivController {
             })
     })
     @PostMapping("/archiviereGekaufteArtikel")
-    public List<Artikel> archiviereGekaufteArtikel() {
-        return artikelArchivService.archiviereGekaufteArtikel();
+    public ResponseEntity<Void> archiviereGekaufteArtikel() {
+        artikelArchivService.archiviereGekaufteArtikel();
+        return ResponseEntity.noContent().build();
     }
 }

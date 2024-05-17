@@ -33,7 +33,7 @@ public class ArtikelArchivService {
         return artikelArchivRepository.findAll();
     }
 
-    public List<Artikel> archiviereGekaufteArtikel() {
+    public void archiviereGekaufteArtikel() {
         List<Artikel> gekaufteArtikel = artikelRepository.findByGekauftTrue();
 
         // Artikel archivieren
@@ -42,7 +42,6 @@ public class ArtikelArchivService {
 
         // Artikel aus Einkaufszettel loeschen
         gekaufteArtikel.forEach(artikel -> artikelRepository.deleteById(artikel.getId()));
-
-        return gekaufteArtikel;
+        artikelRepository.flush();
     }
 }

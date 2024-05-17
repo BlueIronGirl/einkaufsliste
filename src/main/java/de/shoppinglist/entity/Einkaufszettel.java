@@ -12,25 +12,25 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 public class Einkaufszettel extends EntityBase {
-  private String name;
+    private String name;
 
-  @OneToMany(fetch=FetchType.EAGER, mappedBy = "einkaufszettel")
-  @ToString.Exclude
-  private List<Artikel> artikels;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "einkaufszettel")
+    @ToString.Exclude
+    private List<Artikel> artikels;
 
-  @ManyToMany
-  @JoinTable(
-      name = "einkaufszettel_user",
-      joinColumns = @JoinColumn(name = "einkaufszettel_id"),
-      inverseJoinColumns = @JoinColumn(name = "user_id")
-  )
-  @ToString.Exclude
-  private List<User> users;
+    @ManyToMany
+    @JoinTable(
+            name = "einkaufszettel_user",
+            joinColumns = @JoinColumn(name = "einkaufszettel_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    @ToString.Exclude
+    private List<User> users;
 
-  @Builder
-  public Einkaufszettel(Long id, String name, List<Artikel> artikels) {
-    super(id);
-    this.name = name;
-    this.artikels = artikels;
-  }
+    @Builder
+    public Einkaufszettel(Long id, String name, List<Artikel> artikels) {
+        super(id);
+        this.name = name;
+        this.artikels = artikels;
+    }
 }
