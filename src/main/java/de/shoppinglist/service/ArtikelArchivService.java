@@ -29,8 +29,8 @@ public class ArtikelArchivService {
         this.artikelArchivRepository = artikelArchivRepository;
     }
 
-    public List<ArtikelArchiv> selectAllArtikelArchiv() {
-        return artikelArchivRepository.findAll();
+    public List<ArtikelArchiv> findByUserId(Long userId) {
+        return artikelArchivRepository.findByEinkaufszettelUsersIdOrderByKaufZeitpunktDesc(userId);
     }
 
     public void archiviereGekaufteArtikel() {
