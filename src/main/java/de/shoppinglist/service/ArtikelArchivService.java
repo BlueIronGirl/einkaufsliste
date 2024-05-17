@@ -42,6 +42,5 @@ public class ArtikelArchivService {
 
         // Artikel aus Einkaufszettel loeschen
         gekaufteArtikel.forEach(artikel -> artikelRepository.deleteById(artikel.getId()));
-        artikelRepository.flush();
     }
 }
