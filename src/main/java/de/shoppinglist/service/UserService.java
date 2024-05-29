@@ -8,6 +8,7 @@ import de.shoppinglist.exception.EntityNotFoundException;
 import de.shoppinglist.exception.UnautorizedException;
 import de.shoppinglist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -72,6 +73,13 @@ public class UserService {
 
     public User findByLogin(String login) {
         return userRepository.findByUsername(login)
+                .orElseThrow(() -> new EntityNotFoundException("Unbekannter User!"));
+    }
+
+    public User findCurrentUser() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = user.getUsername();
+        return userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("Unbekannter User!"));
     }
 

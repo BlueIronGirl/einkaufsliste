@@ -9,5 +9,5 @@ import java.util.List;
  * Repository for the Artikel-Entity
  */
 public interface ArtikelRepository extends JpaRepository<Artikel, Long> {
-    List<Artikel> findByGekauftTrue();
+    List<Artikel> findByEinkaufszettelUsersIdAndGekauftTrue(Long userId);
 }

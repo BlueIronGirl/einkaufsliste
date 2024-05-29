@@ -44,9 +44,7 @@ public class ArtikelArchivController {
     })
     @GetMapping
     public List<ArtikelArchiv> selectAllArtikelArchiv() {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = user.getUsername();
-        Long userId = userService.findByLogin(username).getId();
+        Long userId = userService.findCurrentUser().getId();
 
         return artikelArchivService.findByUserId(userId);
     }
@@ -59,7 +57,9 @@ public class ArtikelArchivController {
     })
     @PostMapping("/archiviereGekaufteArtikel")
     public ResponseEntity<Void> archiviereGekaufteArtikel() {
-        artikelArchivService.archiviereGekaufteArtikel();
+        Long userId = userService.findCurrentUser().getId();
+
+        artikelArchivService.archiviereGekaufteArtikel(userId);
         return ResponseEntity.noContent().build();
     }
 }

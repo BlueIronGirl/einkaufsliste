@@ -33,12 +33,11 @@ public class ArtikelArchivService {
         return artikelArchivRepository.findByEinkaufszettelUsersIdOrderByKaufZeitpunktDesc(userId);
     }
 
-    public void archiviereGekaufteArtikel() {
-        List<Artikel> gekaufteArtikel = artikelRepository.findByGekauftTrue();
+    public void archiviereGekaufteArtikel(Long userId) {
+        List<Artikel> gekaufteArtikel = artikelRepository.findByEinkaufszettelUsersIdAndGekauftTrue(userId);
 
         // Artikel archivieren
-        gekaufteArtikel.stream()
-                .map(ArtikelArchiv::new).forEach(artikelArchivRepository::saveAndFlush);
+        gekaufteArtikel.stream().map(ArtikelArchiv::new).forEach(artikelArchivRepository::saveAndFlush);
 
         // Artikel aus Einkaufszettel loeschen
         gekaufteArtikel.forEach(artikel -> artikelRepository.deleteById(artikel.getId()));
