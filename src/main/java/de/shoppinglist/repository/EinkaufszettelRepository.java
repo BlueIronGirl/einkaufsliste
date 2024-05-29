@@ -9,5 +9,5 @@ import java.util.List;
  * Repository for the User-Entity
  */
 public interface EinkaufszettelRepository extends JpaRepository<Einkaufszettel, Long> {
-    List<Einkaufszettel> findByUsersId(Long userId);
+    List<Einkaufszettel> findByUsersIdAndGeloeschtFalse(Long userId);
 }

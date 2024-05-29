@@ -27,6 +27,8 @@ public class Einkaufszettel extends EntityBase {
     @ToString.Exclude
     private List<User> users;
 
+    private boolean geloescht;
+
     @Builder
     public Einkaufszettel(Long id, String name, List<Artikel> artikels) {
         super(id);

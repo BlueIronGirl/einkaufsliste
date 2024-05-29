@@ -13,9 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,12 +36,10 @@ public class EinkaufszettelController {
             })
     })
     @GetMapping
-    public ResponseEntity<List<Einkaufszettel>> selectAllEinkaufszettels() {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = user.getUsername();
-        Long userId = userService.findByLogin(username).getId();
+    public ResponseEntity<List<Einkaufszettel>> selectAllActiveEinkaufszettels() {
+        Long userId = userService.findCurrentUser().getId();
 
-        return ResponseEntity.ok(einkaufszettelService.findByUserId(userId));
+        return ResponseEntity.ok(einkaufszettelService.findActiveByUserId(userId));
     }
 
     @Operation(summary = "Create new einkaufszettel", description = "Create new einkaufszettel")
@@ -54,13 +50,10 @@ public class EinkaufszettelController {
     })
     @PostMapping
     public Einkaufszettel createEinkaufszettel(@RequestBody Einkaufszettel einkaufszettel) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = user.getUsername();
-
-        User userDB = userService.findByLogin(username);
+        User currentUserDB = userService.findCurrentUser();
 
         List<User> users = einkaufszettel.getUsers();
-        users.add(userDB);
+        users.add(currentUserDB);
         einkaufszettel.setUsers(users);
 
         return einkaufszettelService.saveEinkaufszettel(einkaufszettel);

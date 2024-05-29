@@ -22,8 +22,8 @@ public class EinkaufszettelService {
         this.artikelRepository = artikelRepository;
     }
 
-    public List<Einkaufszettel> findByUserId(Long userId) {
-        return einkaufszettelRepository.findByUsersId(userId);
+    public List<Einkaufszettel> findActiveByUserId(Long userId) {
+        return einkaufszettelRepository.findByUsersIdAndGeloeschtFalse(userId);
     }
 
     public Einkaufszettel saveEinkaufszettel(Einkaufszettel entity) {
@@ -40,13 +40,13 @@ public class EinkaufszettelService {
                 .orElseThrow(() -> new EntityNotFoundException("Einkaufszettel nicht gefunden"));
     }
 
-    public Einkaufszettel deleteEinkaufszettel(Long id) {
-        Einkaufszettel einkaufszettel = einkaufszettelRepository.findById(id)
+    public void deleteEinkaufszettel(Long id) {
+        einkaufszettelRepository.findById(id).map(einkaufszettel -> {
+                    einkaufszettel.setGeloescht(true);
+                    return einkaufszettelRepository.save(einkaufszettel);
+                })
                 .orElseThrow(() -> new EntityNotFoundException("Einkaufszettel nicht gefunden"));
 
-        einkaufszettelRepository.deleteById(id);
-
-        return einkaufszettel;
     }
 
     public Artikel createArtikel(Long einkaufszettelId, @RequestBody Artikel artikelData) {
@@ -74,12 +74,11 @@ public class EinkaufszettelService {
                 .orElseThrow(() -> new EntityNotFoundException("Artikel nicht gefunden"));
     }
 
-    public Artikel deleteArtikel(@PathVariable Long id) {
-        Artikel artikel = artikelRepository.findById(id)
+    public void deleteArtikel(@PathVariable Long id) {
+        artikelRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Artikel nicht gefunden"));
 
         artikelRepository.deleteById(id);
 
-        return artikel;
     }
 }
