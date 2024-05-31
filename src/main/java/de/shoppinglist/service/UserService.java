@@ -7,6 +7,7 @@ import de.shoppinglist.exception.EntityAlreadyExistsException;
 import de.shoppinglist.exception.EntityNotFoundException;
 import de.shoppinglist.exception.UnautorizedException;
 import de.shoppinglist.repository.UserRepository;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -106,8 +107,13 @@ public class UserService {
     public User update(Long id, User userDetails) {
         return userRepository.findById(id)
                 .map(existingUser -> {
+                    existingUser.setUsername(userDetails.getUsername());
+                    if (StringUtils.isNotEmpty(userDetails.getPassword())) {
+                        existingUser.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDetails.getPassword())));
+                    }
                     existingUser.setName(userDetails.getName());
                     existingUser.setEmail(userDetails.getEmail());
+                    existingUser.setRoles(userDetails.getRoles());
                     return userRepository.save(existingUser);
                 })
                 .orElseThrow(() -> new EntityNotFoundException("User nicht gefunden"));
