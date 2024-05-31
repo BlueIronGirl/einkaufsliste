@@ -1,5 +1,6 @@
 package de.shoppinglist.controller;
 
+import de.shoppinglist.entity.RoleName;
 import de.shoppinglist.entity.User;
 import de.shoppinglist.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,12 +9,10 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -37,21 +36,24 @@ public class UserController {
                     @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = User.class)))
             })
     })
-    @GetMapping
+    @GetMapping("/friends")
     @PreAuthorize("hasRole('USER')")
-    public List<User> selectAllUsersExceptMe() {
+    public List<User> selectAllFriends() {
         Long userId = userService.findCurrentUser().getId();
-        return userService.findAll().stream().filter(userDB -> !userDB.getId().equals(userId)).toList();
+        return userService.findAll().stream()
+                .filter(userDB -> !userDB.getId().equals(userId))
+                .filter(user -> user.getRoles().stream().anyMatch(role -> role.getName().equals(RoleName.ROLE_ADMIN) || role.getName().equals(RoleName.ROLE_USER)))
+                .toList();
     }
 
-//    @Operation(summary = "Get all users", description = "Get all users")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "200", description = "Ok", content = {
-//                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = User.class)))
-//            })
-//    })
-//    @GetMapping
-//    public List<User> selectAllUsers() {
-//        return userService.selectAllUsers();
-//    }
+    @GetMapping
+    public List<User> getAllUsers() {
+        return userService.findAll();
+    }
+
+    @PostMapping
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        User createdUser = userService.save(user);
+        return ResponseEntity.status(201).body(createdUser);
+    }
 }
