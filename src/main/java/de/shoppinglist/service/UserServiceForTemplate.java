@@ -1,20 +1,13 @@
 package de.shoppinglist.service;
 
-import de.shoppinglist.dto.LoginDto;
-import de.shoppinglist.dto.RegisterDto;
 import de.shoppinglist.entity.User;
-import de.shoppinglist.exception.EntityAlreadyExistsException;
 import de.shoppinglist.exception.EntityNotFoundException;
-import de.shoppinglist.exception.UnautorizedException;
 import de.shoppinglist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.nio.CharBuffer;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Service-Class providing the business logic for the User-Entity
