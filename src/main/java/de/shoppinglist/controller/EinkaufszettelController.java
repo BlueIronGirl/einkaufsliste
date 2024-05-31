@@ -5,7 +5,7 @@ import de.shoppinglist.entity.Einkaufszettel;
 import de.shoppinglist.entity.User;
 import de.shoppinglist.exception.EntityNotFoundException;
 import de.shoppinglist.service.EinkaufszettelService;
-import de.shoppinglist.service.UserService;
+import de.shoppinglist.service.UserAuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -22,11 +22,11 @@ import java.util.List;
 @RequestMapping("/einkaufszettel")
 public class EinkaufszettelController {
     private final EinkaufszettelService einkaufszettelService;
-    private final UserService userService;
+    private final UserAuthenticationService userAuthenticationService;
 
-    public EinkaufszettelController(EinkaufszettelService einkaufszettelService, UserService userService) {
+    public EinkaufszettelController(EinkaufszettelService einkaufszettelService, UserAuthenticationService userAuthenticationService) {
         this.einkaufszettelService = einkaufszettelService;
-        this.userService = userService;
+        this.userAuthenticationService = userAuthenticationService;
     }
 
     @Operation(summary = "Get all einkaufszettels", description = "Get all einkaufszettels")
@@ -37,7 +37,7 @@ public class EinkaufszettelController {
     })
     @GetMapping
     public ResponseEntity<List<Einkaufszettel>> selectAllActiveEinkaufszettels() {
-        Long userId = userService.findCurrentUser().getId();
+        Long userId = userAuthenticationService.findCurrentUser().getId();
 
         return ResponseEntity.ok(einkaufszettelService.findActiveByUserId(userId));
     }
@@ -50,7 +50,7 @@ public class EinkaufszettelController {
     })
     @PostMapping
     public Einkaufszettel createEinkaufszettel(@RequestBody Einkaufszettel einkaufszettel) {
-        User currentUserDB = userService.findCurrentUser();
+        User currentUserDB = userAuthenticationService.findCurrentUser();
 
         List<User> users = einkaufszettel.getUsers();
         users.add(currentUserDB);

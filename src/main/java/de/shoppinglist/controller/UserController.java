@@ -1,8 +1,10 @@
 package de.shoppinglist.controller;
 
+import de.shoppinglist.dto.RegisterDto;
 import de.shoppinglist.entity.RoleName;
 import de.shoppinglist.entity.User;
 import de.shoppinglist.exception.EntityNotFoundException;
+import de.shoppinglist.service.UserAuthenticationService;
 import de.shoppinglist.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -26,10 +28,12 @@ import java.util.List;
 @PreAuthorize("hasRole('ADMIN')")
 public class UserController {
     private final UserService userService;
+    private final UserAuthenticationService userAuthenticationService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserAuthenticationService userAuthenticationService) {
         this.userService = userService;
+        this.userAuthenticationService = userAuthenticationService;
     }
 
     @Operation(summary = "Get all users except me", description = "Get all users")
@@ -41,7 +45,7 @@ public class UserController {
     @GetMapping("/friends")
     @PreAuthorize("hasRole('USER')")
     public List<User> selectAllFriends() {
-        Long userId = userService.findCurrentUser().getId();
+        Long userId = userAuthenticationService.findCurrentUser().getId();
         return userService.findAll().stream()
                 .filter(userDB -> !userDB.getId().equals(userId))
                 .filter(user -> user.getRoles().stream().anyMatch(role -> role.getName().equals(RoleName.ROLE_ADMIN) || role.getName().equals(RoleName.ROLE_USER)))
@@ -71,8 +75,8 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Invalid user")
     })
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        User createdUser = userService.save(user);
+    public ResponseEntity<User> createUser(@RequestBody RegisterDto user) {
+        User createdUser = userAuthenticationService.register(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 

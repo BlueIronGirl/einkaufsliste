@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
  * @author alice_b
  */
 @ExtendWith(MockitoExtension.class)
-class UserServiceTest {
+class UserAuthenticationServiceTest {
 
   @Mock
   private UserRepository userRepository;
@@ -36,7 +36,7 @@ class UserServiceTest {
   private PasswordEncoder passwordEncoder;
 
   @InjectMocks
-  private UserService userService;
+  private UserAuthenticationService userAuthenticationService;
 
   public static final String USERNAME = "USERNAME";
   public static final String PASSWORD = "PASSWORD";
@@ -64,7 +64,7 @@ class UserServiceTest {
   void findByLogin_givenExistingUser_thenReturnUser() {
     when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
 
-    User result = userService.findByLogin(USERNAME);
+    User result = userAuthenticationService.findByLogin(USERNAME);
 
     assertEquals(USERNAME, result.getUsername());
   }
@@ -73,7 +73,7 @@ class UserServiceTest {
   void findByLogin_givenNotExistingUser_thenThrowException() {
     when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
 
-    assertThrows(RuntimeException.class, () -> userService.findByLogin(USERNAME));
+    assertThrows(RuntimeException.class, () -> userAuthenticationService.findByLogin(USERNAME));
   }
 
   /*
@@ -86,7 +86,7 @@ class UserServiceTest {
     when(passwordEncoder.matches(Mockito.any(), Mockito.any())).thenReturn(true);
 
     LoginDto loginDto = new LoginDto("admin", "admin");
-    User user = userService.login(loginDto);
+    User user = userAuthenticationService.login(loginDto);
 
     verify(passwordEncoder, Mockito.times(1)).matches(CharBuffer.wrap(loginDto.getPassword()), user.getPassword());
     assertEquals(USERNAME, user.getUsername());
@@ -98,7 +98,7 @@ class UserServiceTest {
 
     LoginDto loginDto = new LoginDto("admin", "admin");
 
-    assertThrows(RuntimeException.class, () -> userService.login(loginDto));
+    assertThrows(RuntimeException.class, () -> userAuthenticationService.login(loginDto));
   }
 
   @Test
@@ -108,7 +108,7 @@ class UserServiceTest {
 
     LoginDto loginDto = new LoginDto("admin", "admin");
 
-    assertThrows(RuntimeException.class, () -> userService.login(loginDto));
+    assertThrows(RuntimeException.class, () -> userAuthenticationService.login(loginDto));
     verify(passwordEncoder, Mockito.times(1)).matches(CharBuffer.wrap(loginDto.getPassword()), user.getPassword());
   }
 
@@ -121,7 +121,7 @@ class UserServiceTest {
     when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
     given(userRepository.save(Mockito.any(User.class))).willReturn(user);
 
-    User user = userService.register(new RegisterDto("admin", "admin", "admin"));
+    User user = userAuthenticationService.register(new RegisterDto("admin", "admin", "admin"));
 
     verify(userRepository, Mockito.times(1)).save(Mockito.any(User.class));
     assertEquals(this.user.getUsername(), user.getUsername());
@@ -145,7 +145,7 @@ class UserServiceTest {
   void register_givenExisting_thenThrowException() {
     when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
 
-    assertThrows(RuntimeException.class, () -> userService.register(new RegisterDto("admin", "admin", "admin")));
+    assertThrows(RuntimeException.class, () -> userAuthenticationService.register(new RegisterDto("admin", "admin", "admin")));
   }
 
   // TODO (ALB) 15.08.2023: validations

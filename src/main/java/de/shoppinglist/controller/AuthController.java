@@ -7,7 +7,6 @@ import de.shoppinglist.exception.EntityAlreadyExistsException;
 import de.shoppinglist.exception.EntityNotFoundException;
 import de.shoppinglist.exception.UnautorizedException;
 import de.shoppinglist.service.UserAuthenticationService;
-import de.shoppinglist.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,12 +29,10 @@ import java.net.URI;
 @RestController
 @RequestMapping("auth")
 public class AuthController {
-    private final UserService userService;
     private final UserAuthenticationService userAuthenticationService;
 
     @Autowired
-    public AuthController(UserService userService, UserAuthenticationService userAuthenticationService) {
-        this.userService = userService;
+    public AuthController(UserAuthenticationService userAuthenticationService) {
         this.userAuthenticationService = userAuthenticationService;
     }
 
@@ -52,7 +49,7 @@ public class AuthController {
     })
     @PostMapping("/login")
     public ResponseEntity<User> login(@Valid @RequestBody LoginDto loginDto) {
-        User user = userService.login(loginDto);
+        User user = userAuthenticationService.login(loginDto);
         user.setToken(userAuthenticationService.createToken(user));
 
         return ResponseEntity.ok(user);
@@ -69,7 +66,7 @@ public class AuthController {
     })
     @PostMapping("/register")
     public ResponseEntity<User> register(@Valid @RequestBody RegisterDto registerDto) {
-        User createdUser = userService.register(registerDto);
+        User createdUser = userAuthenticationService.register(registerDto);
         createdUser.setToken(userAuthenticationService.createToken(createdUser));
         return ResponseEntity.created(URI.create("/users/" + createdUser.getId())).body(createdUser);
     }

@@ -2,9 +2,8 @@ package de.shoppinglist.controller;
 
 import de.shoppinglist.entity.Artikel;
 import de.shoppinglist.entity.ArtikelArchiv;
-import de.shoppinglist.entity.User;
 import de.shoppinglist.service.ArtikelArchivService;
-import de.shoppinglist.service.UserService;
+import de.shoppinglist.service.UserAuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,7 +12,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,12 +26,12 @@ import java.util.List;
 @RequestMapping("archiv")
 public class ArtikelArchivController {
     private final ArtikelArchivService artikelArchivService;
-    private final UserService userService;
+    private final UserAuthenticationService userAuthenticationService;
 
     @Autowired
-    public ArtikelArchivController(ArtikelArchivService artikelArchivService, UserService userService) {
+    public ArtikelArchivController(ArtikelArchivService artikelArchivService, UserAuthenticationService userAuthenticationService) {
         this.artikelArchivService = artikelArchivService;
-        this.userService = userService;
+        this.userAuthenticationService = userAuthenticationService;
     }
 
     @Operation(summary = "Get all archived articles", description = "Get all archived articles")
@@ -44,7 +42,7 @@ public class ArtikelArchivController {
     })
     @GetMapping
     public List<ArtikelArchiv> selectAllArtikelArchiv() {
-        Long userId = userService.findCurrentUser().getId();
+        Long userId = userAuthenticationService.findCurrentUser().getId();
 
         return artikelArchivService.findByUserId(userId);
     }
@@ -57,7 +55,7 @@ public class ArtikelArchivController {
     })
     @PostMapping("/archiviereGekaufteArtikel")
     public ResponseEntity<Void> archiviereGekaufteArtikel() {
-        Long userId = userService.findCurrentUser().getId();
+        Long userId = userAuthenticationService.findCurrentUser().getId();
 
         artikelArchivService.archiviereGekaufteArtikel(userId);
         return ResponseEntity.noContent().build();

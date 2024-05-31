@@ -23,6 +23,7 @@ import java.util.Set;
 })
 public class User extends EntityBase {
     @NotBlank
+    @Column(unique = true)
     private String username;
 
     @NotBlank

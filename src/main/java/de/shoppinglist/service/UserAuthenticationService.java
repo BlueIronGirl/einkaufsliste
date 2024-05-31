@@ -4,8 +4,14 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import de.shoppinglist.dto.LoginDto;
+import de.shoppinglist.dto.RegisterDto;
 import de.shoppinglist.entity.Role;
 import de.shoppinglist.entity.User;
+import de.shoppinglist.exception.EntityAlreadyExistsException;
+import de.shoppinglist.exception.EntityNotFoundException;
+import de.shoppinglist.exception.UnautorizedException;
+import de.shoppinglist.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +20,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 
+import java.nio.CharBuffer;
 import java.util.*;
 
 /**
@@ -25,17 +34,73 @@ import java.util.*;
 @Service
 public class UserAuthenticationService {
     private String secretKey; // secret key for JWT
-    private final UserService userService; // UserService to find User by username
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserAuthenticationService(@Value("${security.jwt.token.secret-key:secret-key}") String secretKey, UserService userService) {
+    public UserAuthenticationService(@Value("${security.jwt.token.secret-key:secret-key}") String secretKey, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.secretKey = secretKey;
-        this.userService = userService;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostConstruct
     protected void init() {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes()); // encode secret key
+    }
+
+    /**
+     * Login a User to the Application and check the user and the password
+     *
+     * @param loginDto LoginDto containing the username and password
+     * @return User-Object of the logged in user
+     */
+    public User login(LoginDto loginDto) {
+        User user = findByLogin(loginDto.getUsername());
+
+        if (passwordEncoder.matches(CharBuffer.wrap(loginDto.getPassword()), user.getPassword())) {
+            if (user.getRoles().isEmpty()) {
+                if(user.getUsername().equals("alice")) {
+                    user.setRoles(Set.of());
+                }
+            }
+            return user;
+        }
+        throw new UnautorizedException("Passwort falsch!");
+    }
+
+    /**
+     * Register a new User to the Application
+     *
+     * @param registerDto RegisterDto containing the username, password and name of the new user
+     * @return User-Object of the registered user
+     */
+    public User register(RegisterDto registerDto) {
+        Optional<User> optionalUser = userRepository.findByUsername(registerDto.getUsername());
+
+        if (optionalUser.isPresent()) {
+            throw new EntityAlreadyExistsException("Benutzer existiert bereits");
+        }
+
+        User user = User.builder()
+                .username(registerDto.getUsername())
+                .password(passwordEncoder.encode(CharBuffer.wrap(registerDto.getPassword())))
+                .name(registerDto.getName())
+                .build();
+
+        return userRepository.save(user);
+    }
+
+    public User findByLogin(String login) {
+        return userRepository.findByUsername(login)
+                .orElseThrow(() -> new EntityNotFoundException("Unbekannter User!"));
+    }
+
+    public User findCurrentUser() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = user.getUsername();
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("Unbekannter User!"));
     }
 
     /**
@@ -70,7 +135,7 @@ public class UserAuthenticationService {
 
         DecodedJWT decodedJWT = verifier.verify(token);
 
-        User user = userService.findByLogin(decodedJWT.getIssuer());
+        User user = findByLogin(decodedJWT.getIssuer());
 
         return new UsernamePasswordAuthenticationToken(user, new WebAuthenticationDetailsSource().buildDetails(request), getAuthorities(user.getRoles()));
     }
