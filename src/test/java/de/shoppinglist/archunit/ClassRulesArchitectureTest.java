@@ -3,8 +3,10 @@ package de.shoppinglist.archunit;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
+import de.shoppinglist.controller.AuthController;
 import jakarta.persistence.Entity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,12 +21,13 @@ public class ClassRulesArchitectureTest {
      * A rule that checks that all controllers are in a controller package, are annotated with Controller or RestController and have Controller at the end of the class name.
      */
     @ArchTest
-    private final ArchRule controller_should_be_annotated_and_have_a_name_end_with_controller_and_are_inside_controller_package = classes()
+    private final ArchRule controller_should_be_annotated_with_controller_annotation_and_should_have_a_method_security_check_and_have_a_name_end_with_controller_and_are_inside_controller_package = classes()
             .that().areAnnotatedWith(Controller.class)
             .or().areAnnotatedWith(RestController.class)
             .or().haveSimpleNameEndingWith("Controller")
             .should().resideInAPackage("..controller..")
             .andShould().beAnnotatedWith(Controller.class).orShould().beAnnotatedWith(RestController.class)
+            .andShould().beAnnotatedWith(PreAuthorize.class).orShould().be(AuthController.class)
             .andShould().haveSimpleNameEndingWith("Controller")
             .because("controllers should be in a controller package, be annotated with Controller or RestController and have Controller at the end of the class name.");
 
