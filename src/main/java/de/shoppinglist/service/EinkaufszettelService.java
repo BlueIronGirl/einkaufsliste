@@ -30,7 +30,7 @@ public class EinkaufszettelService {
         return this.einkaufszettelRepository.save(entity);
     }
 
-    public Einkaufszettel updateEinkaufszettel(@RequestBody Einkaufszettel einkaufszettelData, @PathVariable Long id) {
+    public Einkaufszettel updateEinkaufszettel(Einkaufszettel einkaufszettelData, Long id) {
         return einkaufszettelRepository.findById(id)
                 .map(einkaufszettel -> {
                     einkaufszettel.setName(einkaufszettelData.getName());

@@ -76,7 +76,7 @@ public class EinkaufszettelController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Einkaufszettel.class))}),
-            @ApiResponse(responseCode = "404", description = "Article not found",
+            @ApiResponse(responseCode = "404", description = "Einkaufszettel not found",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = EntityNotFoundException.class))})
     })
     @DeleteMapping("{id}")

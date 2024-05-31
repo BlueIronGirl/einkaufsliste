@@ -13,7 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.CharBuffer;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Service-Class providing the business logic for the User-Entity
@@ -86,8 +87,8 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
+    public User findById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User nicht gefunden"));
     }
 
     public User save(User user) {
@@ -95,6 +96,20 @@ public class UserService {
     }
 
     public void deleteById(Long id) {
-        userRepository.deleteById(id);
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id);
+        } else {
+            throw new EntityNotFoundException("User nicht gefunden");
+        }
+    }
+
+    public User update(Long id, User userDetails) {
+        return userRepository.findById(id)
+                .map(existingUser -> {
+                    existingUser.setName(userDetails.getName());
+                    existingUser.setEmail(userDetails.getEmail());
+                    return userRepository.save(existingUser);
+                })
+                .orElseThrow(() -> new EntityNotFoundException("User nicht gefunden"));
     }
 }

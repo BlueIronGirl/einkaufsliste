@@ -3,6 +3,7 @@ package de.shoppinglist.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.shoppinglist.entity.base.EntityBase;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -29,6 +30,10 @@ public class User extends EntityBase {
 
     @NotBlank
     private String name;
+
+    @NotBlank
+    @Email
+    private String email;
 
     @Transient
     private String token;
