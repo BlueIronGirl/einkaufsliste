@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Entity-Class representing the User-Table
@@ -36,6 +37,13 @@ public class User extends EntityBase {
     @ToString.Exclude
     @JsonIgnore
     private List<Einkaufszettel> einkaufszettels;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles;
 
     @Builder
     public User(Long id, String username, String password, String name, String token) {

@@ -20,10 +20,6 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 public class Kategorie extends EntityBase {
-    @Id
-    @GeneratedValue
-    private Long id;
-
     @NotBlank
     private String name;
 
@@ -33,9 +29,8 @@ public class Kategorie extends EntityBase {
     private List<Artikel> artikels;
 
     @Builder
-    public Kategorie(Long id, Long id1, String name, List<Artikel> artikels) {
+    public Kategorie(Long id, String name, List<Artikel> artikels) {
         super(id);
-        this.id = id1;
         this.name = name;
         this.artikels = artikels;
     }

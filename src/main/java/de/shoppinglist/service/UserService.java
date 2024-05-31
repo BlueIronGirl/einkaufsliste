@@ -13,8 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.CharBuffer;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Service-Class providing the business logic for the User-Entity
@@ -83,7 +82,19 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("Unbekannter User!"));
     }
 
-    public List<User> selectAllUsers() {
+    public List<User> findAll() {
         return userRepository.findAll();
+    }
+
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    public void deleteById(Long id) {
+        userRepository.deleteById(id);
     }
 }
