@@ -7,10 +7,12 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import de.shoppinglist.dto.LoginDto;
 import de.shoppinglist.dto.RegisterDto;
 import de.shoppinglist.entity.Role;
+import de.shoppinglist.entity.RoleName;
 import de.shoppinglist.entity.User;
 import de.shoppinglist.exception.EntityAlreadyExistsException;
 import de.shoppinglist.exception.EntityNotFoundException;
 import de.shoppinglist.exception.UnautorizedException;
+import de.shoppinglist.repository.RoleRepository;
 import de.shoppinglist.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,12 +37,14 @@ import java.util.*;
 public class UserAuthenticationService {
     private String secretKey; // secret key for JWT
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserAuthenticationService(@Value("${security.jwt.token.secret-key:secret-key}") String secretKey, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserAuthenticationService(@Value("${security.jwt.token.secret-key:secret-key}") String secretKey, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.secretKey = secretKey;
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -59,14 +63,35 @@ public class UserAuthenticationService {
         User user = findByLogin(loginDto.getUsername());
 
         if (passwordEncoder.matches(CharBuffer.wrap(loginDto.getPassword()), user.getPassword())) {
-            if (user.getRoles().isEmpty()) {
-                if(user.getUsername().equals("alice")) {
-                    user.setRoles(Set.of());
-                }
-            }
+            fixRoles(user);
             return user;
         }
         throw new UnautorizedException("Passwort falsch!");
+    }
+
+    /**
+     * TODO: Kann bald weg. Nur zum Rollen zuweisen
+     *
+     * @param user user
+     */
+    private void fixRoles(User user) {
+        if (user.getRoles().isEmpty()) {
+
+            // wenn noch keine Rollen angelegt sind, erstmal die Rollen anlegen
+            if (roleRepository.findAll().isEmpty()) {
+                for (RoleName roleName : RoleName.values()) {
+                    Role role = Role.builder().name(roleName).build();
+                    roleRepository.save(role);
+                }
+            }
+
+            if (user.getUsername().equals("alice")) { // Alice -> Admin
+                user.setRoles(Set.of(roleRepository.findByName(RoleName.ROLE_ADMIN)));
+            } else { // Rest -> Gast
+                user.setRoles(Set.of(roleRepository.findByName(RoleName.ROLE_GUEST)));
+            }
+            userRepository.save(user);
+        }
     }
 
     /**
@@ -86,6 +111,8 @@ public class UserAuthenticationService {
                 .username(registerDto.getUsername())
                 .password(passwordEncoder.encode(CharBuffer.wrap(registerDto.getPassword())))
                 .name(registerDto.getName())
+                .email(registerDto.getEmail())
+                .roles(Set.of(roleRepository.findByName(RoleName.ROLE_GUEST)))
                 .build();
 
         return userRepository.save(user);

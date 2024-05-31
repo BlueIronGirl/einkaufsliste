@@ -2,10 +2,9 @@ package de.shoppinglist.entity;
 
 import de.shoppinglist.entity.base.EntityBase;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,4 +14,10 @@ import lombok.ToString;
 public class Role extends EntityBase {
     @Enumerated(EnumType.STRING)
     private RoleName name;
+
+    @Builder
+    public Role(Long id, RoleName name) {
+        super(id);
+        this.name = name;
+    }
 }

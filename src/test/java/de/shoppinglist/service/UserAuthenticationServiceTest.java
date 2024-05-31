@@ -121,7 +121,7 @@ class UserAuthenticationServiceTest {
     when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
     given(userRepository.save(Mockito.any(User.class))).willReturn(user);
 
-    User user = userAuthenticationService.register(new RegisterDto("admin", "admin", "admin"));
+    User user = userAuthenticationService.register(new RegisterDto("admin", "admin", "admin", "email@web.de"));
 
     verify(userRepository, Mockito.times(1)).save(Mockito.any(User.class));
     assertEquals(this.user.getUsername(), user.getUsername());
@@ -145,7 +145,7 @@ class UserAuthenticationServiceTest {
   void register_givenExisting_thenThrowException() {
     when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
 
-    assertThrows(RuntimeException.class, () -> userAuthenticationService.register(new RegisterDto("admin", "admin", "admin")));
+    assertThrows(RuntimeException.class, () -> userAuthenticationService.register(new RegisterDto("admin", "admin", "admin", "email@web.de")));
   }
 
   // TODO (ALB) 15.08.2023: validations

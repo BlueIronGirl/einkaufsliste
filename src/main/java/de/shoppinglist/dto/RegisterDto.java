@@ -18,9 +18,13 @@ public class RegisterDto {
     @NotBlank
     private String name;
 
-    public RegisterDto(String username, String password, String name) {
+    @NotBlank
+    private String email;
+
+    public RegisterDto(String username, String password, String name, String email) {
         this.username = username;
         this.password = password;
         this.name = name;
+        this.email = email;
     }
 }

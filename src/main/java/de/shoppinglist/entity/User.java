@@ -52,11 +52,13 @@ public class User extends EntityBase {
     private Set<Role> roles;
 
     @Builder
-    public User(Long id, String username, String password, String name, String token) {
+    public User(Long id, String username, String password, String name, String email, String token, Set<Role> roles) {
         super(id);
         this.username = username;
         this.password = password;
         this.name = name;
+        this.email = email;
         this.token = token;
+        this.roles = roles;
     }
 }
