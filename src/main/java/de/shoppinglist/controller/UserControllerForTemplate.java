@@ -1,6 +1,5 @@
 package de.shoppinglist.controller;
 
-import de.shoppinglist.entity.RoleName;
 import de.shoppinglist.entity.User;
 import de.shoppinglist.exception.EntityNotFoundException;
 import de.shoppinglist.service.UserService;
@@ -24,28 +23,12 @@ import java.util.List;
 @RestController
 @RequestMapping("user")
 @PreAuthorize("hasRole('ADMIN')")
-public class UserController {
+public class UserControllerForTemplate {
     private final UserService userService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserControllerForTemplate(UserService userService) {
         this.userService = userService;
-    }
-
-    @Operation(summary = "Get all users except me", description = "Get all users")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Ok", content = {
-                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = User.class)))
-            })
-    })
-    @GetMapping("/friends")
-    @PreAuthorize("hasRole('USER')")
-    public List<User> selectAllFriends() {
-        Long userId = userService.findCurrentUser().getId();
-        return userService.findAll().stream()
-                .filter(userDB -> !userDB.getId().equals(userId))
-                .filter(user -> user.getRoles().stream().anyMatch(role -> role.getName().equals(RoleName.ROLE_ADMIN) || role.getName().equals(RoleName.ROLE_USER)))
-                .toList();
     }
 
     @Operation(summary = "Get all user", description = "Get all user")
