@@ -1,5 +1,5 @@
 package de.shoppinglist.entity;
 
 public enum RoleName {
-    ROLE_USER, ROLE_ADMIN, ROLE_GUEST
+    ROLE_ADMIN, ROLE_USER, ROLE_GUEST
 }

@@ -14,6 +14,7 @@ import de.shoppinglist.exception.EntityNotFoundException;
 import de.shoppinglist.exception.UnautorizedException;
 import de.shoppinglist.repository.RoleRepository;
 import de.shoppinglist.repository.UserRepository;
+import io.micrometer.common.util.StringUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,11 +86,18 @@ public class UserAuthenticationService {
                 }
             }
 
+            HashSet<Role> roles = new HashSet<>();
             if (user.getUsername().equals("alice")) { // Alice -> Admin
-                user.setRoles(Set.of(roleRepository.findByName(RoleName.ROLE_ADMIN)));
+                roles.add(roleRepository.findByName(RoleName.ROLE_ADMIN));
             } else { // Rest -> Gast
-                user.setRoles(Set.of(roleRepository.findByName(RoleName.ROLE_GUEST)));
+                roles.add(roleRepository.findByName(RoleName.ROLE_GUEST));
             }
+            user.setRoles(roles);
+
+            if (StringUtils.isEmpty(user.getEmail())) {
+                user.setEmail("changeme@test.de");
+            }
+
             userRepository.save(user);
         }
     }
