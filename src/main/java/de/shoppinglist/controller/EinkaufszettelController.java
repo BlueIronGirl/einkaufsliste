@@ -2,10 +2,8 @@ package de.shoppinglist.controller;
 
 import de.shoppinglist.entity.Artikel;
 import de.shoppinglist.entity.Einkaufszettel;
-import de.shoppinglist.entity.User;
 import de.shoppinglist.exception.EntityNotFoundException;
 import de.shoppinglist.service.EinkaufszettelService;
-import de.shoppinglist.service.UserAuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -61,7 +59,7 @@ public class EinkaufszettelController {
     })
     @PutMapping("{id}")
     public ResponseEntity<Einkaufszettel> updateEinkaufszettel(@Valid @RequestBody Einkaufszettel einkaufszettel, @PathVariable Long id) {
-        return ResponseEntity.ok(einkaufszettelService.updateEinkaufszettel(einkaufszettel, id));
+        return ResponseEntity.ok(einkaufszettelService.updateEinkaufszettel(id, einkaufszettel));
     }
 
     @Operation(summary = "Delete one Einkaufszettel", description = "Delete one Einkaufszettel")
@@ -98,7 +96,7 @@ public class EinkaufszettelController {
     })
     @PutMapping("/artikel/{id}")
     public ResponseEntity<Artikel> updateArtikel(@Valid @RequestBody Artikel artikelData, @PathVariable Long id) {
-        return ResponseEntity.ok(einkaufszettelService.updateArtikel(artikelData, id));
+        return ResponseEntity.ok(einkaufszettelService.updateArtikel(id, artikelData));
     }
 
     @Operation(summary = "Delete one article", description = "Delete one article")

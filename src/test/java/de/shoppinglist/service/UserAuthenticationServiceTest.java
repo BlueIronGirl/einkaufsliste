@@ -35,9 +35,6 @@ class UserAuthenticationServiceTest {
     private UserRepository userRepository;
 
     @Mock
-    private RoleRepository roleRepository;
-
-    @Mock
     private PasswordEncoder passwordEncoder;
 
     @InjectMocks
@@ -133,27 +130,11 @@ class UserAuthenticationServiceTest {
         assertEquals(this.user.getUsername(), user.getUsername());
     }
 
-//  @Test
-//  void register_givenNotExistingUserWithoutName_thenReturnUser() {
-//// TODO (ALB) 17.08.2023: constraintvalidation
-//
-//    when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
-//    when(validator.validate(any())).thenReturn(new HashSet<>());
-//    given(userRepository.save(Mockito.any(User.class))).willReturn(user);
-//
-//    User user = userService.register(new RegisterDto("admin", "admin", ""));
-//
-//    verify(userRepository, Mockito.times(1)).save(Mockito.any(User.class));
-//    assertEquals(this.user.getUsername(), user.getUsername());
-//  }
-
     @Test
     void register_givenExisting_thenThrowException() {
         when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
 
         assertThrows(RuntimeException.class, () -> userAuthenticationService.register(new RegisterDto("admin", "admin", "admin", "email@web.de")));
     }
-
-    // TODO (ALB) 15.08.2023: validations
 
 }

@@ -39,9 +39,12 @@ public class Einkaufszettel extends EntityBase {
     private boolean geloescht;
 
     @Builder
-    public Einkaufszettel(Long id, String name, List<Artikel> artikels) {
+    public Einkaufszettel(Long id, String name, List<Artikel> artikels, List<User> owners, List<User> sharedWith, boolean geloescht) {
         super(id);
         this.name = name;
         this.artikels = artikels;
+        this.owners = owners;
+        this.sharedWith = sharedWith;
+        this.geloescht = geloescht;
     }
 }
