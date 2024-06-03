@@ -9,6 +9,6 @@ import java.util.List;
  * Repository for the ArtikelArchiv-Entity
  */
 public interface ArtikelArchivRepository extends JpaRepository<ArtikelArchiv, Long> {
-    List<ArtikelArchiv> findByEinkaufszettelUsersIdOrderByKaufZeitpunktDesc(Long userId);
+    List<ArtikelArchiv> findByEinkaufszettel_Owners_IdOrEinkaufszettel_SharedWith_IdOrderByKaufZeitpunktDesc(Long ownersId, Long sharedWithId);
 
 }

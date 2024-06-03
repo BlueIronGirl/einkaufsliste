@@ -39,10 +39,15 @@ public class User extends EntityBase {
     @Transient
     private String token;
 
-    @ManyToMany(mappedBy = "users")
+    @ManyToMany(mappedBy = "sharedWith")
     @ToString.Exclude
     @JsonIgnore
-    private List<Einkaufszettel> einkaufszettels;
+    private List<Einkaufszettel> einkaufszettelsSharedWith;
+
+    @ManyToMany(mappedBy = "owners")
+    @ToString.Exclude
+    @JsonIgnore
+    private List<Einkaufszettel> einkaufszettelsOwner;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

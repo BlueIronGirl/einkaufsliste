@@ -22,19 +22,25 @@ import java.util.List;
 public class ArtikelArchivService {
     private final ArtikelRepository artikelRepository;
     private final ArtikelArchivRepository artikelArchivRepository;
+    private final UserAuthenticationService userAuthenticationService;
 
     @Autowired
-    public ArtikelArchivService(ArtikelRepository artikelRepository, ArtikelArchivRepository artikelArchivRepository) {
+    public ArtikelArchivService(ArtikelRepository artikelRepository, ArtikelArchivRepository artikelArchivRepository, UserAuthenticationService userAuthenticationService) {
         this.artikelRepository = artikelRepository;
         this.artikelArchivRepository = artikelArchivRepository;
+        this.userAuthenticationService = userAuthenticationService;
     }
 
-    public List<ArtikelArchiv> findByUserId(Long userId) {
-        return artikelArchivRepository.findByEinkaufszettelUsersIdOrderByKaufZeitpunktDesc(userId);
+    public List<ArtikelArchiv> findByUserId() {
+        Long userId = userAuthenticationService.findCurrentUser().getId();
+
+        return artikelArchivRepository.findByEinkaufszettel_Owners_IdOrEinkaufszettel_SharedWith_IdOrderByKaufZeitpunktDesc(userId, userId);
     }
 
-    public void archiviereGekaufteArtikel(Long userId) {
-        List<Artikel> gekaufteArtikel = artikelRepository.findByEinkaufszettelUsersIdAndGekauftTrue(userId);
+    public void archiviereGekaufteArtikel() {
+        Long userId = userAuthenticationService.findCurrentUser().getId();
+
+        List<Artikel> gekaufteArtikel = artikelRepository.findByGekauftTrueAndEinkaufszettel_Owners_IdOrEinkaufszettel_SharedWith_Id(userId, userId);
 
         // Artikel archivieren
         gekaufteArtikel.stream().map(ArtikelArchiv::new).forEach(artikelArchivRepository::saveAndFlush);

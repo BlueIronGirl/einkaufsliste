@@ -24,11 +24,9 @@ import java.util.List;
 @PreAuthorize("hasRole('GUEST')")
 public class EinkaufszettelController {
     private final EinkaufszettelService einkaufszettelService;
-    private final UserAuthenticationService userAuthenticationService;
 
-    public EinkaufszettelController(EinkaufszettelService einkaufszettelService, UserAuthenticationService userAuthenticationService) {
+    public EinkaufszettelController(EinkaufszettelService einkaufszettelService) {
         this.einkaufszettelService = einkaufszettelService;
-        this.userAuthenticationService = userAuthenticationService;
     }
 
     @Operation(summary = "Get all einkaufszettels", description = "Get all einkaufszettels")
@@ -39,9 +37,7 @@ public class EinkaufszettelController {
     })
     @GetMapping
     public ResponseEntity<List<Einkaufszettel>> selectAllActiveEinkaufszettels() {
-        Long userId = userAuthenticationService.findCurrentUser().getId();
-
-        return ResponseEntity.ok(einkaufszettelService.findActiveByUserId(userId));
+        return ResponseEntity.ok(einkaufszettelService.findActiveByUserId());
     }
 
     @Operation(summary = "Create new einkaufszettel", description = "Create new einkaufszettel")
@@ -52,12 +48,6 @@ public class EinkaufszettelController {
     })
     @PostMapping
     public Einkaufszettel createEinkaufszettel(@RequestBody Einkaufszettel einkaufszettel) {
-        User currentUserDB = userAuthenticationService.findCurrentUser();
-
-        List<User> users = einkaufszettel.getUsers();
-        users.add(currentUserDB);
-        einkaufszettel.setUsers(users);
-
         return einkaufszettelService.saveEinkaufszettel(einkaufszettel);
     }
 

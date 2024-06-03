@@ -20,12 +20,21 @@ public class Einkaufszettel extends EntityBase {
 
     @ManyToMany
     @JoinTable(
+            name = "einkaufszettel_owner",
+            joinColumns = @JoinColumn(name = "einkaufszettel_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    @ToString.Exclude
+    private List<User> owners;
+
+    @ManyToMany
+    @JoinTable(
             name = "einkaufszettel_user",
             joinColumns = @JoinColumn(name = "einkaufszettel_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     @ToString.Exclude
-    private List<User> users;
+    private List<User> sharedWith;
 
     private boolean geloescht;
 

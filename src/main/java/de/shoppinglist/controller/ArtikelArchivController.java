@@ -28,12 +28,10 @@ import java.util.List;
 @PreAuthorize("hasRole('GUEST')")
 public class ArtikelArchivController {
     private final ArtikelArchivService artikelArchivService;
-    private final UserAuthenticationService userAuthenticationService;
 
     @Autowired
-    public ArtikelArchivController(ArtikelArchivService artikelArchivService, UserAuthenticationService userAuthenticationService) {
+    public ArtikelArchivController(ArtikelArchivService artikelArchivService) {
         this.artikelArchivService = artikelArchivService;
-        this.userAuthenticationService = userAuthenticationService;
     }
 
     @Operation(summary = "Get all archived articles", description = "Get all archived articles")
@@ -44,9 +42,7 @@ public class ArtikelArchivController {
     })
     @GetMapping
     public List<ArtikelArchiv> selectAllArtikelArchiv() {
-        Long userId = userAuthenticationService.findCurrentUser().getId();
-
-        return artikelArchivService.findByUserId(userId);
+        return artikelArchivService.findByUserId();
     }
 
     @Operation(summary = "Get all archived articles", description = "Get all archived articles")
@@ -57,9 +53,7 @@ public class ArtikelArchivController {
     })
     @PostMapping("/archiviereGekaufteArtikel")
     public ResponseEntity<Void> archiviereGekaufteArtikel() {
-        Long userId = userAuthenticationService.findCurrentUser().getId();
-
-        artikelArchivService.archiviereGekaufteArtikel(userId);
+        artikelArchivService.archiviereGekaufteArtikel();
         return ResponseEntity.noContent().build();
     }
 }

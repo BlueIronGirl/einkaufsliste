@@ -45,9 +45,7 @@ public class UserController {
     @GetMapping("/friends")
     @PreAuthorize("hasRole('USER')")
     public List<User> selectAllFriends() {
-        Long userId = userAuthenticationService.findCurrentUser().getId();
         return userService.findAll().stream()
-                .filter(userDB -> !userDB.getId().equals(userId))
                 .filter(user -> user.getRoles().stream().anyMatch(role -> role.getName().equals(RoleName.ROLE_ADMIN) || role.getName().equals(RoleName.ROLE_USER)))
                 .toList();
     }
