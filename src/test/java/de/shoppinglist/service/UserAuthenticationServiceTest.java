@@ -3,6 +3,7 @@ package de.shoppinglist.service;
 import de.shoppinglist.dto.LoginDto;
 import de.shoppinglist.dto.RegisterDto;
 import de.shoppinglist.entity.User;
+import de.shoppinglist.repository.RoleRepository;
 import de.shoppinglist.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.nio.CharBuffer;
+import java.util.HashSet;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,103 +31,107 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class UserAuthenticationServiceTest {
 
-  @Mock
-  private UserRepository userRepository;
+    @Mock
+    private UserRepository userRepository;
 
-  @Mock
-  private PasswordEncoder passwordEncoder;
+    @Mock
+    private RoleRepository roleRepository;
 
-  @InjectMocks
-  private UserAuthenticationService userAuthenticationService;
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
-  public static final String USERNAME = "USERNAME";
-  public static final String PASSWORD = "PASSWORD";
-  public static final String NAME = "NAME";
-  public static final String TOKEN = "TOKEN";
+    @InjectMocks
+    private UserAuthenticationService userAuthenticationService;
 
-  private User user;
+    public static final String USERNAME = "USERNAME";
+    public static final String PASSWORD = "PASSWORD";
+    public static final String NAME = "NAME";
+    public static final String TOKEN = "TOKEN";
 
-  @BeforeEach
-  public void setup() {
-    user = User.builder()
-        .id(1L)
-        .username(USERNAME)
-        .password(PASSWORD)
-        .name(NAME)
-        .token(TOKEN)
-        .build();
-  }
+    private User user;
+
+    @BeforeEach
+    public void setup() {
+        user = User.builder()
+                .id(1L)
+                .username(USERNAME)
+                .password(PASSWORD)
+                .name(NAME)
+                .token(TOKEN)
+                .roles(new HashSet<>())
+                .build();
+    }
 
   /*
   FindByLogin
    */
 
-  @Test
-  void findByLogin_givenExistingUser_thenReturnUser() {
-    when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
+    @Test
+    void findByLogin_givenExistingUser_thenReturnUser() {
+        when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
 
-    User result = userAuthenticationService.findByLogin(USERNAME);
+        User result = userAuthenticationService.findByLogin(USERNAME);
 
-    assertEquals(USERNAME, result.getUsername());
-  }
+        assertEquals(USERNAME, result.getUsername());
+    }
 
-  @Test
-  void findByLogin_givenNotExistingUser_thenThrowException() {
-    when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
+    @Test
+    void findByLogin_givenNotExistingUser_thenThrowException() {
+        when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
 
-    assertThrows(RuntimeException.class, () -> userAuthenticationService.findByLogin(USERNAME));
-  }
+        assertThrows(RuntimeException.class, () -> userAuthenticationService.findByLogin(USERNAME));
+    }
 
   /*
   Login
    */
 
-  @Test
-  void login_givenExistingUser_thenReturnUser() {
-    when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
-    when(passwordEncoder.matches(Mockito.any(), Mockito.any())).thenReturn(true);
+    @Test
+    void login_givenExistingUser_thenReturnUser() {
+        when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(Mockito.any(), Mockito.any())).thenReturn(true);
 
-    LoginDto loginDto = new LoginDto("admin", "admin");
-    User user = userAuthenticationService.login(loginDto);
+        LoginDto loginDto = new LoginDto("admin", "admin");
+        User user = userAuthenticationService.login(loginDto);
 
-    verify(passwordEncoder, Mockito.times(1)).matches(CharBuffer.wrap(loginDto.getPassword()), user.getPassword());
-    assertEquals(USERNAME, user.getUsername());
-  }
+        verify(passwordEncoder, Mockito.times(1)).matches(CharBuffer.wrap(loginDto.getPassword()), user.getPassword());
+        assertEquals(USERNAME, user.getUsername());
+    }
 
-  @Test
-  void login_givenNotExistingUser_thenThrowException() {
-    when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
+    @Test
+    void login_givenNotExistingUser_thenThrowException() {
+        when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
 
-    LoginDto loginDto = new LoginDto("admin", "admin");
+        LoginDto loginDto = new LoginDto("admin", "admin");
 
-    assertThrows(RuntimeException.class, () -> userAuthenticationService.login(loginDto));
-  }
+        assertThrows(RuntimeException.class, () -> userAuthenticationService.login(loginDto));
+    }
 
-  @Test
-  void login_givenExistingUserNoCorrectPassword_thenThrowException() {
-    when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
-    when(passwordEncoder.matches(Mockito.any(), Mockito.any())).thenReturn(false);
+    @Test
+    void login_givenExistingUserNoCorrectPassword_thenThrowException() {
+        when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(Mockito.any(), Mockito.any())).thenReturn(false);
 
-    LoginDto loginDto = new LoginDto("admin", "admin");
+        LoginDto loginDto = new LoginDto("admin", "admin");
 
-    assertThrows(RuntimeException.class, () -> userAuthenticationService.login(loginDto));
-    verify(passwordEncoder, Mockito.times(1)).matches(CharBuffer.wrap(loginDto.getPassword()), user.getPassword());
-  }
+        assertThrows(RuntimeException.class, () -> userAuthenticationService.login(loginDto));
+        verify(passwordEncoder, Mockito.times(1)).matches(CharBuffer.wrap(loginDto.getPassword()), user.getPassword());
+    }
 
   /*
   Register
    */
 
-  @Test
-  void register_givenNotExistingUser_thenReturnUser() {
-    when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
-    given(userRepository.save(Mockito.any(User.class))).willReturn(user);
+    @Test
+    void register_givenNotExistingUser_thenReturnUser() {
+        when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
+        given(userRepository.save(Mockito.any(User.class))).willReturn(user);
 
-    User user = userAuthenticationService.register(new RegisterDto("admin", "admin", "admin", "email@web.de"));
+        User user = userAuthenticationService.register(new RegisterDto("admin", "admin", "admin", "email@web.de"));
 
-    verify(userRepository, Mockito.times(1)).save(Mockito.any(User.class));
-    assertEquals(this.user.getUsername(), user.getUsername());
-  }
+        verify(userRepository, Mockito.times(1)).save(Mockito.any(User.class));
+        assertEquals(this.user.getUsername(), user.getUsername());
+    }
 
 //  @Test
 //  void register_givenNotExistingUserWithoutName_thenReturnUser() {
@@ -141,13 +147,13 @@ class UserAuthenticationServiceTest {
 //    assertEquals(this.user.getUsername(), user.getUsername());
 //  }
 
-  @Test
-  void register_givenExisting_thenThrowException() {
-    when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
+    @Test
+    void register_givenExisting_thenThrowException() {
+        when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
 
-    assertThrows(RuntimeException.class, () -> userAuthenticationService.register(new RegisterDto("admin", "admin", "admin", "email@web.de")));
-  }
+        assertThrows(RuntimeException.class, () -> userAuthenticationService.register(new RegisterDto("admin", "admin", "admin", "email@web.de")));
+    }
 
-  // TODO (ALB) 15.08.2023: validations
+    // TODO (ALB) 15.08.2023: validations
 
 }

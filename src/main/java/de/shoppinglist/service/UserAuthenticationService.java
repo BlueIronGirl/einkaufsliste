@@ -115,12 +115,16 @@ public class UserAuthenticationService {
             throw new EntityAlreadyExistsException("Benutzer existiert bereits");
         }
 
+        Role guest = roleRepository.findByName(RoleName.ROLE_GUEST);
+        HashSet<Role> roles = new HashSet<>();
+        roles.add(guest);
+
         User user = User.builder()
                 .username(registerDto.getUsername())
                 .password(passwordEncoder.encode(CharBuffer.wrap(registerDto.getPassword())))
                 .name(registerDto.getName())
                 .email(registerDto.getEmail())
-                .roles(Set.of(roleRepository.findByName(RoleName.ROLE_GUEST)))
+                .roles(roles)
                 .build();
 
         return userRepository.save(user);
