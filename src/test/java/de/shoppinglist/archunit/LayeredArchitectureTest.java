@@ -4,6 +4,8 @@ import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
 
+import static com.tngtech.archunit.base.DescribedPredicate.alwaysTrue;
+import static com.tngtech.archunit.core.domain.properties.HasName.Predicates.nameMatching;
 import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 
 @AnalyzeClasses(packages = "de.shoppinglist")
@@ -19,13 +21,13 @@ public class LayeredArchitectureTest {
     @ArchTest
     private final ArchRule layeredArchitectureRule = layeredArchitecture().consideringAllDependencies()
             .layer("Configuration").definedBy("..config..")
-            .layer("Controller").definedBy("..controller..");
-//            .layer("Service").definedBy("..service..")
-//            .layer("Repository").definedBy("..repository..")
-//            .whereLayer("Configuration").mayNotBeAccessedByAnyLayer()
-//            .whereLayer("Controller").mayNotBeAccessedByAnyLayer()
-////            .whereLayer("Service").mayOnlyBeAccessedByLayers("Controller", "Service", "Configuration")
-//            .whereLayer("Repository").mayOnlyBeAccessedByLayers("Service");
+            .layer("Controller").definedBy("..controller..")
+            .layer("Service").definedBy("..service..")
+            .layer("Repository").definedBy("..repository..")
+            .whereLayer("Configuration").mayNotBeAccessedByAnyLayer()
+            .whereLayer("Controller").mayNotBeAccessedByAnyLayer().ignoreDependency(nameMatching(".+\\.*Test"), alwaysTrue())
+            .whereLayer("Service").mayOnlyBeAccessedByLayers("Controller", "Service", "Configuration")
+            .whereLayer("Repository").mayOnlyBeAccessedByLayers("Service");
 
 
 }
