@@ -115,6 +115,5 @@ public class EinkaufszettelService {
                 .orElseThrow(() -> new EntityNotFoundException("Artikel nicht gefunden"));
 
         artikelRepository.deleteById(id);
-
     }
 }

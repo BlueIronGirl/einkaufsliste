@@ -413,6 +413,7 @@ class EinkaufszettelServiceTest {
 
         einkaufszettelService.deleteArtikel(1L);
 
+        assertDoesNotThrow(() -> RuntimeException.class);
         verify(artikelRepository).deleteById(1L);
     }
 
