@@ -25,7 +25,7 @@ public class LayeredArchitectureTest {
             .layer("Service").definedBy("..service..")
             .layer("Repository").definedBy("..repository..")
             .whereLayer("Configuration").mayNotBeAccessedByAnyLayer()
-            .whereLayer("Controller").mayNotBeAccessedByAnyLayer().ignoreDependency(nameMatching(".+\\.*Test"), alwaysTrue())
+            .whereLayer("Controller").mayNotBeAccessedByAnyLayer().ignoreDependency(nameMatching(".+\\.*Aspect"), alwaysTrue()).ignoreDependency(nameMatching(".+\\.*Test"), alwaysTrue())
             .whereLayer("Service").mayOnlyBeAccessedByLayers("Controller", "Service", "Configuration")
             .whereLayer("Repository").mayOnlyBeAccessedByLayers("Service");
 

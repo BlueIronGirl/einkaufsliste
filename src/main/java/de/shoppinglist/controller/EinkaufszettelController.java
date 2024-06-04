@@ -35,7 +35,7 @@ public class EinkaufszettelController {
     })
     @GetMapping
     public ResponseEntity<List<Einkaufszettel>> selectAllActiveEinkaufszettels() {
-        return ResponseEntity.ok(einkaufszettelService.findActiveByUserId());
+        return ResponseEntity.ok(einkaufszettelService.findActiveEinkaufszettelsByUserId());
     }
 
     @Operation(summary = "Create new einkaufszettel", description = "Create new einkaufszettel")
@@ -57,8 +57,8 @@ public class EinkaufszettelController {
             @ApiResponse(responseCode = "404", description = "Einkaufszettel not found",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = EntityNotFoundException.class))})
     })
-    @PutMapping("{id}")
-    public ResponseEntity<Einkaufszettel> updateEinkaufszettel(@Valid @RequestBody Einkaufszettel einkaufszettel, @PathVariable Long id) {
+    @PutMapping("{einkaufszettelId}")
+    public ResponseEntity<Einkaufszettel> updateEinkaufszettel(@PathVariable(name = "einkaufszettelId") Long id, @Valid @RequestBody Einkaufszettel einkaufszettel) {
         return ResponseEntity.ok(einkaufszettelService.updateEinkaufszettel(id, einkaufszettel));
     }
 
@@ -69,8 +69,8 @@ public class EinkaufszettelController {
             @ApiResponse(responseCode = "404", description = "Einkaufszettel not found",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = EntityNotFoundException.class))})
     })
-    @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteEinkaufszettel(@PathVariable Long id) {
+    @DeleteMapping("{einkaufszettelId}")
+    public ResponseEntity<Void> deleteEinkaufszettel(@PathVariable(name = "einkaufszettelId") Long id) {
         einkaufszettelService.deleteEinkaufszettel(id);
         return ResponseEntity.noContent().build();
     }
@@ -81,8 +81,8 @@ public class EinkaufszettelController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Artikel.class))}),
             @ApiResponse(responseCode = "400", description = "Invalid article")
     })
-    @PostMapping("/{id}/artikel")
-    public ResponseEntity<Artikel> createArtikel(@PathVariable(name = "id") Long einkaufszettelId, @Valid @RequestBody Artikel artikel) {
+    @PostMapping("/{einkaufszettelId}/artikel")
+    public ResponseEntity<Artikel> createArtikel(@PathVariable(name = "einkaufszettelId") Long einkaufszettelId, @Valid @RequestBody Artikel artikel) {
         return ResponseEntity.ok(einkaufszettelService.createArtikel(einkaufszettelId, artikel));
     }
 
@@ -94,9 +94,9 @@ public class EinkaufszettelController {
             @ApiResponse(responseCode = "404", description = "Article not found",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = EntityNotFoundException.class))})
     })
-    @PutMapping("/artikel/{id}")
-    public ResponseEntity<Artikel> updateArtikel(@Valid @RequestBody Artikel artikelData, @PathVariable Long id) {
-        return ResponseEntity.ok(einkaufszettelService.updateArtikel(id, artikelData));
+    @PutMapping("/{einkaufszettelId}/artikel/{id}")
+    public ResponseEntity<Artikel> updateArtikel(@PathVariable(name = "einkaufszettelId") Long einkaufszettelId, @PathVariable(name = "id") Long id, @Valid @RequestBody Artikel artikelData) {
+        return ResponseEntity.ok(einkaufszettelService.updateArtikel(einkaufszettelId, id, artikelData));
     }
 
     @Operation(summary = "Delete one article", description = "Delete one article")
@@ -106,9 +106,9 @@ public class EinkaufszettelController {
             @ApiResponse(responseCode = "404", description = "Article not found",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = EntityNotFoundException.class))})
     })
-    @DeleteMapping("/artikel/{id}")
-    public ResponseEntity<Void> deleteArtikel(@PathVariable Long id) {
-        einkaufszettelService.deleteArtikel(id);
+    @DeleteMapping("/{einkaufszettelId}/artikel/{id}")
+    public ResponseEntity<Void> deleteArtikel(@PathVariable(name = "einkaufszettelId") Long einkaufszettelId, @PathVariable Long id) {
+        einkaufszettelService.deleteArtikel(einkaufszettelId, id);
         return ResponseEntity.noContent().build();
     }
 

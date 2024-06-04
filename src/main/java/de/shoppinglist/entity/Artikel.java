@@ -2,10 +2,7 @@ package de.shoppinglist.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.shoppinglist.entity.base.EntityBase;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -29,7 +26,7 @@ public class Artikel extends EntityBase {
     @ToString.Exclude
     private List<Kategorie> kategories;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "einkaufszettel_id", nullable = false)
     @JsonIgnore
     private Einkaufszettel einkaufszettel;

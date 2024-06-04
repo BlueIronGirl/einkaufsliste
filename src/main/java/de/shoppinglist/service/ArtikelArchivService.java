@@ -2,6 +2,7 @@ package de.shoppinglist.service;
 
 import de.shoppinglist.entity.Artikel;
 import de.shoppinglist.entity.ArtikelArchiv;
+import de.shoppinglist.entity.User;
 import de.shoppinglist.repository.ArtikelArchivRepository;
 import de.shoppinglist.repository.ArtikelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,15 +33,15 @@ public class ArtikelArchivService {
     }
 
     public List<ArtikelArchiv> findByUserId() {
-        Long userId = userAuthenticationService.findCurrentUser().getId();
+        User currentUser = userAuthenticationService.findCurrentUser();
 
-        return artikelArchivRepository.findByEinkaufszettel_Owners_IdOrEinkaufszettel_SharedWith_IdOrderByKaufZeitpunktDesc(userId, userId);
+        return artikelArchivRepository.findByEinkaufszettel_Owners_IdOrEinkaufszettel_SharedWith_IdOrderByKaufZeitpunktDesc(currentUser, currentUser);
     }
 
     public void archiviereGekaufteArtikel() {
-        Long userId = userAuthenticationService.findCurrentUser().getId();
+        User currentUser = userAuthenticationService.findCurrentUser();
 
-        List<Artikel> gekaufteArtikel = artikelRepository.findByGekauftTrueAndEinkaufszettel_Owners_IdOrEinkaufszettel_SharedWith_Id(userId, userId);
+        List<Artikel> gekaufteArtikel = artikelRepository.findByGekauftTrueAndEinkaufszettel_Owners_IdOrEinkaufszettel_SharedWith_Id(currentUser, currentUser);
 
         // Artikel archivieren
         gekaufteArtikel.stream().map(ArtikelArchiv::new).forEach(artikelArchivRepository::saveAndFlush);

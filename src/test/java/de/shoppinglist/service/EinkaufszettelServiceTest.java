@@ -359,7 +359,8 @@ class EinkaufszettelServiceTest {
 
     @Test
     void createArtikel_givenNotExistingEinkaufszettel_thenThrowException() {
-        when(einkaufszettelRepository.findById(Mockito.any())).thenReturn(null);
+        when(userAuthenticationService.findCurrentUser()).thenReturn(user);
+        when(einkaufszettelRepository.findByIdAndGeloeschtFalseAndOwners_IdOrSharedWith_Id(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Optional.ofNullable(null));
 
         Artikel artikelData = Mockito.spy(Artikel.builder().id(1L).build());
 
@@ -369,7 +370,8 @@ class EinkaufszettelServiceTest {
 
     @Test
     void createArtikel_givenExistingEinkaufszettel_thenSaveAndReturnEinkaufszettel() {
-        when(einkaufszettelRepository.findById(1L)).thenReturn(Optional.ofNullable(einkaufszettel));
+        when(userAuthenticationService.findCurrentUser()).thenReturn(user);
+        when(einkaufszettelRepository.findByIdAndGeloeschtFalseAndOwners_IdOrSharedWith_Id(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Optional.ofNullable(einkaufszettel));
 
         Artikel artikelData = Mockito.spy(Artikel.builder().id(1L).build());
         when(artikelRepository.save(artikelData)).thenReturn(artikelData);
@@ -382,6 +384,7 @@ class EinkaufszettelServiceTest {
 
     @Test
     void updateArtikel_givenNotExistingArtikel_thenThrowException() {
+        when(userAuthenticationService.findCurrentUser()).thenReturn(user);
         Artikel artikelData = Mockito.spy(Artikel.builder().id(1L).build());
 
         assertThrows(RuntimeException.class, () -> einkaufszettelService.createArtikel(1L, artikelData));
@@ -390,12 +393,14 @@ class EinkaufszettelServiceTest {
 
     @Test
     void updateArtikel_givenExistingEinkaufszettel_thenSaveAndReturnEinkaufszettel() {
+        when(userAuthenticationService.findCurrentUser()).thenReturn(user);
         when(artikelRepository.findById(1L)).thenReturn(Optional.ofNullable(artikel));
+        when(einkaufszettelRepository.findByIdAndGeloeschtFalseAndOwners_IdOrSharedWith_Id(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Optional.ofNullable(einkaufszettel));
 
         Artikel artikelData = Mockito.spy(Artikel.builder().id(1L).gekauft(true).build());
         when(artikelRepository.save(Mockito.any())).thenReturn(artikel);
 
-        einkaufszettelService.updateArtikel(1L, artikelData);
+        einkaufszettelService.updateArtikel(1L, 1L, artikelData);
 
         assertNotNull(artikel.getKaufZeitpunkt());
         verify(artikelRepository).save(artikel);
@@ -403,15 +408,19 @@ class EinkaufszettelServiceTest {
 
     @Test
     void deleteArtikel_givenNotExistingArtikel_thenThrowException() {
-        assertThrows(RuntimeException.class, () -> einkaufszettelService.deleteArtikel(1L));
+        when(userAuthenticationService.findCurrentUser()).thenReturn(user);
+
+        assertThrows(RuntimeException.class, () -> einkaufszettelService.deleteArtikel(1L, 1L));
         verify(artikelRepository, Mockito.times(0)).save(Mockito.any());
     }
 
     @Test
     void deleteArtikel_givenExistingEinkaufszettel_thenSaveAndReturnEinkaufszettel() {
+        when(userAuthenticationService.findCurrentUser()).thenReturn(user);
         when(artikelRepository.findById(1L)).thenReturn(Optional.ofNullable(artikel));
+        when(einkaufszettelRepository.findByIdAndGeloeschtFalseAndOwners_IdOrSharedWith_Id(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Optional.ofNullable(einkaufszettel));
 
-        einkaufszettelService.deleteArtikel(1L);
+        einkaufszettelService.deleteArtikel(1L, 1L);
 
         assertDoesNotThrow(() -> RuntimeException.class);
         verify(artikelRepository).deleteById(1L);

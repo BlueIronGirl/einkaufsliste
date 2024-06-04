@@ -136,10 +136,12 @@ public class UserAuthenticationService {
     }
 
     public User findCurrentUser() {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = user.getUsername();
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("Unbekannter User!"));
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof User user) {
+            String username = user.getUsername();
+            return userRepository.findByUsername(username)
+                    .orElseThrow(() -> new EntityNotFoundException("Unbekannter User!"));
+        }
+        return null;
     }
 
     /**

@@ -26,10 +26,10 @@ public class EinkaufszettelService {
         this.userAuthenticationService = userAuthenticationService;
     }
 
-    public List<Einkaufszettel> findActiveByUserId() {
-        Long userId = userAuthenticationService.findCurrentUser().getId();
+    public List<Einkaufszettel> findActiveEinkaufszettelsByUserId() {
+        User currentUserDB = userAuthenticationService.findCurrentUser();
 
-        return einkaufszettelRepository.findByGeloeschtFalseAndOwners_IdOrSharedWith_Id(userId, userId);
+        return einkaufszettelRepository.findByGeloeschtFalseAndOwners_IdOrSharedWith_Id(currentUserDB, currentUserDB);
     }
 
     public Einkaufszettel saveEinkaufszettel(Einkaufszettel einkaufszettelData) {
@@ -45,7 +45,7 @@ public class EinkaufszettelService {
     }
 
     public Einkaufszettel updateEinkaufszettel(Long id, Einkaufszettel einkaufszettelData) {
-        validateEinkaufszettel(id, einkaufszettelData);
+        validateEinkaufszettelUserGeaendert(id, einkaufszettelData);
 
         return einkaufszettelRepository.findById(id)
                 .map(einkaufszettel -> {
@@ -57,7 +57,7 @@ public class EinkaufszettelService {
                 .orElseThrow(() -> new EntityNotFoundException("Einkaufszettel nicht gefunden"));
     }
 
-    private void validateEinkaufszettel(Long id, Einkaufszettel einkaufszettelData) {
+    private void validateEinkaufszettelUserGeaendert(Long id, Einkaufszettel einkaufszettelData) {
         User currentUserDB = userAuthenticationService.findCurrentUser();
         Einkaufszettel einkaufszettelDB = einkaufszettelRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Einkaufszettel nicht gefunden"));
         if (!einkaufszettelDB.getOwners().isEmpty() && !einkaufszettelDB.getOwners().contains(currentUserDB)) {
@@ -86,7 +86,8 @@ public class EinkaufszettelService {
     }
 
     public Artikel createArtikel(Long einkaufszettelId, Artikel artikelData) {
-        Einkaufszettel einkaufszettel = einkaufszettelRepository.findById(einkaufszettelId)
+        User currentUserDB = userAuthenticationService.findCurrentUser();
+        Einkaufszettel einkaufszettel = einkaufszettelRepository.findByIdAndGeloeschtFalseAndOwners_IdOrSharedWith_Id(einkaufszettelId, currentUserDB, currentUserDB)
                 .orElseThrow(() -> new EntityNotFoundException("Einkaufszettel nicht gefunden"));
 
         artikelData.setEinkaufszettel(einkaufszettel);
@@ -95,7 +96,11 @@ public class EinkaufszettelService {
         return artikelRepository.save(artikelData);
     }
 
-    public Artikel updateArtikel(Long artikelId, Artikel artikelData) {
+    public Artikel updateArtikel(Long einkaufszettelId, Long artikelId, Artikel artikelData) {
+        User currentUserDB = userAuthenticationService.findCurrentUser();
+        einkaufszettelRepository.findByIdAndGeloeschtFalseAndOwners_IdOrSharedWith_Id(einkaufszettelId, currentUserDB, currentUserDB)
+                .orElseThrow(() -> new EntityNotFoundException("Einkaufszettel nicht gefunden"));
+
         return artikelRepository.findById(artikelId)
                 .map(artikel -> {
                     artikel.setName(artikelData.getName());
@@ -110,10 +115,15 @@ public class EinkaufszettelService {
                 .orElseThrow(() -> new EntityNotFoundException("Artikel nicht gefunden"));
     }
 
-    public void deleteArtikel(Long id) {
-        artikelRepository.findById(id)
+    public void deleteArtikel(Long einkaufszettelId, Long artikelId) {
+        User currentUserDB = userAuthenticationService.findCurrentUser();
+
+        einkaufszettelRepository.findByIdAndGeloeschtFalseAndOwners_IdOrSharedWith_Id(einkaufszettelId, currentUserDB, currentUserDB)
+                .orElseThrow(() -> new EntityNotFoundException("Einkaufszettel nicht gefunden"));
+
+        artikelRepository.findById(artikelId)
                 .orElseThrow(() -> new EntityNotFoundException("Artikel nicht gefunden"));
 
-        artikelRepository.deleteById(id);
+        artikelRepository.deleteById(artikelId);
     }
 }
