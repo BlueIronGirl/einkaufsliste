@@ -143,14 +143,14 @@ public class UserAuthenticationService {
     }
 
     /**
-     * Method to create a JWT-Token for a given User that is valid for 1 hour
+     * Method to create a JWT-Token for a given User that is valid for 12 hours
      *
      * @param user User to create the token for
      * @return JWT-Token
      */
     public String createToken(User user) {
         Date now = new Date();
-        Date validUntil = new Date(now.getTime() + 3_600_000); // 1 Hour
+        Date validUntil = new Date(now.getTime() + 43_200_000); // 12 Hours
 
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
         return JWT.create()
