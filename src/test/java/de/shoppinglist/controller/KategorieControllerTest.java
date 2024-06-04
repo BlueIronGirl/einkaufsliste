@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.shoppinglist.dto.KategorieDTO;
 import de.shoppinglist.entity.Kategorie;
 import de.shoppinglist.service.KategorieService;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,7 +46,7 @@ class KategorieControllerTest {
 
   @Test
   void selectAllKategorien_givenKategories_thenReturnAllKategorien() {
-    List<Kategorie> result = kategorieController.selectAllKategorien();
+    List<KategorieDTO> result = kategorieController.selectAllKategorien().getBody();
 
     assertEquals(result.get(0).getName(), TESTKATEGORIE_NAME);
   }
@@ -54,7 +55,7 @@ class KategorieControllerTest {
   void selectAllKategorien_givenEmptyList_thenReturnEmptyList() {
     kategorieList.clear();
 
-    List<Kategorie> result = kategorieController.selectAllKategorien();
+    List<KategorieDTO> result = kategorieController.selectAllKategorien().getBody();
 
     assertTrue(result.isEmpty());
   }

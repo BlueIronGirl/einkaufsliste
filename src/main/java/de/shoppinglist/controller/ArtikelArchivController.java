@@ -1,5 +1,7 @@
 package de.shoppinglist.controller;
 
+import de.shoppinglist.dto.ArtikelArchivDTO;
+import de.shoppinglist.dto.ModelMapperDTO;
 import de.shoppinglist.entity.Artikel;
 import de.shoppinglist.entity.ArtikelArchiv;
 import de.shoppinglist.service.ArtikelArchivService;
@@ -28,10 +30,12 @@ import java.util.List;
 @PreAuthorize("hasRole('GUEST')")
 public class ArtikelArchivController {
     private final ArtikelArchivService artikelArchivService;
+    private final ModelMapperDTO modelMapperDTO;
 
     @Autowired
-    public ArtikelArchivController(ArtikelArchivService artikelArchivService) {
+    public ArtikelArchivController(ArtikelArchivService artikelArchivService, ModelMapperDTO modelMapperDTO) {
         this.artikelArchivService = artikelArchivService;
+        this.modelMapperDTO = modelMapperDTO;
     }
 
     @Operation(summary = "Get all archived articles", description = "Get all archived articles")
@@ -41,8 +45,10 @@ public class ArtikelArchivController {
             })
     })
     @GetMapping
-    public List<ArtikelArchiv> selectAllArtikelArchiv() {
-        return artikelArchivService.findByUserId();
+    public ResponseEntity<List<ArtikelArchivDTO>> selectAllArtikelArchiv() {
+        List<ArtikelArchiv> artikelArchivs = artikelArchivService.findByUserId();
+
+        return ResponseEntity.ok(this.modelMapperDTO.mapList(artikelArchivs, ArtikelArchivDTO.class));
     }
 
     @Operation(summary = "Get all archived articles", description = "Get all archived articles")

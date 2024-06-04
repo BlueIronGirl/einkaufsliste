@@ -1,5 +1,6 @@
 package de.shoppinglist.service;
 
+import de.shoppinglist.entity.RoleName;
 import de.shoppinglist.entity.User;
 import de.shoppinglist.exception.EntityNotFoundException;
 import de.shoppinglist.repository.UserRepository;
@@ -31,6 +32,12 @@ public class UserService {
 
     public List<User> findAll() {
         return userRepository.findAll();
+    }
+
+    public List<User> findAllFriends() {
+        return findAll().stream()
+                .filter(user -> user.getRoles().stream().anyMatch(role -> role.getName().equals(RoleName.ROLE_ADMIN) || role.getName().equals(RoleName.ROLE_USER)))
+                .toList();
     }
 
     public User findById(Long id) {

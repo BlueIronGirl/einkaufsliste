@@ -1,7 +1,8 @@
 package de.shoppinglist.controller;
 
+import de.shoppinglist.dto.ModelMapperDTO;
 import de.shoppinglist.dto.RegisterDto;
-import de.shoppinglist.entity.RoleName;
+import de.shoppinglist.dto.UserDTO;
 import de.shoppinglist.entity.User;
 import de.shoppinglist.exception.EntityNotFoundException;
 import de.shoppinglist.service.UserAuthenticationService;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,11 +31,13 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     private final UserAuthenticationService userAuthenticationService;
+    private final ModelMapperDTO modelMapper;
 
     @Autowired
-    public UserController(UserService userService, UserAuthenticationService userAuthenticationService) {
+    public UserController(UserService userService, UserAuthenticationService userAuthenticationService, ModelMapperDTO modelMapper) {
         this.userService = userService;
         this.userAuthenticationService = userAuthenticationService;
+        this.modelMapper = modelMapper;
     }
 
     @Operation(summary = "Get all users except me", description = "Get all users")
@@ -44,10 +48,10 @@ public class UserController {
     })
     @GetMapping("/friends")
     @PreAuthorize("hasRole('USER')")
-    public List<User> selectAllFriends() {
-        return userService.findAll().stream()
-                .filter(user -> user.getRoles().stream().anyMatch(role -> role.getName().equals(RoleName.ROLE_ADMIN) || role.getName().equals(RoleName.ROLE_USER)))
-                .toList();
+    public ResponseEntity<List<UserDTO>> selectAllFriends() {
+        List<User> users = userService.findAllFriends();
+
+        return ResponseEntity.ok(modelMapper.mapList(users, UserDTO.class));
     }
 
     @Operation(summary = "Get all user", description = "Get all user")
@@ -57,13 +61,17 @@ public class UserController {
             })
     })
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(userService.findAll());
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        List<User> users = userService.findAll();
+
+        return ResponseEntity.ok(modelMapper.mapList(users, UserDTO.class));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.findById(id));
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+        User user = userService.findById(id);
+
+        return ResponseEntity.ok(modelMapper.getModelMapper().map(user, UserDTO.class));
     }
 
     @Operation(summary = "Create new user", description = "Create new user")
@@ -73,9 +81,9 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Invalid user")
     })
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody RegisterDto user) {
+    public ResponseEntity<UserDTO> createUser(@RequestBody RegisterDto user) {
         User createdUser = userAuthenticationService.register(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.getModelMapper().map(createdUser, UserDTO.class));
     }
 
     @Operation(summary = "Update one user", description = "Update one user")
@@ -87,8 +95,10 @@ public class UserController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = EntityNotFoundException.class))})
     })
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
-        return ResponseEntity.ok(userService.update(id, userDetails));
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
+        User user = userService.update(id, userDetails);
+
+        return ResponseEntity.ok(modelMapper.getModelMapper().map(user, UserDTO.class));
     }
 
     @Operation(summary = "Delete one user", description = "Delete one user")

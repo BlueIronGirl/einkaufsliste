@@ -1,5 +1,7 @@
 package de.shoppinglist.controller;
 
+import de.shoppinglist.dto.KategorieDTO;
+import de.shoppinglist.dto.ModelMapperDTO;
 import de.shoppinglist.entity.Kategorie;
 import de.shoppinglist.service.KategorieService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,10 +27,12 @@ import java.util.List;
 @PreAuthorize("hasRole('GUEST')")
 public class KategorieController {
     private final KategorieService kategorieService;
+    private final ModelMapperDTO modelMapperDTO;
 
     @Autowired
-    public KategorieController(KategorieService kategorieService) {
+    public KategorieController(KategorieService kategorieService, ModelMapperDTO modelMapperDTO) {
         this.kategorieService = kategorieService;
+        this.modelMapperDTO = modelMapperDTO;
     }
 
     @Operation(summary = "Get all categories", description = "Get all categories")
@@ -37,7 +42,9 @@ public class KategorieController {
             })
     })
     @GetMapping
-    public List<Kategorie> selectAllKategorien() {
-        return kategorieService.selectAllKategorien();
+    public ResponseEntity<List<KategorieDTO>> selectAllKategorien() {
+        List<Kategorie> kategorieList = kategorieService.selectAllKategorien();
+
+        return ResponseEntity.ok(modelMapperDTO.mapList(kategorieList, KategorieDTO.class));
     }
 }

@@ -1,18 +1,28 @@
 package de.shoppinglist.archunit;
 
+import com.tngtech.archunit.core.domain.JavaClass;
+import com.tngtech.archunit.core.domain.JavaMethod;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
+import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ArchRule;
+import com.tngtech.archunit.lang.ConditionEvents;
 import de.shoppinglist.controller.AuthController;
 import jakarta.persistence.Entity;
+import org.junit.jupiter.api.Assertions;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
-import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
+import java.util.List;
+
+import static com.tngtech.archunit.lang.ConditionEvent.createMessage;
+import static com.tngtech.archunit.lang.SimpleConditionEvent.satisfied;
+import static com.tngtech.archunit.lang.SimpleConditionEvent.violated;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.*;
 import static com.tngtech.archunit.library.DependencyRules.NO_CLASSES_SHOULD_DEPEND_UPPER_PACKAGES;
 
 @AnalyzeClasses(packages = "de.shoppinglist")
@@ -30,6 +40,37 @@ public class ClassRulesArchitectureTest {
             .andShould().beAnnotatedWith(PreAuthorize.class).orShould().be(AuthController.class)
             .andShould().haveSimpleNameEndingWith("Controller")
             .because("controllers should be in a controller package, be annotated with Controller or RestController and have Controller at the end of the class name.");
+
+    /**
+     * A rule that checks that all controllers methods only return an dto
+     */
+    @ArchTest
+    private final ArchRule controller_methods_should_return_an_dto_or_void = methods()
+            .that().areAnnotatedWith(GetMapping.class)
+            .or().areAnnotatedWith(PostMapping.class)
+            .or().areAnnotatedWith(PutMapping.class)
+            .or().areAnnotatedWith(DeleteMapping.class)
+
+            .should(returnAnDTO())
+            .because("controllers should return an responseentity with an dto or void");
+
+
+    private static ArchCondition<? super JavaMethod> returnAnDTO() {
+        return new ArchCondition<>("a controller method should return an dto and not an entity") {
+            @Override
+            public void check(JavaMethod javaMethod, ConditionEvents events) {
+                List<JavaClass> allClasses = javaMethod.getReturnType().getAllInvolvedRawTypes().stream().toList();
+
+                if (allClasses.stream().noneMatch(clazz -> clazz.getFullName().equals(ResponseEntity.class.getName()))) {
+                    events.add(violated(javaMethod, createMessage(javaMethod, "Method does not return ResponseEntity")));
+                } else if (allClasses.stream().noneMatch(clazz -> clazz.getFullName().endsWith("DTO") || clazz.getFullName().endsWith(Void.class.getName()))) {
+                    events.add(violated(javaMethod, createMessage(javaMethod, "Method does not return DTO")));
+                }
+            }
+        }
+
+                ;
+    }
 
     /**
      * A rule that checks that all services are in a service package, are annotated with Service and have Service at the end of the class name.
@@ -69,8 +110,8 @@ public class ClassRulesArchitectureTest {
      */
     @ArchTest
     private final ArchRule no_classes_should_depend_on_config_classes = noClasses()
-            .that().resideOutsideOfPackage("..config")
-            .should().dependOnClassesThat().resideInAPackage("..config..");
+            .that().resideOutsideOfPackage("de..config")
+            .should().dependOnClassesThat().resideInAPackage("de..config..");
 
     /**
      * A rule that checks that no class depends on upper packages

@@ -1,5 +1,8 @@
 package de.shoppinglist.controller;
 
+import de.shoppinglist.dto.ArtikelDTO;
+import de.shoppinglist.dto.EinkaufszettelDTO;
+import de.shoppinglist.dto.ModelMapperDTO;
 import de.shoppinglist.entity.Artikel;
 import de.shoppinglist.entity.Einkaufszettel;
 import de.shoppinglist.exception.EntityNotFoundException;
@@ -22,9 +25,11 @@ import java.util.List;
 @PreAuthorize("hasRole('GUEST')")
 public class EinkaufszettelController {
     private final EinkaufszettelService einkaufszettelService;
+    private final ModelMapperDTO modelMapperDTO;
 
-    public EinkaufszettelController(EinkaufszettelService einkaufszettelService) {
+    public EinkaufszettelController(EinkaufszettelService einkaufszettelService, ModelMapperDTO modelMapperDTO) {
         this.einkaufszettelService = einkaufszettelService;
+        this.modelMapperDTO = modelMapperDTO;
     }
 
     @Operation(summary = "Get all einkaufszettels", description = "Get all einkaufszettels")
@@ -34,8 +39,10 @@ public class EinkaufszettelController {
             })
     })
     @GetMapping
-    public ResponseEntity<List<Einkaufszettel>> selectAllActiveEinkaufszettels() {
-        return ResponseEntity.ok(einkaufszettelService.findActiveEinkaufszettelsByUserId());
+    public ResponseEntity<List<EinkaufszettelDTO>> selectAllActiveEinkaufszettels() {
+        List<Einkaufszettel> einkaufszettels = einkaufszettelService.findActiveEinkaufszettelsByUserId();
+
+        return ResponseEntity.ok(this.modelMapperDTO.mapList(einkaufszettels, EinkaufszettelDTO.class));
     }
 
     @Operation(summary = "Create new einkaufszettel", description = "Create new einkaufszettel")
@@ -45,8 +52,10 @@ public class EinkaufszettelController {
             @ApiResponse(responseCode = "400", description = "Invalid einkaufszettel")
     })
     @PostMapping
-    public Einkaufszettel createEinkaufszettel(@RequestBody Einkaufszettel einkaufszettel) {
-        return einkaufszettelService.saveEinkaufszettel(einkaufszettel);
+    public ResponseEntity<EinkaufszettelDTO> createEinkaufszettel(@RequestBody Einkaufszettel einkaufszettel) {
+        Einkaufszettel einkaufszettelSaved = einkaufszettelService.saveEinkaufszettel(einkaufszettel);
+
+        return ResponseEntity.ok(this.modelMapperDTO.getModelMapper().map(einkaufszettelSaved, EinkaufszettelDTO.class));
     }
 
     @Operation(summary = "Update one Einkaufszettel", description = "Update one Einkaufszettel")
@@ -58,8 +67,10 @@ public class EinkaufszettelController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = EntityNotFoundException.class))})
     })
     @PutMapping("{einkaufszettelId}")
-    public ResponseEntity<Einkaufszettel> updateEinkaufszettel(@PathVariable(name = "einkaufszettelId") Long id, @Valid @RequestBody Einkaufszettel einkaufszettel) {
-        return ResponseEntity.ok(einkaufszettelService.updateEinkaufszettel(id, einkaufszettel));
+    public ResponseEntity<EinkaufszettelDTO> updateEinkaufszettel(@PathVariable(name = "einkaufszettelId") Long id, @Valid @RequestBody Einkaufszettel einkaufszettel) {
+        Einkaufszettel einkaufszettelSaved = einkaufszettelService.updateEinkaufszettel(id, einkaufszettel);
+
+        return ResponseEntity.ok(this.modelMapperDTO.getModelMapper().map(einkaufszettelSaved, EinkaufszettelDTO.class));
     }
 
     @Operation(summary = "Delete one Einkaufszettel", description = "Delete one Einkaufszettel")
@@ -82,8 +93,10 @@ public class EinkaufszettelController {
             @ApiResponse(responseCode = "400", description = "Invalid article")
     })
     @PostMapping("/{einkaufszettelId}/artikel")
-    public ResponseEntity<Artikel> createArtikel(@PathVariable(name = "einkaufszettelId") Long einkaufszettelId, @Valid @RequestBody Artikel artikel) {
-        return ResponseEntity.ok(einkaufszettelService.createArtikel(einkaufszettelId, artikel));
+    public ResponseEntity<ArtikelDTO> createArtikel(@PathVariable(name = "einkaufszettelId") Long einkaufszettelId, @Valid @RequestBody Artikel artikel) {
+        Artikel artikelSaved = einkaufszettelService.createArtikel(einkaufszettelId, artikel);
+
+        return ResponseEntity.ok(this.modelMapperDTO.getModelMapper().map(artikelSaved, ArtikelDTO.class));
     }
 
     @Operation(summary = "Update one article", description = "Update one article")
@@ -95,8 +108,10 @@ public class EinkaufszettelController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = EntityNotFoundException.class))})
     })
     @PutMapping("/{einkaufszettelId}/artikel/{id}")
-    public ResponseEntity<Artikel> updateArtikel(@PathVariable(name = "einkaufszettelId") Long einkaufszettelId, @PathVariable(name = "id") Long id, @Valid @RequestBody Artikel artikelData) {
-        return ResponseEntity.ok(einkaufszettelService.updateArtikel(einkaufszettelId, id, artikelData));
+    public ResponseEntity<ArtikelDTO> updateArtikel(@PathVariable(name = "einkaufszettelId") Long einkaufszettelId, @PathVariable(name = "id") Long id, @Valid @RequestBody Artikel artikelData) {
+        Artikel artikelSaved = einkaufszettelService.updateArtikel(einkaufszettelId, id, artikelData);
+
+        return ResponseEntity.ok(this.modelMapperDTO.getModelMapper().map(artikelSaved, ArtikelDTO.class));
     }
 
     @Operation(summary = "Delete one article", description = "Delete one article")

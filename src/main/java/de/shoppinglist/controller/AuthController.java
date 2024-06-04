@@ -1,7 +1,9 @@
 package de.shoppinglist.controller;
 
 import de.shoppinglist.dto.LoginDto;
+import de.shoppinglist.dto.ModelMapperDTO;
 import de.shoppinglist.dto.RegisterDto;
+import de.shoppinglist.dto.UserDTO;
 import de.shoppinglist.entity.User;
 import de.shoppinglist.exception.EntityAlreadyExistsException;
 import de.shoppinglist.exception.EntityNotFoundException;
@@ -30,10 +32,12 @@ import java.net.URI;
 @RequestMapping("auth")
 public class AuthController {
     private final UserAuthenticationService userAuthenticationService;
+    private final ModelMapperDTO modelMapperDTO;
 
     @Autowired
-    public AuthController(UserAuthenticationService userAuthenticationService) {
+    public AuthController(UserAuthenticationService userAuthenticationService, ModelMapperDTO modelMapperDTO) {
         this.userAuthenticationService = userAuthenticationService;
+        this.modelMapperDTO = modelMapperDTO;
     }
 
     @Operation(summary = "Login to the Application and get a valid token", description = "Login to the Application and get a valid token")
@@ -48,11 +52,11 @@ public class AuthController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = EntityNotFoundException.class))})
     })
     @PostMapping("/login")
-    public ResponseEntity<User> login(@Valid @RequestBody LoginDto loginDto) {
+    public ResponseEntity<UserDTO> login(@Valid @RequestBody LoginDto loginDto) {
         User user = userAuthenticationService.login(loginDto);
         user.setToken(userAuthenticationService.createToken(user));
 
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(modelMapperDTO.getModelMapper().map(user, UserDTO.class));
     }
 
     @Operation(summary = "Register to the Application and get a valid token", description = "Register to the Application and get a valid token")
@@ -65,9 +69,9 @@ public class AuthController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = EntityAlreadyExistsException.class))})
     })
     @PostMapping("/register")
-    public ResponseEntity<User> register(@Valid @RequestBody RegisterDto registerDto) {
+    public ResponseEntity<UserDTO> register(@Valid @RequestBody RegisterDto registerDto) {
         User createdUser = userAuthenticationService.register(registerDto);
         createdUser.setToken(userAuthenticationService.createToken(createdUser));
-        return ResponseEntity.created(URI.create("/users/" + createdUser.getId())).body(createdUser);
+        return ResponseEntity.created(URI.create("/users/" + createdUser.getId())).body(modelMapperDTO.getModelMapper().map(createdUser, UserDTO.class));
     }
 }
