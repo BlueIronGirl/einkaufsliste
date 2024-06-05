@@ -12,6 +12,10 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MariaDB103Dialect
 
+  flyway:
+    enabled: true
+    baselineOnMigrate: true
+    validateOnMigrate: true
 
 server:
   error:

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.shoppinglist.dto.KategorieDTO;
+import de.shoppinglist.dto.ModelMapperDTO;
 import de.shoppinglist.entity.Kategorie;
 import de.shoppinglist.service.KategorieService;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +27,6 @@ class KategorieControllerTest {
   @Mock
   private KategorieService kategorieService;
 
-  @InjectMocks
   private KategorieController kategorieController;
 
   public static final String TESTKATEGORIE_NAME = "Kategorietestname";
@@ -35,6 +35,8 @@ class KategorieControllerTest {
 
   @BeforeEach
   public void setup() {
+    kategorieController = new KategorieController(kategorieService, new ModelMapperDTO());
+
     kategorieList.clear();
 
     Kategorie kategorie = new Kategorie();
