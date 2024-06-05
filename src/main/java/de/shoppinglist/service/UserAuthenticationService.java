@@ -64,42 +64,9 @@ public class UserAuthenticationService {
         User user = findByLogin(loginDto.getUsername());
 
         if (passwordEncoder.matches(CharBuffer.wrap(loginDto.getPassword()), user.getPassword())) {
-            fixRoles(user);
             return user;
         }
         throw new UnautorizedException("Passwort falsch!");
-    }
-
-    /**
-     * TODO: Kann bald weg. Nur zum Rollen zuweisen
-     *
-     * @param user user
-     */
-    private void fixRoles(User user) {
-        if (user.getRoles().isEmpty()) {
-
-            // wenn noch keine Rollen angelegt sind, erstmal die Rollen anlegen
-            if (roleRepository.findAll().isEmpty()) {
-                for (RoleName roleName : RoleName.values()) {
-                    Role role = Role.builder().name(roleName).build();
-                    roleRepository.save(role);
-                }
-            }
-
-            HashSet<Role> roles = new HashSet<>();
-            if (user.getUsername().equals("alice")) { // Alice -> Admin
-                roles.add(roleRepository.findByName(RoleName.ROLE_ADMIN));
-            } else { // Rest -> Gast
-                roles.add(roleRepository.findByName(RoleName.ROLE_GUEST));
-            }
-            user.setRoles(roles);
-
-            if (StringUtils.isEmpty(user.getEmail())) {
-                user.setEmail("changeme@test.de");
-            }
-
-            userRepository.save(user);
-        }
     }
 
     /**
