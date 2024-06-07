@@ -35,6 +35,7 @@ public class User extends EntityBase {
 
     @NotBlank
     @Email
+    @Column(unique = true)
     private String email;
 
     @Transient

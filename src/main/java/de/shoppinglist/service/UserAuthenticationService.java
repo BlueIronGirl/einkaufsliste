@@ -46,6 +46,8 @@ public class UserAuthenticationService {
     private static final Logger log = LoggerFactory.getLogger(UserAuthenticationService.class);
 
     private String secretKey; // secret key for JWT
+    private String clientUrl;
+
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final ConfirmationTokenRepository tokenRepository;
@@ -53,9 +55,10 @@ public class UserAuthenticationService {
     private final EmailService emailService;
 
     @Autowired
-    public UserAuthenticationService(@Value("${security.jwt.token.secret-key:secret-key}") String secretKey, UserRepository userRepository, RoleRepository roleRepository,
+    public UserAuthenticationService(@Value("${security.jwt.token.secret-key:secret-key}") String secretKey, @Value("${client.url}") String clientUrl, UserRepository userRepository, RoleRepository roleRepository,
                                      ConfirmationTokenRepository tokenRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.secretKey = secretKey;
+        this.clientUrl = clientUrl;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.tokenRepository = tokenRepository;
@@ -91,7 +94,7 @@ public class UserAuthenticationService {
      * @param registerDto RegisterDto containing the username, password and name of the new user
      * @return User-Object of the registered user
      */
-    public User register(RegisterDto registerDto, String currentUrl) {
+    public User register(RegisterDto registerDto) {
         Optional<User> optionalUser = userRepository.findByUsername(registerDto.getUsername());
 
         if (optionalUser.isPresent()) {
@@ -123,7 +126,7 @@ public class UserAuthenticationService {
 
         tokenRepository.save(confirmationToken);
 
-        String link = currentUrl.replace("register", "confirm") + "?token=" + token;
+        String link = this.clientUrl + "/registration-confirmation?token=" + token;
 
         try {
             emailService.sendEmail(user.getEmail(), "Confirm your email", "Link klappt noch nicht :( Please click the link to confirm your email: " + link);

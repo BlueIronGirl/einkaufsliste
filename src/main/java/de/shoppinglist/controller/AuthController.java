@@ -15,13 +15,10 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
 
 /**
  * Controller-Class providing the REST-Endpoints for the Login and Register of the Users of the Application
@@ -31,13 +28,11 @@ import java.net.URI;
 public class AuthController {
     private final UserAuthenticationService userAuthenticationService;
     private final ModelMapperDTO modelMapperDTO;
-    private final HttpServletRequest httpServletRequest;
 
     @Autowired
-    public AuthController(UserAuthenticationService userAuthenticationService, ModelMapperDTO modelMapperDTO, HttpServletRequest httpServletRequest) {
+    public AuthController(UserAuthenticationService userAuthenticationService, ModelMapperDTO modelMapperDTO) {
         this.userAuthenticationService = userAuthenticationService;
         this.modelMapperDTO = modelMapperDTO;
-        this.httpServletRequest = httpServletRequest;
     }
 
     @Operation(summary = "Login to the Application and get a valid token", description = "Login to the Application and get a valid token")
@@ -70,8 +65,7 @@ public class AuthController {
     })
     @PostMapping("/register")
     public ResponseEntity<Void> register(@Valid @RequestBody RegisterDto registerDto) {
-        String currentUrl = httpServletRequest.getRequestURL().toString();
-        User createdUser = userAuthenticationService.register(registerDto, currentUrl);
+        User createdUser = userAuthenticationService.register(registerDto);
         createdUser.setToken(userAuthenticationService.createToken(createdUser));
         return ResponseEntity.noContent().build();
     }
@@ -86,7 +80,8 @@ public class AuthController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = EntityAlreadyExistsException.class))})
     })
     @PostMapping("/confirm")
-    public ResponseEntity<String> confirm(@RequestParam("token") String token) {
-        return ResponseEntity.ok(this.userAuthenticationService.confirmEmailToken(token));
+    public ResponseEntity<Void> confirm(@RequestParam("token") String token) {
+        this.userAuthenticationService.confirmEmailToken(token);
+        return ResponseEntity.noContent().build();
     }
 }

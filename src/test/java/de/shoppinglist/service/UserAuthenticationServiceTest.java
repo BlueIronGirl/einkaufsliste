@@ -134,7 +134,7 @@ class UserAuthenticationServiceTest {
         when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
         given(userRepository.saveAndFlush(Mockito.any(User.class))).willReturn(user);
 
-        User user = userAuthenticationService.register(new RegisterDto("admin", "admin", "admin", "email@web.de"), "");
+        User user = userAuthenticationService.register(new RegisterDto("admin", "admin", "admin", "email@web.de"));
 
         verify(userRepository, Mockito.times(1)).saveAndFlush(Mockito.any(User.class));
         assertEquals(this.user.getUsername(), user.getUsername());
@@ -144,7 +144,7 @@ class UserAuthenticationServiceTest {
     void register_givenExisting_thenThrowException() {
         when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
 
-        assertThrows(RuntimeException.class, () -> userAuthenticationService.register(new RegisterDto("admin", "admin", "admin", "email@web.de"), ""));
+        assertThrows(RuntimeException.class, () -> userAuthenticationService.register(new RegisterDto("admin", "admin", "admin", "email@web.de")));
     }
 
 }
