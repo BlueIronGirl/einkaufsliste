@@ -1,7 +1,6 @@
 package de.shoppinglist.controller;
 
 import de.shoppinglist.dto.ModelMapperDTO;
-import de.shoppinglist.dto.RegisterDto;
 import de.shoppinglist.dto.UserDTO;
 import de.shoppinglist.entity.User;
 import de.shoppinglist.exception.EntityNotFoundException;
@@ -13,9 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -72,18 +69,6 @@ public class UserController {
         User user = userService.findById(id);
 
         return ResponseEntity.ok(modelMapper.getModelMapper().map(user, UserDTO.class));
-    }
-
-    @Operation(summary = "Create new user", description = "Create new user")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Ok",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = User.class))}),
-            @ApiResponse(responseCode = "400", description = "Invalid user")
-    })
-    @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody RegisterDto user) {
-        User createdUser = userAuthenticationService.register(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.getModelMapper().map(createdUser, UserDTO.class));
     }
 
     @Operation(summary = "Update one user", description = "Update one user")

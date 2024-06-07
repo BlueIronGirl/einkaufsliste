@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -56,8 +57,11 @@ public class User extends EntityBase {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
+    private LocalDateTime createdAt;
+    private LocalDateTime lastLoggedIn;
+
     @Builder
-    public User(Long id, String username, String password, String name, String email, String token, Set<Role> roles) {
+    public User(Long id, String username, String password, String name, String email, String token, Set<Role> roles, LocalDateTime createdAt, LocalDateTime lastLoggedIn) {
         super(id);
         this.username = username;
         this.password = password;
@@ -65,5 +69,7 @@ public class User extends EntityBase {
         this.email = email;
         this.token = token;
         this.roles = roles;
+        this.createdAt = createdAt;
+        this.lastLoggedIn = lastLoggedIn;
     }
 }

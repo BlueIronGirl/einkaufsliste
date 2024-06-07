@@ -3,6 +3,7 @@ package de.shoppinglist.service;
 import de.shoppinglist.dto.LoginDto;
 import de.shoppinglist.dto.RegisterDto;
 import de.shoppinglist.entity.User;
+import de.shoppinglist.repository.ConfirmationTokenRepository;
 import de.shoppinglist.repository.RoleRepository;
 import de.shoppinglist.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +39,13 @@ class UserAuthenticationServiceTest {
     private RoleRepository roleRepository;
 
     @Mock
+    private ConfirmationTokenRepository tokenRepository;
+
+    @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private EmailService emailService;
 
     @InjectMocks
     private UserAuthenticationService userAuthenticationService;
@@ -125,11 +132,11 @@ class UserAuthenticationServiceTest {
     @Test
     void register_givenNotExistingUser_thenReturnUser() {
         when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
-        given(userRepository.save(Mockito.any(User.class))).willReturn(user);
+        given(userRepository.saveAndFlush(Mockito.any(User.class))).willReturn(user);
 
-        User user = userAuthenticationService.register(new RegisterDto("admin", "admin", "admin", "email@web.de"));
+        User user = userAuthenticationService.register(new RegisterDto("admin", "admin", "admin", "email@web.de"), "");
 
-        verify(userRepository, Mockito.times(1)).save(Mockito.any(User.class));
+        verify(userRepository, Mockito.times(1)).saveAndFlush(Mockito.any(User.class));
         assertEquals(this.user.getUsername(), user.getUsername());
     }
 
@@ -137,7 +144,7 @@ class UserAuthenticationServiceTest {
     void register_givenExisting_thenThrowException() {
         when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
 
-        assertThrows(RuntimeException.class, () -> userAuthenticationService.register(new RegisterDto("admin", "admin", "admin", "email@web.de")));
+        assertThrows(RuntimeException.class, () -> userAuthenticationService.register(new RegisterDto("admin", "admin", "admin", "email@web.de"), ""));
     }
 
 }

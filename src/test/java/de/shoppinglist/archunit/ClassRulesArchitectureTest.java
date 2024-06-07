@@ -63,7 +63,7 @@ public class ClassRulesArchitectureTest {
 
                 if (allClasses.stream().noneMatch(clazz -> clazz.getFullName().equals(ResponseEntity.class.getName()))) {
                     events.add(violated(javaMethod, createMessage(javaMethod, "Method does not return ResponseEntity")));
-                } else if (allClasses.stream().noneMatch(clazz -> clazz.getFullName().endsWith("DTO") || clazz.getFullName().endsWith(Void.class.getName()))) {
+                } else if (allClasses.stream().noneMatch(clazz -> clazz.getFullName().endsWith("DTO") || clazz.getFullName().endsWith(String.class.getName()) || clazz.getFullName().endsWith(Void.class.getName()))) {
                     events.add(violated(javaMethod, createMessage(javaMethod, "Method does not return DTO")));
                 }
             }

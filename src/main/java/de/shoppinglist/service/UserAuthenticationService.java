@@ -6,17 +6,22 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import de.shoppinglist.dto.LoginDto;
 import de.shoppinglist.dto.RegisterDto;
+import de.shoppinglist.entity.ConfirmationToken;
 import de.shoppinglist.entity.Role;
 import de.shoppinglist.entity.RoleName;
 import de.shoppinglist.entity.User;
 import de.shoppinglist.exception.EntityAlreadyExistsException;
 import de.shoppinglist.exception.EntityNotFoundException;
 import de.shoppinglist.exception.UnautorizedException;
+import de.shoppinglist.repository.ConfirmationTokenRepository;
 import de.shoppinglist.repository.RoleRepository;
 import de.shoppinglist.repository.UserRepository;
-import io.micrometer.common.util.StringUtils;
+import de.shoppinglist.timer.RegistrationTimeoutTimer;
 import jakarta.annotation.PostConstruct;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,6 +34,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Service;
 
 import java.nio.CharBuffer;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -36,17 +42,25 @@ import java.util.*;
  */
 @Service
 public class UserAuthenticationService {
+
+    private static final Logger log = LoggerFactory.getLogger(UserAuthenticationService.class);
+
     private String secretKey; // secret key for JWT
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final ConfirmationTokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Autowired
-    public UserAuthenticationService(@Value("${security.jwt.token.secret-key:secret-key}") String secretKey, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public UserAuthenticationService(@Value("${security.jwt.token.secret-key:secret-key}") String secretKey, UserRepository userRepository, RoleRepository roleRepository,
+                                     ConfirmationTokenRepository tokenRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.secretKey = secretKey;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.tokenRepository = tokenRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
     @PostConstruct
@@ -62,6 +76,8 @@ public class UserAuthenticationService {
      */
     public User login(LoginDto loginDto) {
         User user = findByLogin(loginDto.getUsername());
+        user.setLastLoggedIn(LocalDateTime.now());
+        userRepository.save(user);
 
         if (passwordEncoder.matches(CharBuffer.wrap(loginDto.getPassword()), user.getPassword())) {
             return user;
@@ -75,7 +91,7 @@ public class UserAuthenticationService {
      * @param registerDto RegisterDto containing the username, password and name of the new user
      * @return User-Object of the registered user
      */
-    public User register(RegisterDto registerDto) {
+    public User register(RegisterDto registerDto, String currentUrl) {
         Optional<User> optionalUser = userRepository.findByUsername(registerDto.getUsername());
 
         if (optionalUser.isPresent()) {
@@ -92,9 +108,30 @@ public class UserAuthenticationService {
                 .name(registerDto.getName())
                 .email(registerDto.getEmail())
                 .roles(roles)
+                .createdAt(LocalDateTime.now())
                 .build();
 
-        return userRepository.save(user);
+        user = userRepository.saveAndFlush(user);
+
+        String token = UUID.randomUUID().toString();
+        ConfirmationToken confirmationToken = ConfirmationToken.builder()
+                .token(token)
+                .createdAt(LocalDateTime.now())
+                .expiresAt(LocalDateTime.now().plusMinutes(15))
+                .user(user)
+                .build();
+
+        tokenRepository.save(confirmationToken);
+
+        String link = currentUrl.replace("register", "confirm") + "?token=" + token;
+
+        try {
+            emailService.sendEmail(user.getEmail(), "Confirm your email", "Link klappt noch nicht :( Please click the link to confirm your email: " + link);
+        } catch (MessagingException e) {
+            log.error("Fehler beim Mail versenden: ", e);
+        }
+
+        return user;
     }
 
     public User findByLogin(String login) {
@@ -154,5 +191,32 @@ public class UserAuthenticationService {
             authorities.add(new SimpleGrantedAuthority(role.getName().name()));
         }
         return authorities;
+    }
+
+    public String confirmEmailToken(String token) {
+        ConfirmationToken confirmationToken = tokenRepository.findByToken(token)
+                .orElseThrow(() -> new IllegalStateException("Token not found or expired"));
+
+        if (confirmationToken.getConfirmedAt() != null || confirmationToken.getUser().getRoles().stream().noneMatch(role -> role.getName() == RoleName.ROLE_GUEST)) {
+            throw new IllegalStateException("Email already confirmed");
+        }
+
+        LocalDateTime expiredAt = confirmationToken.getExpiresAt();
+
+        if (expiredAt.isBefore(LocalDateTime.now())) {
+            throw new IllegalStateException("Token expired");
+        }
+
+        confirmationToken.setConfirmedAt(LocalDateTime.now());
+        tokenRepository.save(confirmationToken);
+
+        User user = confirmationToken.getUser();
+        Role roleUser = roleRepository.findByName(RoleName.ROLE_USER);
+        HashSet<Role> roles = new HashSet<>();
+        roles.add(roleUser);
+        user.setRoles(roles);
+        userRepository.save(user);
+
+        return "Email confirmed successfully";
     }
 }
