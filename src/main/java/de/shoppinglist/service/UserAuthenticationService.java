@@ -16,9 +16,7 @@ import de.shoppinglist.exception.UnautorizedException;
 import de.shoppinglist.repository.ConfirmationTokenRepository;
 import de.shoppinglist.repository.RoleRepository;
 import de.shoppinglist.repository.UserRepository;
-import de.shoppinglist.timer.RegistrationTimeoutTimer;
 import jakarta.annotation.PostConstruct;
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -128,11 +126,7 @@ public class UserAuthenticationService {
 
         String link = this.clientUrl + "/registration-confirmation?token=" + token;
 
-        try {
-            emailService.sendEmail(user.getEmail(), "Shopping-List: Bitte bestätigen Sie ihre E-Mail-Adresse", "Bitte klicken Sie auf diesen Link, um Ihre E-Mail-Adresse zu bestätigen: " + link);
-        } catch (MessagingException e) {
-            log.error("Fehler beim Mail versenden: ", e);
-        }
+        emailService.sendEmail(user.getEmail(), "Shopping-List: Bitte bestätigen Sie ihre E-Mail-Adresse", "Bitte klicken Sie auf diesen Link, um Ihre E-Mail-Adresse zu bestätigen: " + link);
 
         return user;
     }
