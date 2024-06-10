@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +50,25 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<UserDTO> login(@Valid @RequestBody LoginDto loginDto) {
         User user = userAuthenticationService.login(loginDto);
+        user.setToken(userAuthenticationService.createToken(user));
+
+        return ResponseEntity.ok(modelMapperDTO.getModelMapper().map(user, UserDTO.class));
+    }
+
+    @Operation(summary = "Refresh user token", description = "Renew user token")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok", content = {
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = User.class)))
+            }),
+            @ApiResponse(responseCode = "400", description = "Invalid user"),
+            @ApiResponse(responseCode = "409", description = "User already exists",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = EntityAlreadyExistsException.class))})
+    })
+    @PostMapping("/refresh-token")
+    public ResponseEntity<UserDTO> refreshToken(@Valid @RequestBody String token, HttpServletRequest request) {
+        userAuthenticationService.validateToken(request, token);
+
+        User user = userAuthenticationService.findCurrentUser();
         user.setToken(userAuthenticationService.createToken(user));
 
         return ResponseEntity.ok(modelMapperDTO.getModelMapper().map(user, UserDTO.class));
