@@ -129,7 +129,7 @@ public class UserAuthenticationService {
         String link = this.clientUrl + "/registration-confirmation?token=" + token;
 
         try {
-            emailService.sendEmail(user.getEmail(), "Confirm your email", "Link klappt noch nicht :( Please click the link to confirm your email: " + link);
+            emailService.sendEmail(user.getEmail(), "Shopping-List: Bitte bestätigen Sie ihre E-Mail-Adresse", "Bitte klicken Sie auf diesen Link, um Ihre E-Mail-Adresse zu bestätigen: " + link);
         } catch (MessagingException e) {
             log.error("Fehler beim Mail versenden: ", e);
         }
