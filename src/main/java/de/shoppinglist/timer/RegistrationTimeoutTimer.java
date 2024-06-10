@@ -51,7 +51,7 @@ public class RegistrationTimeoutTimer {
         timedoutUsers.forEach(user -> emailService.sendEmail(user.getEmail(), "Shopping-List: Account wurde gelöscht", emailText));
         userRepository.deleteAll(timedoutUsers);
 
-        List<User> oldUsersWithoutData = userRepository.findByLastLoggedInBeforeAndEinkaufszettelsOwnerEmptyAndEinkaufszettelsSharedWithEmpty(LocalDateTime.now().minusDays(90)); // inaktive User die keinen Einkaufszettel besitzen
+        List<User> oldUsersWithoutData = userRepository.findByLastLoggedInBeforeAndEinkaufszettelsOwnerEmptyAndEinkaufszettelsSharedWithEmpty(LocalDateTime.now().minusDays(180)); // inaktive User die keinen Einkaufszettel besitzen
         oldUsersWithoutData.forEach(user -> emailService.sendEmail(user.getEmail(), "Shopping-List: Account wurde gelöscht", emailText));
         userRepository.deleteAll(oldUsersWithoutData);
 
