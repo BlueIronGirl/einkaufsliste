@@ -163,8 +163,8 @@ class UserServiceTest {
     }
 
     @Test
-    void deleteById_givenExistingUserWithEinkaufszettelOwnedUserAndSharedWithAnotherUser_thenDeleteUserAndChangeOwnerAndSharedWithOfEinkaufszettel() {
-        Einkaufszettel einkaufszettel = createEinkaufszettel(List.of(user), List.of(user2));
+    void deleteById_givenExistingUserWithEinkaufszettelOwnedUserAndSharedWithAnotherUsers_thenDeleteUserAndChangeOwnerAndSharedWithOfEinkaufszettel() {
+        Einkaufszettel einkaufszettel = createEinkaufszettel(List.of(user), List.of(user2, user3));
         user.setEinkaufszettelsOwner(List.of(einkaufszettel));
 
         when(userRepository.findById(any())).thenReturn(Optional.of(user));
@@ -174,6 +174,7 @@ class UserServiceTest {
         assertFalse(einkaufszettel.getOwners().contains(user));
         assertFalse(einkaufszettel.getSharedWith().contains(user));
         assertTrue(einkaufszettel.getOwners().contains(user2));
+        assertTrue(einkaufszettel.getOwners().contains(user3));
         verify(userRepository, times(1)).deleteById(user.getId());
         verify(einkaufszettelRepository, times(0)).deleteById(einkaufszettel.getId());
         verify(einkaufszettelRepository, times(1)).save(einkaufszettel);

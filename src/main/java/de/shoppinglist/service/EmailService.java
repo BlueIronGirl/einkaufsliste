@@ -1,5 +1,6 @@
 package de.shoppinglist.service;
 
+import de.shoppinglist.exception.ValidationException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
@@ -36,7 +37,7 @@ public class EmailService {
             log.debug("E-Mail wurde versendet an {} mit dem Titel {} und dem Inhalt {}", to, subject, body);
         } catch (MessagingException e) {
             log.error("Fehler beim Mail versenden: ", e);
-            throw new RuntimeException("Fehler beim E-Mail versenden");
+            throw new ValidationException("Fehler beim E-Mail versenden");
         }
     }
 }
