@@ -76,9 +76,9 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    private void deleteFullEinkaufszettel(Einkaufszettel einkaufszettel) { //TODO: werden auch user rollen geloescht?
+    private void deleteFullEinkaufszettel(Einkaufszettel einkaufszettel) {
         einkaufszettel.getArtikels().forEach(artikel -> artikelRepository.deleteById(artikel.getId()));
-        einkaufszettel.getArtikelsArchiv().forEach(artikelArchiv -> artikelRepository.deleteById(artikelArchiv.getId()));
+        einkaufszettel.getArtikelsArchiv().forEach(artikelArchiv -> artikelArchivRepository.deleteById(artikelArchiv.getId()));
         einkaufszettelRepository.deleteById(einkaufszettel.getId());
     }
 
