@@ -12,8 +12,9 @@ import java.util.List;
  */
 public interface ArtikelRepository extends JpaRepository<Artikel, Long> {
     @Query("select artikel from Artikel artikel " +
-            "where ?1 MEMBER OF artikel.einkaufszettel.owners " +
-            "or ?2 MEMBER OF artikel.einkaufszettel.sharedWith"
+            "where artikel.gekauft = true " +
+            "and (?1 MEMBER OF artikel.einkaufszettel.owners " +
+            "or ?2 MEMBER OF artikel.einkaufszettel.sharedWith)"
     )
     List<Artikel> findByGekauftTrueAndEinkaufszettel_Owners_IdOrEinkaufszettel_SharedWith_Id(User owner, User sharedWith);
 }
