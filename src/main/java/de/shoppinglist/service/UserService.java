@@ -1,8 +1,12 @@
 package de.shoppinglist.service;
 
+import de.shoppinglist.entity.Einkaufszettel;
 import de.shoppinglist.entity.RoleName;
 import de.shoppinglist.entity.User;
 import de.shoppinglist.exception.EntityNotFoundException;
+import de.shoppinglist.repository.ArtikelArchivRepository;
+import de.shoppinglist.repository.ArtikelRepository;
+import de.shoppinglist.repository.EinkaufszettelRepository;
 import de.shoppinglist.repository.UserRepository;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.nio.CharBuffer;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service-Class providing the business logic for the User-Entity
@@ -22,11 +27,17 @@ import java.util.List;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final EinkaufszettelRepository einkaufszettelRepository;
+    private final ArtikelRepository artikelRepository;
+    private final ArtikelArchivRepository artikelArchivRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, EinkaufszettelRepository einkaufszettelRepository, ArtikelRepository artikelRepository, ArtikelArchivRepository artikelArchivRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.einkaufszettelRepository = einkaufszettelRepository;
+        this.artikelRepository = artikelRepository;
+        this.artikelArchivRepository = artikelArchivRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -45,11 +56,30 @@ public class UserService {
     }
 
     public void deleteById(Long id) {
-        if (userRepository.existsById(id)) {
-            userRepository.deleteById(id);
-        } else {
-            throw new EntityNotFoundException("User nicht gefunden");
+        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User nicht gefunden"));
+
+        for (Einkaufszettel einkaufszettel : user.getEinkaufszettelsOwner()) {
+            // User aus Owner und SharedWith rausfiltern
+            einkaufszettel.setOwners(einkaufszettel.getOwners().stream().filter(owner -> !owner.getId().equals(user.getId())).collect(Collectors.toList()));
+            einkaufszettel.setSharedWith(einkaufszettel.getSharedWith().stream().filter(owner -> !owner.getId().equals(user.getId())).collect(Collectors.toList()));
+
+            if (einkaufszettel.getOwners().isEmpty() && einkaufszettel.getSharedWith().isEmpty()) {
+                deleteFullEinkaufszettel(einkaufszettel);
+            } else {
+                if (einkaufszettel.getOwners().isEmpty()) { // wenn es keinen Owner mehr gibt aber noch Shared-With -> Shared-With wird Owner
+                    einkaufszettel.setOwners(einkaufszettel.getSharedWith());
+                }
+                einkaufszettelRepository.save(einkaufszettel);
+            }
         }
+
+        userRepository.deleteById(id);
+    }
+
+    private void deleteFullEinkaufszettel(Einkaufszettel einkaufszettel) { //TODO: werden auch user rollen geloescht?
+        einkaufszettel.getArtikels().forEach(artikel -> artikelRepository.deleteById(artikel.getId()));
+        einkaufszettel.getArtikelsArchiv().forEach(artikelArchiv -> artikelRepository.deleteById(artikelArchiv.getId()));
+        einkaufszettelRepository.deleteById(einkaufszettel.getId());
     }
 
     public User update(Long id, User userDetails) {

@@ -8,6 +8,7 @@ import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.ConditionEvents;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import static com.tngtech.archunit.lang.ConditionEvent.createMessage;
 import static com.tngtech.archunit.lang.SimpleConditionEvent.satisfied;
@@ -21,7 +22,7 @@ public class UnitArchitectureTest {
      * A rule that checks that all unit tests contain an assertion.
      */
     @ArchTest
-    private final ArchRule unit_tests_should_have_an_assertion = methods()
+    private final ArchRule unit_tests_should_have_an_assertion_or_an_verification = methods()
             .that().areAnnotatedWith(Test.class)
             .should(callAnAssertion());
 
@@ -29,8 +30,9 @@ public class UnitArchitectureTest {
         return new ArchCondition<>("a unit test should assert something") {
             @Override
             public void check(JavaMethod javaMethod, ConditionEvents events) {
-                if (javaMethod.getMethodCallsFromSelf().stream().noneMatch(javaMethodCall -> javaMethodCall.getTargetOwner().isAssignableTo(Assertions.class))) {
-                    events.add(violated(javaMethod, createMessage(javaMethod, "Method does not contain an assertion")));
+                if (javaMethod.getMethodCallsFromSelf().stream().noneMatch(javaMethodCall -> javaMethodCall.getTargetOwner().isAssignableTo(Assertions.class)) &&
+                        javaMethod.getMethodCallsFromSelf().stream().noneMatch(javaMethodCall -> javaMethodCall.getName().startsWith("verify"))) {
+                    events.add(violated(javaMethod, createMessage(javaMethod, "Method does not contain an assertion or verify")));
                 } else {
                     events.add(satisfied(javaMethod, "Method contains an assertion"));
                 }

@@ -1,5 +1,6 @@
 package de.shoppinglist.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.shoppinglist.entity.base.EntityBase;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,6 +18,11 @@ public class Einkaufszettel extends EntityBase {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "einkaufszettel")
     @ToString.Exclude
     private List<Artikel> artikels;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "einkaufszettel")
+    @ToString.Exclude
+    @JsonIgnore
+    private List<ArtikelArchiv> artikelsArchiv;
 
     @ManyToMany
     @JoinTable(
@@ -39,10 +45,11 @@ public class Einkaufszettel extends EntityBase {
     private boolean geloescht;
 
     @Builder
-    public Einkaufszettel(Long id, String name, List<Artikel> artikels, List<User> owners, List<User> sharedWith, boolean geloescht) {
+    public Einkaufszettel(Long id, String name, List<Artikel> artikels, List<ArtikelArchiv> artikelsArchiv, List<User> owners, List<User> sharedWith, boolean geloescht) {
         super(id);
         this.name = name;
         this.artikels = artikels;
+        this.artikelsArchiv = artikelsArchiv;
         this.owners = owners;
         this.sharedWith = sharedWith;
         this.geloescht = geloescht;

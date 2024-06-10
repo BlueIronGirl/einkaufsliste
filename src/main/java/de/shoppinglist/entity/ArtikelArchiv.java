@@ -44,6 +44,7 @@ public class ArtikelArchiv extends EntityBase {
         this(artikel.getId(), artikel.getName(), artikel.getKategories(), artikel.getAnzahl(), artikel.getErstellungsZeitpunkt(), artikel.getKaufZeitpunkt(), artikel.getEinkaufszettel());
     }
 
+    @Builder
     public ArtikelArchiv(Long id, Long id1, String name, List<Kategorie> kategories, int anzahl, LocalDateTime erstellungsZeitpunkt, LocalDateTime kaufZeitpunkt) {
         super(id);
         this.id = id1;
