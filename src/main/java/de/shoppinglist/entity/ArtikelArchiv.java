@@ -37,11 +37,14 @@ public class ArtikelArchiv extends EntityBase {
 
     @ManyToOne
     @JoinColumn(name = "einkaufszettel_id", nullable = false)
-    @JsonIgnore
     private Einkaufszettel einkaufszettel;
 
+    @ManyToOne
+    @JoinColumn(name = "kaeufer_id")
+    private User kaeufer;
+
     public ArtikelArchiv(Artikel artikel) {
-        this(artikel.getId(), artikel.getName(), artikel.getKategories(), artikel.getAnzahl(), artikel.getErstellungsZeitpunkt(), artikel.getKaufZeitpunkt(), artikel.getEinkaufszettel());
+        this(artikel.getId(), artikel.getName(), artikel.getKategories(), artikel.getAnzahl(), artikel.getErstellungsZeitpunkt(), artikel.getKaufZeitpunkt(), artikel.getEinkaufszettel(), artikel.getKaeufer());
     }
 
     @Builder

@@ -107,6 +107,7 @@ public class EinkaufszettelService {
                     artikel.setAnzahl(artikelData.getAnzahl());
                     if (!artikel.isGekauft() && artikelData.isGekauft()) {
                         artikel.setKaufZeitpunkt(LocalDateTime.now());
+                        artikel.setKaeufer(currentUserDB);
                     }
                     artikel.setGekauft(artikelData.isGekauft());
                     artikel.setKategories(artikelData.getKategories());

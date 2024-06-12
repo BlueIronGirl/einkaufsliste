@@ -18,4 +18,5 @@ public class ArtikelDTO {
     private boolean gekauft;
     private LocalDateTime erstellungsZeitpunkt;
     private LocalDateTime kaufZeitpunkt;
+    private UserDTO kaeufer;
 }

@@ -40,6 +40,10 @@ public class Artikel extends EntityBase {
 
     private LocalDateTime kaufZeitpunkt;
 
+    @ManyToOne
+    @JoinColumn(name = "kaeufer_id")
+    private User kaeufer;
+
     @Builder
     public Artikel(Long id, String name, List<Kategorie> kategories, int anzahl, boolean gekauft, LocalDateTime erstellungsZeitpunkt, LocalDateTime kaufZeitpunkt) {
         super(id);

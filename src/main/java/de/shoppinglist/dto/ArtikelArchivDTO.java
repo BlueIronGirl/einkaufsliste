@@ -17,4 +17,6 @@ public class ArtikelArchivDTO {
     private int anzahl;
     private LocalDateTime erstellungsZeitpunkt;
     private LocalDateTime kaufZeitpunkt;
+    private EinkaufszettelDTO einkaufszettel;
+    private UserDTO kaeufer;
 }
