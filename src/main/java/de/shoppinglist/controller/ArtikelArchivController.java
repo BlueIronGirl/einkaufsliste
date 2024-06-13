@@ -50,16 +50,4 @@ public class ArtikelArchivController {
 
         return ResponseEntity.ok(this.modelMapperDTO.mapList(artikelArchivs, ArtikelArchivDTO.class));
     }
-
-    @Operation(summary = "Get all archived articles", description = "Get all archived articles")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Ok", content = {
-                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Artikel.class)))
-            })
-    })
-    @PostMapping("/archiviereGekaufteArtikel")
-    public ResponseEntity<Void> archiviereGekaufteArtikel() {
-        artikelArchivService.archiviereGekaufteArtikel();
-        return ResponseEntity.noContent().build();
-    }
 }

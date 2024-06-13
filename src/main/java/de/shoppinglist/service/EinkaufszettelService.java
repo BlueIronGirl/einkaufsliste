@@ -1,11 +1,13 @@
 package de.shoppinglist.service;
 
 import de.shoppinglist.entity.Artikel;
+import de.shoppinglist.entity.ArtikelArchiv;
 import de.shoppinglist.entity.Einkaufszettel;
 import de.shoppinglist.entity.User;
 import de.shoppinglist.exception.EntityNotFoundException;
 import de.shoppinglist.exception.UnautorizedException;
 import de.shoppinglist.exception.ValidationException;
+import de.shoppinglist.repository.ArtikelArchivRepository;
 import de.shoppinglist.repository.ArtikelRepository;
 import de.shoppinglist.repository.EinkaufszettelRepository;
 import org.springframework.stereotype.Service;
@@ -19,11 +21,13 @@ public class EinkaufszettelService {
     private final EinkaufszettelRepository einkaufszettelRepository;
     private final ArtikelRepository artikelRepository;
     private final UserAuthenticationService userAuthenticationService;
+    private final ArtikelArchivRepository artikelArchivRepository;
 
-    public EinkaufszettelService(EinkaufszettelRepository einkaufszettelRepository, ArtikelRepository artikelRepository, UserAuthenticationService userAuthenticationService) {
+    public EinkaufszettelService(EinkaufszettelRepository einkaufszettelRepository, ArtikelRepository artikelRepository, UserAuthenticationService userAuthenticationService, ArtikelArchivRepository artikelArchivRepository) {
         this.einkaufszettelRepository = einkaufszettelRepository;
         this.artikelRepository = artikelRepository;
         this.userAuthenticationService = userAuthenticationService;
+        this.artikelArchivRepository = artikelArchivRepository;
     }
 
     public List<Einkaufszettel> findActiveEinkaufszettelsByUserId() {
@@ -126,5 +130,17 @@ public class EinkaufszettelService {
                 .orElseThrow(() -> new EntityNotFoundException("Artikel nicht gefunden"));
 
         artikelRepository.deleteById(artikelId);
+    }
+
+    public void archiviereGekaufteArtikel(Long einkaufszettelId) {
+        User currentUser = userAuthenticationService.findCurrentUser();
+
+        List<Artikel> gekaufteArtikel = artikelRepository.findByGekauftTrueAndEinkaufszettel_Owners_IdOrEinkaufszettel_SharedWith_Id(einkaufszettelId, currentUser, currentUser);
+
+        // Artikel archivieren
+        gekaufteArtikel.stream().map(ArtikelArchiv::new).forEach(artikelArchivRepository::saveAndFlush);
+
+        // Artikel aus Einkaufszettel loeschen
+        gekaufteArtikel.forEach(artikel -> artikelRepository.deleteById(artikel.getId()));
     }
 }

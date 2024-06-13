@@ -127,4 +127,16 @@ public class EinkaufszettelController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Archive all articles of einkaufszettel", description = "Archive all articles of einkaufszettel")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok", content = {
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema()))
+            })
+    })
+    @PostMapping("/{einkaufszettelId}/archiviereGekaufteArtikel")
+    public ResponseEntity<Void> archiviereGekaufteArtikel(@PathVariable(name = "einkaufszettelId") Long einkaufszettelId) {
+        einkaufszettelService.archiviereGekaufteArtikel(einkaufszettelId);
+        return ResponseEntity.noContent().build();
+    }
+
 }
