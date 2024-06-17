@@ -27,13 +27,11 @@ import java.util.List;
 @PreAuthorize("hasRole('ADMIN')")
 public class UserController {
     private final UserService userService;
-    private final UserAuthenticationService userAuthenticationService;
     private final ModelMapperDTO modelMapper;
 
     @Autowired
-    public UserController(UserService userService, UserAuthenticationService userAuthenticationService, ModelMapperDTO modelMapper) {
+    public UserController(UserService userService, ModelMapperDTO modelMapper) {
         this.userService = userService;
-        this.userAuthenticationService = userAuthenticationService;
         this.modelMapper = modelMapper;
     }
 
