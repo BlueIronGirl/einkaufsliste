@@ -17,11 +17,13 @@ public class Einkaufszettel extends EntityBase {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "einkaufszettel")
     @ToString.Exclude
+    @OrderBy("name")
     private List<Artikel> artikels;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "einkaufszettel")
     @ToString.Exclude
     @JsonIgnore
+    @OrderBy("name")
     private List<ArtikelArchiv> artikelsArchiv;
 
     @ManyToMany

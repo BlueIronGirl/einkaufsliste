@@ -13,7 +13,8 @@ import java.util.List;
 public interface ArtikelArchivRepository extends JpaRepository<ArtikelArchiv, Long> {
     @Query("select archiv from ArtikelArchiv archiv " +
             "where ?1 MEMBER OF archiv.einkaufszettel.owners " +
-            "or ?2 MEMBER OF archiv.einkaufszettel.sharedWith"
+            "or ?2 MEMBER OF archiv.einkaufszettel.sharedWith "+
+            "order by archiv.einkaufszettel.name, archiv.kaufZeitpunkt"
     )
     List<ArtikelArchiv> findByEinkaufszettel_Owners_IdOrEinkaufszettel_SharedWith_IdOrderByKaufZeitpunktDesc(User owner, User sharedWith);
 
