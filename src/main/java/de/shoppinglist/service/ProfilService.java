@@ -5,6 +5,7 @@ import de.shoppinglist.entity.User;
 import de.shoppinglist.exception.EntityNotFoundException;
 import de.shoppinglist.exception.InternalServerErrorException;
 import de.shoppinglist.repository.UserRepository;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,10 @@ public class ProfilService {
         try {
             User userDB = userRepository.findById(user.getId()).orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-            if (user.getAvatarBase64() != null) {
+            userDB.setName(user.getName());
+            userDB.setEmail(user.getEmail());
+
+            if (StringUtils.isNotEmpty(user.getAvatarBase64())) {
                 saveBase64File(userDB, user.getAvatarBase64());
             }
 

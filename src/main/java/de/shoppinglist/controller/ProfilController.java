@@ -1,6 +1,5 @@
 package de.shoppinglist.controller;
 
-import de.shoppinglist.dto.ArtikelDTO;
 import de.shoppinglist.dto.ModelMapperDTO;
 import de.shoppinglist.dto.UserDTO;
 import de.shoppinglist.entity.User;
@@ -39,7 +38,7 @@ public class ProfilController {
                     @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema()))
             })
     })
-    @PostMapping("/uploadFile")
+    @PostMapping
     public ResponseEntity<UserDTO> saveUserProfile(@RequestBody UserDTO user) {
         User userDB = this.profilService.saveUserProfile(user);
         return ResponseEntity.ok(this.modelMapper.getModelMapper().map(userDB, UserDTO.class));
