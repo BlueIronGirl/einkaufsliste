@@ -22,7 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/einkaufszettel")
-@PreAuthorize("hasRole('GUEST')")
+@PreAuthorize("hasRole('USER')")
 public class EinkaufszettelController {
     private final EinkaufszettelService einkaufszettelService;
     private final ModelMapperDTO modelMapperDTO;

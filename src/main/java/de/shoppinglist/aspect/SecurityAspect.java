@@ -4,7 +4,7 @@ import de.shoppinglist.entity.Einkaufszettel;
 import de.shoppinglist.entity.User;
 import de.shoppinglist.exception.UnautorizedException;
 import de.shoppinglist.repository.EinkaufszettelRepository;
-import de.shoppinglist.service.UserAuthenticationService;
+import de.shoppinglist.service.AuthService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -25,11 +25,11 @@ import java.util.List;
 @Component
 public class SecurityAspect {
     private static final Logger logger = LoggerFactory.getLogger(SecurityAspect.class);
-    private final UserAuthenticationService userAuthenticationService;
+    private final AuthService authService;
     private final EinkaufszettelRepository einkaufszettelRepository;
 
-    public SecurityAspect(UserAuthenticationService userAuthenticationService, EinkaufszettelRepository einkaufszettelRepository) {
-        this.userAuthenticationService = userAuthenticationService;
+    public SecurityAspect(AuthService authService, EinkaufszettelRepository einkaufszettelRepository) {
+        this.authService = authService;
         this.einkaufszettelRepository = einkaufszettelRepository;
     }
 
@@ -59,7 +59,7 @@ public class SecurityAspect {
      */
     @Around("applicationPackagePointcut() && springBeanPointcut()")
     public Object checkAround(ProceedingJoinPoint joinPoint) throws Throwable {
-        User currentUser = this.userAuthenticationService.findCurrentUser();
+        User currentUser = this.authService.findCurrentUser();
 
         if (!joinPoint.getSignature().getName().startsWith("create")) {
             for (Object arg : joinPoint.getArgs()) {

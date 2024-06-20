@@ -8,7 +8,7 @@ import de.shoppinglist.entity.User;
 import de.shoppinglist.exception.EntityAlreadyExistsException;
 import de.shoppinglist.exception.EntityNotFoundException;
 import de.shoppinglist.exception.UnautorizedException;
-import de.shoppinglist.service.UserAuthenticationService;
+import de.shoppinglist.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,12 +27,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("auth")
 public class AuthController {
-    private final UserAuthenticationService userAuthenticationService;
+    private final AuthService authService;
     private final ModelMapperDTO modelMapperDTO;
 
     @Autowired
-    public AuthController(UserAuthenticationService userAuthenticationService, ModelMapperDTO modelMapperDTO) {
-        this.userAuthenticationService = userAuthenticationService;
+    public AuthController(AuthService authService, ModelMapperDTO modelMapperDTO) {
+        this.authService = authService;
         this.modelMapperDTO = modelMapperDTO;
     }
 
@@ -49,8 +49,8 @@ public class AuthController {
     })
     @PostMapping("/login")
     public ResponseEntity<UserDTO> login(@Valid @RequestBody LoginDto loginDto) {
-        User user = userAuthenticationService.login(loginDto);
-        user.setToken(userAuthenticationService.createToken(user));
+        User user = authService.login(loginDto);
+        user.setToken(authService.createToken(user));
 
         return ResponseEntity.ok(modelMapperDTO.getModelMapper().map(user, UserDTO.class));
     }
@@ -66,10 +66,10 @@ public class AuthController {
     })
     @PostMapping("/refresh-token")
     public ResponseEntity<UserDTO> refreshToken(@Valid @RequestBody String token, HttpServletRequest request) {
-        userAuthenticationService.validateToken(request, token);
+        authService.validateToken(request, token);
 
-        User user = userAuthenticationService.findCurrentUser();
-        user.setToken(userAuthenticationService.createToken(user));
+        User user = authService.findCurrentUser();
+        user.setToken(authService.createToken(user));
 
         return ResponseEntity.ok(modelMapperDTO.getModelMapper().map(user, UserDTO.class));
     }
@@ -85,8 +85,8 @@ public class AuthController {
     })
     @PostMapping("/register")
     public ResponseEntity<Void> register(@Valid @RequestBody RegisterDto registerDto) {
-        User createdUser = userAuthenticationService.register(registerDto);
-        createdUser.setToken(userAuthenticationService.createToken(createdUser));
+        User createdUser = authService.register(registerDto);
+        createdUser.setToken(authService.createToken(createdUser));
         return ResponseEntity.noContent().build();
     }
 
@@ -101,7 +101,7 @@ public class AuthController {
     })
     @PostMapping("/confirm")
     public ResponseEntity<Void> confirm(@RequestParam("token") String token) {
-        this.userAuthenticationService.confirmEmailToken(token);
+        this.authService.confirmEmailToken(token);
         return ResponseEntity.noContent().build();
     }
 }

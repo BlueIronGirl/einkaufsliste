@@ -1,6 +1,5 @@
 package de.shoppinglist.service;
 
-import de.shoppinglist.entity.Artikel;
 import de.shoppinglist.entity.ArtikelArchiv;
 import de.shoppinglist.entity.User;
 import de.shoppinglist.repository.ArtikelArchivRepository;
@@ -21,16 +20,16 @@ import java.util.List;
 @Service
 public class ArtikelArchivService {
     private final ArtikelArchivRepository artikelArchivRepository;
-    private final UserAuthenticationService userAuthenticationService;
+    private final AuthService authService;
 
     @Autowired
-    public ArtikelArchivService(ArtikelArchivRepository artikelArchivRepository, UserAuthenticationService userAuthenticationService) {
+    public ArtikelArchivService(ArtikelArchivRepository artikelArchivRepository, AuthService authService) {
         this.artikelArchivRepository = artikelArchivRepository;
-        this.userAuthenticationService = userAuthenticationService;
+        this.authService = authService;
     }
 
     public List<ArtikelArchiv> findByUserId() {
-        User currentUser = userAuthenticationService.findCurrentUser();
+        User currentUser = authService.findCurrentUser();
 
         return artikelArchivRepository.findByEinkaufszettel_Owners_IdOrEinkaufszettel_SharedWith_IdOrderByKaufZeitpunktDesc(currentUser, currentUser);
     }

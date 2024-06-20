@@ -24,7 +24,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("kategorien")
-@PreAuthorize("hasRole('GUEST')")
+@PreAuthorize("hasRole('USER')")
 public class KategorieController {
     private final KategorieService kategorieService;
     private final ModelMapperDTO modelMapperDTO;

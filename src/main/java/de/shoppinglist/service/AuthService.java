@@ -39,9 +39,9 @@ import java.util.*;
  * Component-Class providing the UserAuthenticationProvider to create and validate JWT-Tokens
  */
 @Service
-public class UserAuthenticationService {
+public class AuthService {
 
-    private static final Logger log = LoggerFactory.getLogger(UserAuthenticationService.class);
+    private static final Logger log = LoggerFactory.getLogger(AuthService.class);
 
     private String secretKey; // secret key for JWT
     private String clientUrl;
@@ -53,8 +53,8 @@ public class UserAuthenticationService {
     private final EmailService emailService;
 
     @Autowired
-    public UserAuthenticationService(@Value("${security.jwt.token.secret-key:secret-key}") String secretKey, @Value("${client.url}") String clientUrl, UserRepository userRepository, RoleRepository roleRepository,
-                                     ConfirmationTokenRepository tokenRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
+    public AuthService(@Value("${security.jwt.token.secret-key:secret-key}") String secretKey, @Value("${client.url}") String clientUrl, UserRepository userRepository, RoleRepository roleRepository,
+                       ConfirmationTokenRepository tokenRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.secretKey = secretKey;
         this.clientUrl = clientUrl;
         this.userRepository = userRepository;

@@ -4,7 +4,6 @@ import de.shoppinglist.dto.ModelMapperDTO;
 import de.shoppinglist.dto.UserDTO;
 import de.shoppinglist.entity.User;
 import de.shoppinglist.exception.EntityNotFoundException;
-import de.shoppinglist.service.UserAuthenticationService;
 import de.shoppinglist.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;

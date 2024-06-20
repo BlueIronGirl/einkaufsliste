@@ -20,24 +20,24 @@ import java.util.List;
 public class EinkaufszettelService {
     private final EinkaufszettelRepository einkaufszettelRepository;
     private final ArtikelRepository artikelRepository;
-    private final UserAuthenticationService userAuthenticationService;
+    private final AuthService authService;
     private final ArtikelArchivRepository artikelArchivRepository;
 
-    public EinkaufszettelService(EinkaufszettelRepository einkaufszettelRepository, ArtikelRepository artikelRepository, UserAuthenticationService userAuthenticationService, ArtikelArchivRepository artikelArchivRepository) {
+    public EinkaufszettelService(EinkaufszettelRepository einkaufszettelRepository, ArtikelRepository artikelRepository, AuthService authService, ArtikelArchivRepository artikelArchivRepository) {
         this.einkaufszettelRepository = einkaufszettelRepository;
         this.artikelRepository = artikelRepository;
-        this.userAuthenticationService = userAuthenticationService;
+        this.authService = authService;
         this.artikelArchivRepository = artikelArchivRepository;
     }
 
     public List<Einkaufszettel> findActiveEinkaufszettelsByUserId() {
-        User currentUserDB = userAuthenticationService.findCurrentUser();
+        User currentUserDB = authService.findCurrentUser();
 
         return einkaufszettelRepository.findByGeloeschtFalseAndOwners_IdOrSharedWith_Id(currentUserDB, currentUserDB);
     }
 
     public Einkaufszettel saveEinkaufszettel(Einkaufszettel einkaufszettelData) {
-        User currentUserDB = userAuthenticationService.findCurrentUser();
+        User currentUserDB = authService.findCurrentUser();
 
         if (einkaufszettelData.getOwners().isEmpty()) {
             List<User> users = einkaufszettelData.getOwners();
@@ -62,7 +62,7 @@ public class EinkaufszettelService {
     }
 
     private void validateEinkaufszettelUserGeaendert(Long id, Einkaufszettel einkaufszettelData) {
-        User currentUserDB = userAuthenticationService.findCurrentUser();
+        User currentUserDB = authService.findCurrentUser();
         Einkaufszettel einkaufszettelDB = einkaufszettelRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Einkaufszettel nicht gefunden"));
         if (!einkaufszettelDB.getOwners().isEmpty() && !einkaufszettelDB.getOwners().contains(currentUserDB)) {
             boolean someSharedUserRemovedAsAOnlySharedUser = !einkaufszettelDB.getSharedWith().stream().filter(shared -> !shared.equals(currentUserDB)).allMatch(shared -> einkaufszettelData.getSharedWith().contains(shared));
@@ -90,7 +90,7 @@ public class EinkaufszettelService {
     }
 
     public Artikel createArtikel(Long einkaufszettelId, Artikel artikelData) {
-        User currentUserDB = userAuthenticationService.findCurrentUser();
+        User currentUserDB = authService.findCurrentUser();
         Einkaufszettel einkaufszettel = einkaufszettelRepository.findByIdAndGeloeschtFalseAndOwners_IdOrSharedWith_Id(einkaufszettelId, currentUserDB, currentUserDB)
                 .orElseThrow(() -> new EntityNotFoundException("Einkaufszettel nicht gefunden"));
 
@@ -101,7 +101,7 @@ public class EinkaufszettelService {
     }
 
     public Artikel updateArtikel(Long einkaufszettelId, Long artikelId, Artikel artikelData) {
-        User currentUserDB = userAuthenticationService.findCurrentUser();
+        User currentUserDB = authService.findCurrentUser();
         einkaufszettelRepository.findByIdAndGeloeschtFalseAndOwners_IdOrSharedWith_Id(einkaufszettelId, currentUserDB, currentUserDB)
                 .orElseThrow(() -> new EntityNotFoundException("Einkaufszettel nicht gefunden"));
 
@@ -121,7 +121,7 @@ public class EinkaufszettelService {
     }
 
     public void deleteArtikel(Long einkaufszettelId, Long artikelId) {
-        User currentUserDB = userAuthenticationService.findCurrentUser();
+        User currentUserDB = authService.findCurrentUser();
 
         einkaufszettelRepository.findByIdAndGeloeschtFalseAndOwners_IdOrSharedWith_Id(einkaufszettelId, currentUserDB, currentUserDB)
                 .orElseThrow(() -> new EntityNotFoundException("Einkaufszettel nicht gefunden"));
@@ -133,7 +133,7 @@ public class EinkaufszettelService {
     }
 
     public void archiviereGekaufteArtikel(Long einkaufszettelId) {
-        User currentUser = userAuthenticationService.findCurrentUser();
+        User currentUser = authService.findCurrentUser();
 
         List<Artikel> gekaufteArtikel = artikelRepository.findByGekauftTrueAndEinkaufszettel_Owners_IdOrEinkaufszettel_SharedWith_Id(einkaufszettelId, currentUser, currentUser);
 

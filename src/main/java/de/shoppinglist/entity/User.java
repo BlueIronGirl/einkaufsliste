@@ -61,6 +61,14 @@ public class User extends EntityBase {
     private LocalDateTime createdAt;
     private LocalDateTime lastLoggedIn;
 
+    @Lob
+    @Column(name = "avatar", length = 4096)
+    @ToString.Exclude
+    private byte[] avatar;
+
+    @Transient
+    private String avatarBase64;
+
     @Builder
     public User(Long id, String username, String password, String name, String email, String token, Set<Role> roles, LocalDateTime createdAt, LocalDateTime lastLoggedIn) {
         super(id);
